@@ -6,14 +6,14 @@ type ATIS = {
 };
 
 type vATIS = {
-  facility: string;
-  preset: string;
-  atisLetter: string;
-  atisType: 'combined' | 'arr' | 'dep';
+  id: string; // UUID
+  name: string;
   airportConditions: string;
   notams: string;
-  timestamp: string;
-  version: '4.0.0';
+  template: string;
+  externalGenerator: {
+    enabled: boolean;
+  };
 };
 
 export type { ATIS, vATIS };

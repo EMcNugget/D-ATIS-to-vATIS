@@ -1,8 +1,11 @@
 import type { ATIS, vATIS } from './types.js';
+import { v4 } from 'uuid';
 
-const facility = 'KATL';
+// Replace with Env Variables
 
-const link = `https://datis.clowd.io/api/${facility}`;
+const facility = 'GSO';
+
+const link = `https://datis.clowd.io/api/k${facility}`;
 
 const findNthOccurrenceIndex = (
   str: string,
@@ -19,6 +22,14 @@ const findNthOccurrenceIndex = (
   );
 };
 
+const createTemplate = (
+  facility: string,
+  combined: boolean,
+  type?: 'ARR' | 'DEP',
+): string => {
+  return `${facility}${combined ? ` ${type}` : ''} ATIS INFO [ATIS_CODE] [OBS_TIME]. [FULL_WX_STRING]. [ARPT_COND] [NOTAMS]`;
+};
+
 const parseATIS = (atis: ATIS['datis']): vATIS => {
   const notams = atis.split('NOTAMS... ')[1].split(' ...ADVS')[0];
   const airportConditions = atis
@@ -27,25 +38,21 @@ const parseATIS = (atis: ATIS['datis']): vATIS => {
     .trim();
 
   return {
-    facility,
-    preset: 'REAL WORLD',
-    atisLetter: atis.charAt(atis.indexOf('INFO') + 5),
-    atisType: 'combined', // replace with logic if its combined or dep/arr
+    id: v4(),
+    name: 'REAL WOLRD',
     airportConditions,
     notams,
-    timestamp: '', // getTimeStamp(atis),
-    version: '4.0.0',
+    template: createTemplate(facility, false),
+    externalGenerator: {
+      enabled: false, // not sure what this does, leaving it as false for now
+    },
   };
 };
 
-const fetchATIS = () => {
-  fetch(link)
-    .then((response) => {
-      return response.json() as Promise<ATIS[]>;
-    })
-    .then((data) => {
-      return parseATIS(data[0].datis); // data[0].datis is placeholder data until logic is implemented to parse dep/arr atis's
-    });
+const fetchATIS = async () => {
+  const response = await fetch(link);
+  const data = (await response.json()) as ATIS[];
+  return parseATIS(data[0].datis);
 };
 
-fetchATIS();
+console.log(await fetchATIS());
