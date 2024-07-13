@@ -60,7 +60,8 @@ const fetchATIS = async () => {
   const data = (await response.json()) as ATIS[];
 
   const atisArray = [];
-  if (data.length < 1) {
+
+  if (data.length === 1) {
     atisArray.push(parseATIS(data[0], false));
   } else {
     atisArray.push(parseATIS(data[0], true));
