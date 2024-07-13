@@ -3,7 +3,7 @@ import { v4 } from 'uuid';
 
 // Replace with Env Variables
 
-const facility = 'GSO';
+const facility = 'ATL';
 
 const link = `https://datis.clowd.io/api/k${facility}`;
 
@@ -30,11 +30,13 @@ const createTemplate = (
   return `${facility}${combined ? ` ${type}` : ''} ATIS INFO [ATIS_CODE] [OBS_TIME]. [FULL_WX_STRING]. [ARPT_COND] [NOTAMS]`;
 };
 
-const parseATIS = (atis: ATIS['datis']): vATIS => {
-  const notams = atis.split('NOTAMS... ')[1].split(' ...ADVS')[0];
-  const airportConditions = atis
-    .slice(findNthOccurrenceIndex(atis, '.', 2) + 1)
-    .split(atis.includes('NOTAMS') ? 'NOTAMS...' : 'NOTICE TO AIR MISSIONS.')[0]
+const parseATIS = (atis: ATIS, split: boolean): vATIS => {
+  const notams = atis.datis.split('NOTAMS... ')[1].split(' ...ADVS')[0];
+  const airportConditions = atis.datis
+    .slice(findNthOccurrenceIndex(atis.datis, '.', 2) + 1)
+    .split(
+      atis.datis.includes('NOTAMS') ? 'NOTAMS...' : 'NOTICE TO AIR MISSIONS.',
+    )[0]
     .trim();
 
   return {
@@ -42,7 +44,11 @@ const parseATIS = (atis: ATIS['datis']): vATIS => {
     name: 'REAL WOLRD',
     airportConditions,
     notams,
-    template: createTemplate(facility, false),
+    template: createTemplate(
+      facility,
+      split,
+      split ? (atis.type.toUpperCase() as 'ARR' | 'DEP') : undefined,
+    ),
     externalGenerator: {
       enabled: false, // not sure what this does, leaving it as false for now
     },
@@ -52,7 +58,16 @@ const parseATIS = (atis: ATIS['datis']): vATIS => {
 const fetchATIS = async () => {
   const response = await fetch(link);
   const data = (await response.json()) as ATIS[];
-  return parseATIS(data[0].datis);
+
+  const atisArray = [];
+  if (data.length < 1) {
+    atisArray.push(parseATIS(data[0], false));
+  } else {
+    atisArray.push(parseATIS(data[0], true));
+    atisArray.push(parseATIS(data[1], true));
+  }
+
+  return atisArray;
 };
 
 console.log(await fetchATIS());

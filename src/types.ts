@@ -1,6 +1,6 @@
 type ATIS = {
   airport: string;
-  type: string;
+  type: 'arr' | 'dep' | 'combined';
   code: string;
   datis: string;
 };
