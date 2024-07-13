@@ -16,4 +16,9 @@ type vATIS = {
   };
 };
 
-export type { ATIS, vATIS };
+type Settings = {
+  facility: string;
+  filePath: string;
+};
+
+export type { ATIS, vATIS, Settings };

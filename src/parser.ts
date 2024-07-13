@@ -1,11 +1,11 @@
 import type { ATIS, vATIS } from "./types.js";
+import { useATISSTore } from "./stores.js";
 import { v4 } from "uuid";
+import { computed } from "vue";
 
-// Replace with Env Variables
+const store = useATISSTore();
 
-const facility = "ATL";
-
-const link = `https://datis.clowd.io/api/k${facility}`;
+const facility = computed(() => store.getFacility());
 
 const findNthOccurrenceIndex = (
   str: string,
@@ -47,7 +47,7 @@ const parseATIS = (atis: ATIS, split: boolean): vATIS => {
     airportConditions,
     notams,
     template: createTemplate(
-      facility,
+      facility.value,
       split,
       split ? (atis.type.toUpperCase() as "ARR" | "DEP") : undefined
     ),
@@ -57,8 +57,8 @@ const parseATIS = (atis: ATIS, split: boolean): vATIS => {
   };
 };
 
-const fetchATIS = async () => {
-  const response = await fetch(link);
+export const fetchATIS = async () => {
+  const response = await fetch(`https://datis.clowd.io/api/k${facility}`);
   const data = (await response.json()) as ATIS[];
 
   const atisArray = [];
@@ -72,5 +72,3 @@ const fetchATIS = async () => {
 
   return atisArray;
 };
-
-console.log(await fetchATIS());
