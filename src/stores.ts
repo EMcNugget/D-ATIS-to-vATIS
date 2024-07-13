@@ -1,10 +1,5 @@
 import { defineStore } from "pinia";
 import type { Settings } from "./types";
-import * as fs from "fs";
-
-const writeSettings = (settings: Settings) => {
-  fs.writeFileSync("../settings.json", JSON.stringify(settings));
-};
 
 export const useATISSTore = defineStore("atis", {
   state: () => ({
@@ -14,11 +9,9 @@ export const useATISSTore = defineStore("atis", {
   actions: {
     setFacility(code: string) {
       this.facility = code.toUpperCase();
-      writeSettings(this.getAll());
     },
     setFilePath(path: string) {
       this.filePath = path;
-      writeSettings(this.getAll());
     },
     getFacility() {
       return this.facility;
