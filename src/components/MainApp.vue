@@ -1,36 +1,12 @@
 <script setup lang="ts">
-import { computed, onMounted, onBeforeUnmount } from "vue";
+import { computed } from "vue";
 import { useATISSTore } from "../stores";
-import * as fs from "fs";
 
 const store = useATISSTore();
 
 const facility = computed({
   get: () => store.getFacility(),
   set: (value) => store.setFacility(value),
-});
-
-onMounted(() => {
-  if (fs.existsSync("../settings.json")) {
-    const settings = JSON.parse(fs.readFileSync("../settings.json", "utf-8"));
-    store.setAll(settings);
-  } else {
-    fs.writeFileSync(
-      "../settings.json",
-      JSON.stringify({
-        facility: "",
-        apiKey: "",
-      })
-    );
-  }
-});
-
-onBeforeUnmount(() => {
-  fs.writeFileSync("../settings.json", JSON.stringify(store.getAll()));
-});
-
-onBeforeUnmount(() => {
-  console.log("Unmounted");
 });
 </script>
 
