@@ -1,10 +1,10 @@
 <script setup lang="ts">
 import { computed } from "vue";
-import { useATISSTore } from "../stores";
+import { use_atis_store } from "../stores";
 import { invoke } from "@tauri-apps/api";
 import { Settings } from "../types";
 
-const store = useATISSTore();
+const store = use_atis_store();
 
 const facility = computed({
   get: () => store.get_facility(),

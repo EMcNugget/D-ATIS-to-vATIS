@@ -1,7 +1,7 @@
 import { defineStore } from "pinia";
 import type { Settings } from "./types";
 
-export const useATISSTore = defineStore("atis", {
+export const use_atis_store = defineStore("atis", {
   state: () => ({
     facility: "",
     file_path: "",
