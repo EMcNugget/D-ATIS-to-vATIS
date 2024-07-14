@@ -5,7 +5,7 @@ import { computed } from "vue";
 
 const store = useATISSTore();
 
-const facility = computed(() => store.getFacility());
+const facility = computed(() => store.get_facility());
 
 const findNthOccurrenceIndex = (
   str: string,
@@ -34,7 +34,7 @@ const createTemplate = (
 
 const parseATIS = (atis: ATIS, split: boolean): vATIS => {
   const notams = atis.datis.split("NOTAMS... ")[1].split(" ...ADVS")[0];
-  const airportConditions = atis.datis
+  const airport_conditions = atis.datis
     .slice(findNthOccurrenceIndex(atis.datis, ".", 2) + 1)
     .split(
       atis.datis.includes("NOTAMS") ? "NOTAMS..." : "NOTICE TO AIR MISSIONS."
@@ -44,14 +44,14 @@ const parseATIS = (atis: ATIS, split: boolean): vATIS => {
   return {
     id: v4(),
     name: "REAL WOLRD",
-    airportConditions,
+    airport_conditions,
     notams,
     template: createTemplate(
       facility.value,
       split,
       split ? (atis.type.toUpperCase() as "ARR" | "DEP") : undefined
     ),
-    externalGenerator: {
+    external_generator: {
       enabled: false, // not sure what this does, leaving it as false for now
     },
   };

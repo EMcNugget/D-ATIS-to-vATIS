@@ -1,6 +1,6 @@
 type ATIS = {
   airport: string;
-  type: 'arr' | 'dep' | 'combined';
+  type: "arr" | "dep" | "combined";
   code: string;
   datis: string;
 };
@@ -8,17 +8,17 @@ type ATIS = {
 type vATIS = {
   id: string; // UUID
   name: string;
-  airportConditions: string;
+  airport_conditions: string;
   notams: string;
   template: string;
-  externalGenerator: {
+  external_generator: {
     enabled: boolean;
   };
 };
 
 type Settings = {
   facility: string;
-  filePath: string;
+  file_path: string;
 };
 
 export type { ATIS, vATIS, Settings };

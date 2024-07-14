@@ -4,31 +4,30 @@ import type { Settings } from "./types";
 export const useATISSTore = defineStore("atis", {
   state: () => ({
     facility: "",
-    filePath: "",
+    file_path: "",
   }),
   actions: {
-    setFacility(code: string) {
-      console.log("Setting facility to", code);
+    set_facility(code: string) {
       this.facility = code.toUpperCase();
     },
-    setFilePath(path: string) {
-      this.filePath = path;
+    set_file_path(path: string) {
+      this.file_path = path;
     },
-    getFacility() {
+    get_facility() {
       return this.facility;
     },
-    getFilePath() {
-      return this.filePath;
+    get_file_path() {
+      return this.file_path;
     },
-    getAll() {
+    get_all() {
       return {
         facility: this.facility,
-        filePath: this.filePath,
+        filePath: this.file_path,
       };
     },
-    setAll(settings: Settings) {
+    set_all(settings: Settings) {
       this.facility = settings.facility;
-      this.filePath = settings.filePath;
+      this.file_path = settings.file_path;
     },
   },
 });

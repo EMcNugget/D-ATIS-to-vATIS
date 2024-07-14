@@ -7,23 +7,23 @@ import { Settings } from "../types";
 const store = useATISSTore();
 
 const facility = computed({
-  get: () => store.getFacility(),
-  set: (value) => store.setFacility(value),
+  get: () => store.get_facility(),
+  set: (value) => store.set_facility(value),
 });
 
 store.$subscribe(() => {
   invoke("write_settings", {
     settings: {
-      facility: store.getFacility(),
-      filepath: store.getFilePath(),
+      facility: store.get_facility(),
+      filepath: store.get_file_path(),
     },
   });
 });
 
 invoke("read_settings").then((k) => {
   const settings: Settings = k as Settings;
-  store.setFacility(settings.facility);
-  store.setFilePath(settings.filePath);
+  store.set_facility(settings.facility);
+  store.set_file_path(settings.file_path);
 });
 </script>
 
