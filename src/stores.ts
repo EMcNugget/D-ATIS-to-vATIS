@@ -8,6 +8,7 @@ export const useATISSTore = defineStore("atis", {
   }),
   actions: {
     setFacility(code: string) {
+      console.log("Setting facility to", code);
       this.facility = code.toUpperCase();
     },
     setFilePath(path: string) {

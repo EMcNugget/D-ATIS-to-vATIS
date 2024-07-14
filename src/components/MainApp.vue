@@ -1,12 +1,29 @@
 <script setup lang="ts">
 import { computed } from "vue";
 import { useATISSTore } from "../stores";
+import { invoke } from "@tauri-apps/api";
+import { Settings } from "../types";
 
 const store = useATISSTore();
 
 const facility = computed({
   get: () => store.getFacility(),
   set: (value) => store.setFacility(value),
+});
+
+store.$subscribe(() => {
+  invoke("write_settings", {
+    settings: {
+      facility: store.getFacility(),
+      filepath: store.getFilePath(),
+    },
+  });
+});
+
+invoke("read_settings").then((k) => {
+  const settings: Settings = k as Settings;
+  store.setFacility(settings.facility);
+  store.setFilePath(settings.filePath);
 });
 </script>
 
