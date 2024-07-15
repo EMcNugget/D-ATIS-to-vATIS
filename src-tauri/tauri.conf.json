@@ -7,7 +7,7 @@
     "distDir": "../dist"
   },
   "package": {
-    "productName": "atis-parser",
+    "productName": "d-atis-to-vatis",
     "version": "0.1.0"
   },
   "tauri": {
@@ -20,7 +20,7 @@
     "bundle": {
       "active": true,
       "category": "DeveloperTool",
-      "copyright": "",
+      "copyright": "MIT",
       "deb": {
         "depends": []
       },
@@ -32,7 +32,7 @@
         "icons/icon.icns",
         "icons/icon.ico"
       ],
-      "identifier": "atis-parser",
+      "identifier": "d-atis-to-vatis",
       "longDescription": "",
       "macOS": {
         "entitlements": null,
@@ -61,7 +61,7 @@
         "fullscreen": false,
         "height": 600,
         "resizable": true,
-        "title": "atis-parser",
+        "title": "D-ATIS to vATIS",
         "width": 800
       }
     ]

@@ -1,11 +1,11 @@
 [package]
-name = "app"
+name = "D-ATIS-to-vATIS"
 version = "0.1.0"
-description = "A Tauri App"
+description = "Converts real world FAA D-ATIS's to vATIS profiles"
 authors = ["you"]
-license = ""
+license = "MIT"
 repository = ""
-default-run = "app"
+default-run = "D-ATIS-to-vATIS"
 edition = "2021"
 rust-version = "1.60"
 
