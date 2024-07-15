@@ -19,6 +19,7 @@ type vATIS = {
 type Settings = {
   facility: string;
   file_path: string;
+  save_facility: boolean;
 };
 
 export type { ATIS, vATIS, Settings };
