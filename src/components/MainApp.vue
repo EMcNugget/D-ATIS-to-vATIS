@@ -61,7 +61,7 @@ invoke("read_settings").then((k) => {
       <input
         type="text"
         placeholder="Airport Code..."
-        class="input input-bordered w-full max-w-xs mb-4"
+        class="input input-bordered w-full max-w-xs mb-4 input-uppercase"
         v-model="facility"
       />
       <button class="btn btn-primary w-half max-w-xs mb-4">Fetch</button>
@@ -104,3 +104,13 @@ invoke("read_settings").then((k) => {
     </button>
   </div>
 </template>
+
+<style>
+.input-uppercase::placeholder {
+  text-transform: none;
+}
+
+.input-uppercase {
+  text-transform: uppercase;
+}
+</style>

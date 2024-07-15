@@ -5,7 +5,7 @@ import { computed } from "vue";
 
 const store = use_atis_store();
 
-const facility = computed(() => store.get_facility());
+const facility = computed(() => store.get_facility().slice(1));
 
 const find_number_of_occurances = (
   str: string,
