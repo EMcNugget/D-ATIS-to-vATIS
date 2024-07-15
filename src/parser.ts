@@ -61,14 +61,10 @@ export const fetch_atis = async () => {
   const response = await fetch(`https://datis.clowd.io/api/k${facility}`);
   const data = (await response.json()) as ATIS[];
 
-  const atisArray = [];
-
-  if (data.length === 1) {
-    atisArray.push(parse_atis(data[0], false));
-  } else {
-    atisArray.push(parse_atis(data[0], true));
-    atisArray.push(parse_atis(data[1], true));
-  }
+  const atisArray: vATIS[] = [];
+  data.forEach((atis) => {
+    atisArray.push(parse_atis(atis, false));
+  });
 
   return atisArray;
 };

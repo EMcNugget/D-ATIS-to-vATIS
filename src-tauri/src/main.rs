@@ -11,7 +11,7 @@ use std::{
 #[derive(Serialize, Deserialize, Debug, PartialEq)]
 struct Settings {
     pub facility: String,
-    pub filepath: String,
+    pub file_path: String,
 }
 
 #[tauri::command(rename_all = "snake_case")]
