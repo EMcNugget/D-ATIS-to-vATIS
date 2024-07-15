@@ -47,6 +47,7 @@ fn read_settings() -> Result<Settings, String> {
 
 fn main() {
     tauri::Builder::default()
+        .plugin(tauri_plugin_dialog::init())
         .invoke_handler(tauri::generate_handler![write_settings, read_settings])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");

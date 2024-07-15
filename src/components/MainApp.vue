@@ -1,8 +1,8 @@
 <script setup lang="ts">
 import { computed } from "vue";
 import { use_atis_store } from "../stores";
-import { invoke } from "@tauri-apps/api";
-import { open } from "@tauri-apps/api/dialog";
+import { invoke } from "@tauri-apps/api/core";
+import { open } from "@tauri-apps/plugin-dialog";
 import { Settings } from "../types";
 
 const open_path = () => {
@@ -16,7 +16,7 @@ const open_path = () => {
       },
     ],
   }).then((k) => {
-    store.set_file_path(k as string);
+    store.set_file_path(k ? (k.path as string) : store.get_file_path());
   });
 };
 
