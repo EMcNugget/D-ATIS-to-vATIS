@@ -1,11 +1,11 @@
 import type { ATIS, vATIS } from "./types.js";
-import { use_atis_store } from "./stores.js";
+import { use_settings } from "./stores.js";
 import { v4 } from "uuid";
 import { computed } from "vue";
 
-const store = use_atis_store();
+const settings = use_settings();
 
-const facility = computed(() => store.get_facility().slice(1));
+const facility = computed(() => settings.get_facility().slice(1));
 
 const find_number_of_occurances = (
   str: string,

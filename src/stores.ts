@@ -1,7 +1,7 @@
 import { defineStore } from "pinia";
-import type { Settings } from "./types";
+import type { vATIS, Settings } from "./types";
 
-export const use_atis_store = defineStore("atis", {
+export const use_settings = defineStore("settings", {
   state: () => ({
     facility: "",
     file_path: "",
@@ -37,6 +37,21 @@ export const use_atis_store = defineStore("atis", {
       this.facility = settings.facility;
       this.file_path = settings.file_path;
       this.save_facility = settings.save_facility;
+    },
+  },
+});
+
+export const use_atis_store = defineStore("atis", {
+  state: () => ({
+    atis: [] as vATIS[],
+  }),
+  actions: {
+    set_atis(atis: vATIS[]) {
+      this.atis = atis;
+      console.log(this.atis);
+    },
+    get_atis() {
+      return this.atis;
     },
   },
 });

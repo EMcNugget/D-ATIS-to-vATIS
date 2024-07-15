@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { computed } from "vue";
-import { use_atis_store } from "../stores";
+import { use_settings } from "../stores";
 import { invoke } from "@tauri-apps/api/core";
 import { open } from "@tauri-apps/plugin-dialog";
 import { Settings } from "../types";
@@ -16,42 +16,42 @@ const open_path = () => {
       },
     ],
   }).then((k) => {
-    store.set_file_path(k ? (k.path as string) : store.get_file_path());
+    settings.set_file_path(k ? (k.path as string) : settings.get_file_path());
   });
 };
 
-const store = use_atis_store();
+const settings = use_settings();
 
 const facility = computed({
-  get: () => store.get_facility(),
-  set: (value) => store.set_facility(value),
+  get: () => settings.get_facility(),
+  set: (value) => settings.set_facility(value),
 });
 
 const file_path = computed({
-  get: () => store.get_file_path(),
-  set: (value) => store.set_file_path(value),
+  get: () => settings.get_file_path(),
+  set: (value) => settings.set_file_path(value),
 });
 
 const save_facility = computed({
-  get: () => store.get_save_facility(),
-  set: (value) => store.set_save_facility(value),
+  get: () => settings.get_save_facility(),
+  set: (value) => settings.set_save_facility(value),
 });
 
-store.$subscribe(() => {
+settings.$subscribe(() => {
   invoke("write_settings", {
     settings: {
-      facility: store.get_save_facility() ? store.get_facility() : "",
-      file_path: store.get_file_path(),
-      save_facility: store.get_save_facility(),
+      facility: settings.get_save_facility() ? settings.get_facility() : "",
+      file_path: settings.get_file_path(),
+      save_facility: settings.get_save_facility(),
     },
   });
 });
 
 invoke("read_settings").then((k) => {
-  const settings: Settings = k as Settings;
-  store.set_facility(settings.facility);
-  store.set_file_path(settings.file_path);
-  store.set_save_facility(settings.save_facility);
+  const v: Settings = k as Settings;
+  settings.set_facility(v.facility);
+  settings.set_file_path(v.file_path);
+  settings.set_save_facility(v.save_facility);
 });
 </script>
 
