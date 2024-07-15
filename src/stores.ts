@@ -6,6 +6,7 @@ export const use_settings = defineStore("settings", {
     facility: "",
     file_path: "",
     save_facility: false,
+    profile: "",
   }),
   actions: {
     set_facility(code: string) {
@@ -17,6 +18,9 @@ export const use_settings = defineStore("settings", {
     set_save_facility(save: boolean) {
       this.save_facility = save;
     },
+    set_profile(profile: string) {
+      this.profile = profile;
+    },
     get_facility() {
       return this.facility;
     },
@@ -26,17 +30,22 @@ export const use_settings = defineStore("settings", {
     get_save_facility() {
       return this.save_facility;
     },
+    get_profile() {
+      return this.profile;
+    },
     get_all() {
       return {
         facility: this.facility,
         file_path: this.file_path,
         save_facility: this.save_facility,
+        profile: this.profile,
       };
     },
     set_all(settings: Settings) {
       this.facility = settings.facility;
       this.file_path = settings.file_path;
       this.save_facility = settings.save_facility;
+      this.profile = settings.profile
     },
   },
 });
