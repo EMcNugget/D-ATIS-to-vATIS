@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { computed } from "vue";
-import { use_settings } from "../stores";
+import { use_settings, use_atis_store } from "../stores";
+import { fetch_atis } from "../parser";
 import { invoke } from "@tauri-apps/api/core";
 import { open } from "@tauri-apps/plugin-dialog";
 import { Settings } from "../types";
@@ -21,6 +22,13 @@ const open_path = () => {
 };
 
 const settings = use_settings();
+const atis_store = use_atis_store();
+
+const fetch = () => {
+  fetch_atis(facility.value).then((k) => {
+    atis_store.set_atis(k);
+  });
+};
 
 const facility = computed({
   get: () => settings.get_facility(),
@@ -64,7 +72,9 @@ invoke("read_settings").then((k) => {
         class="input input-bordered w-full max-w-xs mb-4 input-uppercase"
         v-model="facility"
       />
-      <button class="btn btn-primary w-half max-w-xs mb-4">Fetch</button>
+      <button class="btn btn-primary w-half max-w-xs mb-4" @click="fetch()">
+        Fetch
+      </button>
       <dialog id="my_modal_3" class="modal">
         <div class="modal-box">
           <form method="dialog">

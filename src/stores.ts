@@ -48,7 +48,6 @@ export const use_atis_store = defineStore("atis", {
   actions: {
     set_atis(atis: vATIS[]) {
       this.atis = atis;
-      console.log(this.atis);
     },
     get_atis() {
       return this.atis;

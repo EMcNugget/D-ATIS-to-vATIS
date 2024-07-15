@@ -1,11 +1,5 @@
 import type { ATIS, vATIS } from "./types.js";
-import { use_settings } from "./stores.js";
 import { v4 } from "uuid";
-import { computed } from "vue";
-
-const settings = use_settings();
-
-const facility = computed(() => settings.get_facility().slice(1));
 
 const find_number_of_occurances = (
   str: string,
@@ -32,7 +26,7 @@ const create_template = (
   } ATIS INFO [ATIS_CODE] [OBS_TIME]. [FULL_WX_STRING]. [ARPT_COND] [NOTAMS]`;
 };
 
-const parse_atis = (atis: ATIS, split: boolean): vATIS => {
+const parse_atis = (atis: ATIS, split: boolean, facility: string): vATIS => {
   const notams = atis.datis.split("NOTAMS... ")[1].split(" ...ADVS")[0];
   const airport_conditions = atis.datis
     .slice(find_number_of_occurances(atis.datis, ".", 2) + 1)
@@ -47,7 +41,7 @@ const parse_atis = (atis: ATIS, split: boolean): vATIS => {
     airport_conditions,
     notams,
     template: create_template(
-      facility.value,
+      facility.slice(1),
       split,
       split ? (atis.type.toUpperCase() as "ARR" | "DEP") : undefined
     ),
@@ -57,13 +51,19 @@ const parse_atis = (atis: ATIS, split: boolean): vATIS => {
   };
 };
 
-export const fetch_atis = async () => {
-  const response = await fetch(`https://datis.clowd.io/api/k${facility}`);
+export const fetch_atis = async (facility: string) => {
+  const response = await fetch(`https://datis.clowd.io/api/${facility}`);
   const data = (await response.json()) as ATIS[];
+
+  let split = false;
+
+  if (data.length > 1) {
+    split = true;
+  }
 
   const atisArray: vATIS[] = [];
   data.forEach((atis) => {
-    atisArray.push(parse_atis(atis, false));
+    atisArray.push(parse_atis(atis, split, facility));
   });
 
   return atisArray;
