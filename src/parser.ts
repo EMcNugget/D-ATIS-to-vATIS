@@ -52,17 +52,18 @@ const parse_atis = (atis: ATIS, split: boolean, facility: string): vATIS => {
 };
 
 export const fetch_atis = async (facility: string) => {
-  const response = await fetch(`https://datis.clowd.io/api/${facility}`);
-  const data = (await response.json()) as ATIS[];
+  const response = await fetch(`https://datis.clowd.io/api/${facility}`).then(
+    (res) => res.json()
+  );
 
   let split = false;
 
-  if (data.length > 1) {
+  if (response.length > 1) {
     split = true;
   }
 
   const atisArray: vATIS[] = [];
-  data.forEach((atis) => {
+  response.forEach((atis: ATIS) => {
     atisArray.push(parse_atis(atis, split, facility));
   });
 

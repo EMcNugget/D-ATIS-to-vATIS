@@ -4,6 +4,7 @@ import { use_settings, use_atis_store } from "../stores";
 import { fetch_atis } from "../parser";
 import { invoke } from "@tauri-apps/api/core";
 import { open } from "@tauri-apps/plugin-dialog";
+import { emit } from "@tauri-apps/api/event";
 import { Settings, facilities } from "../types";
 
 const open_path = () => {
@@ -24,12 +25,6 @@ const open_path = () => {
 const settings = use_settings();
 const atis_store = use_atis_store();
 
-const fetch = () => {
-  fetch_atis(facility.value).then((k) => {
-    atis_store.set_atis(k);
-  });
-};
-
 const facility = computed({
   get: () => settings.get_facility(),
   set: (value) => settings.set_facility(value),
@@ -49,6 +44,14 @@ const profile = computed({
   get: () => settings.get_profile(),
   set: (value) => settings.set_profile(value),
 });
+
+const fetch = () => {
+  fetch_atis(facility.value).then((k) => {
+    atis_store.set_atis(k);
+    emit("facility", facility.value);
+    emit("atis", k);
+  });
+};
 
 const validateICAO = (value: string) => {
   if (

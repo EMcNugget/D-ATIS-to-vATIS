@@ -2,8 +2,12 @@ use serde_json::{self, Value};
 use std::fs::File;
 use std::io::Read;
 
-fn read_json_file(file_path: &str) -> Result<Value, Box<dyn std::error::Error>> {
-    let mut file = File::open("AppConfig.json")?;
+use crate::settings::read_settings;
+
+fn read_json_file() -> Result<Value, Box<dyn std::error::Error>> {
+    let settings = read_settings()?;
+
+    let mut file = File::open(settings.file_path.to_string())?;
     let mut json_data = String::new();
     file.read_to_string(&mut json_data)?;
 
