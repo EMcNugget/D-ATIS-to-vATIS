@@ -1,16 +1,11 @@
-use serde::{Deserialize, Serialize};
 use std::{
     fs::File,
     io::{BufReader, Write},
     path::Path,
 };
+use crate::structs::Settings;
 
-#[derive(Serialize, Deserialize, Debug, PartialEq)]
-pub struct Settings {
-    pub facility: String,
-    pub file_path: String,
-    pub save_facility: bool,
-}
+
 
 #[tauri::command(rename_all = "snake_case")]
 pub fn write_settings(settings: Settings) -> Result<(), String> {

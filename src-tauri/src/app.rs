@@ -1,8 +1,7 @@
+use crate::settings::read_settings;
 use serde_json::{self, Value};
 use std::fs::File;
 use std::io::Read;
-
-use crate::settings::read_settings;
 
 fn read_json_file() -> Result<Value, Box<dyn std::error::Error>> {
     let settings = read_settings()?;
@@ -15,24 +14,34 @@ fn read_json_file() -> Result<Value, Box<dyn std::error::Error>> {
     return Ok(data);
 }
 
-pub fn find_profile_index(data: &Value, profile: &str, facility: &str) -> Option<usize> {
+pub struct FindComposite {
+    pub profile_index: usize,
+    pub composite_index: usize,
+}
+
+pub fn find_composite(data: &Value, profile: &str, facility: &str) -> Option<FindComposite> {
     if let Some(profiles) = data.get("profiles").and_then(|p| p.as_array()) {
-        for (index, prof) in profiles.iter().enumerate() {
+        for (profile_index, prof) in profiles.iter().enumerate() {
             if let Some(name) = prof.get("name").and_then(|n| n.as_str()) {
                 if name == profile {
-                    return Some(index);
+                    return Some(FindComposite {
+                        profile_index,
+                        composite_index: usize::MAX,
+                    });
                 }
             }
         }
 
-        for (index, profile) in profiles.iter().enumerate() {
+        for (profile_index, profile) in profiles.iter().enumerate() {
             if let Some(composites) = profile.get("composites").and_then(|c| c.as_array()) {
-                if let Some(first_composite) = composites.get(0) {
-                    if let Some(identifier) =
-                        first_composite.get("identifier").and_then(|id| id.as_str())
+                for (composite_index, composite) in composites.iter().enumerate() {
+                    if let Some(identifier) = composite.get("identifier").and_then(|id| id.as_str())
                     {
                         if identifier == facility {
-                            return Some(index);
+                            return Some(FindComposite {
+                                profile_index,
+                                composite_index,
+                            });
                         }
                     }
                 }
