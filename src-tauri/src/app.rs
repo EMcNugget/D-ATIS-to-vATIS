@@ -1,19 +1,18 @@
-use crate::settings::read_settings;
 use serde_json::{self, Value};
 use std::fs::File;
-use std::io::Read;
+use std::io::{BufReader, Write};
 
-fn read_json_file() -> Result<Value, Box<dyn std::error::Error>> {
-    let settings = read_settings()?;
-
-    let mut file = File::open(settings.file_path.to_string())?;
-    let mut json_data = String::new();
-    file.read_to_string(&mut json_data)?;
-
-    let data: Value = serde_json::from_str(&json_data)?;
-    return Ok(data);
+fn read_json_file(file_path: &str) -> Result<Value, String> {
+    let file = File::open(file_path).map_err(|e| e.to_string())?;
+    let reader = BufReader::new(file);
+    serde_json::from_reader(reader).map_err(|e| e.to_string())
 }
 
+fn write_json_file(filename: &str, data: &str) -> Result<(), Box<dyn std::error::Error>> {
+    let mut file = File::create(filename)?;
+    file.write_all(data.as_bytes())?;
+    Ok(())
+}
 pub struct FindComposite {
     pub profile_index: usize,
     pub composite_index: usize,
@@ -49,4 +48,25 @@ pub fn find_composite(data: &Value, profile: &str, facility: &str) -> Option<Fin
         }
     }
     None
+}
+
+pub fn write_profile(
+    atis_preset: &Value,
+    profile: &str,
+    facility: &str,
+    file_path: &str
+) -> Result<(), Box<dyn std::error::Error>> {
+    let mut data: Value =
+        serde_json::from_str(&read_json_file(file_path).unwrap().to_string()).unwrap();
+    let indexes: FindComposite = find_composite(&data, profile, facility).unwrap();
+
+    let presets = data["profiles"][indexes.profile_index]["composites"][indexes.composite_index]
+        ["presets"]
+        .as_array_mut()
+        .unwrap();
+
+    presets.push(serde_json::json!(atis_preset));
+
+    write_json_file("Output.json", &data.to_string())?;
+    Ok(())
 }
