@@ -27,7 +27,7 @@ fn main() {
                         atis,
                         &settings.profile,
                         facility,
-                        format!("{}\\AppConfig.json", &settings.profile).as_str(),
+                        format!("{}\\AppConfig.json", &settings.file_path).as_str(),
                         Some(atis_type),
                     );
 
