@@ -41,7 +41,7 @@
     }
   },
   "productName": "d-atis-to-vatis",
-  "version": "1.1.0",
+  "version": "1.2.0",
   "identifier": "d-atis-to-vatis",
   "plugins": {},
   "app": {
