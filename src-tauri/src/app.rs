@@ -18,11 +18,48 @@ pub struct FindComposite {
     pub composite_index: usize,
 }
 
-pub fn find_composite(data: &Value, profile: &str, facility: &str) -> Option<FindComposite> {
+// I know this is nested if then hell but until I get more confident in rust its going to remain this way
+fn find_composite(
+    data: &Value,
+    profile: &str,
+    facility: &str,
+    atis_type: Option<&str>,
+) -> Option<FindComposite> {
+    fn find_atis_type(atis_type: Option<&str>) -> &str {
+        match atis_type {
+            Some("dep") => "Departure",
+            Some("arr") => "Arrival",
+            _ => "Combined",
+        }
+    }
+
+    let atis_type_str = find_atis_type(atis_type);
+
     if let Some(profiles) = data.get("profiles").and_then(|p| p.as_array()) {
         for (profile_index, prof) in profiles.iter().enumerate() {
             if let Some(name) = prof.get("name").and_then(|n| n.as_str()) {
                 if name == profile {
+                    // Check composites for atis_type
+                    if let Some(composites) = prof.get("composites").and_then(|c| c.as_array()) {
+                        for (composite_index, composite) in composites.iter().enumerate() {
+                            if let Some(identifier) =
+                                composite.get("identifier").and_then(|id| id.as_str())
+                            {
+                                if identifier == facility {
+                                    if let Some(atis) =
+                                        composite.get("atisType").and_then(|a| a.as_str())
+                                    {
+                                        if atis == atis_type_str {
+                                            return Some(FindComposite {
+                                                profile_index,
+                                                composite_index,
+                                            });
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
                     return Some(FindComposite {
                         profile_index,
                         composite_index: usize::MAX,
@@ -37,10 +74,14 @@ pub fn find_composite(data: &Value, profile: &str, facility: &str) -> Option<Fin
                     if let Some(identifier) = composite.get("identifier").and_then(|id| id.as_str())
                     {
                         if identifier == facility {
-                            return Some(FindComposite {
-                                profile_index,
-                                composite_index,
-                            });
+                            if let Some(atis) = composite.get("atisType").and_then(|a| a.as_str()) {
+                                if atis == atis_type_str {
+                                    return Some(FindComposite {
+                                        profile_index,
+                                        composite_index,
+                                    });
+                                }
+                            }
                         }
                     }
                 }
@@ -54,11 +95,12 @@ pub fn write_profile(
     atis_preset: &Value,
     profile: &str,
     facility: &str,
-    file_path: &str
+    file_path: &str,
+    atis_type: Option<&str>,
 ) -> Result<(), Box<dyn std::error::Error>> {
     let mut data: Value =
         serde_json::from_str(&read_json_file(file_path).unwrap().to_string()).unwrap();
-    let indexes: FindComposite = find_composite(&data, profile, facility).unwrap();
+    let indexes: FindComposite = find_composite(&data, profile, facility, atis_type).unwrap();
 
     let presets = data["profiles"][indexes.profile_index]["composites"][indexes.composite_index]
         ["presets"]
