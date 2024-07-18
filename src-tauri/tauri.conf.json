@@ -8,7 +8,7 @@
   },
   "bundle": {
     "active": true,
-    "category": "DeveloperTool",
+    "category": "Utility",
     "copyright": "MIT",
     "targets": "all",
     "externalBin": [],
@@ -38,11 +38,10 @@
       "deb": {
         "depends": []
       }
-    },
-    "createUpdaterArtifacts": "v1Compatible"
+    }
   },
   "productName": "d-atis-to-vatis",
-  "version": "0.1.0",
+  "version": "1.0.0",
   "identifier": "d-atis-to-vatis",
   "plugins": {},
   "app": {
