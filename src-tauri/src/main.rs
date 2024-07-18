@@ -7,8 +7,7 @@ mod structs;
 
 use app::write_profile;
 use settings::{read_settings, write_settings};
-use tauri::Event;
-use tauri::Listener;
+use tauri::{Event, Listener};
 
 fn main() {
     tauri::Builder::default()

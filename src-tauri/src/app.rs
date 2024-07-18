@@ -19,6 +19,7 @@ pub struct FindComposite {
 }
 
 // I know this is nested if then hell but until I get more confident in rust its going to remain this way
+// Needs a refactor
 fn find_composite(
     data: &Value,
     profile: &str,
@@ -40,7 +41,6 @@ fn find_composite(
         for (profile_index, prof) in profiles.iter().enumerate() {
             if let Some(name) = prof.get("name").and_then(|n| n.as_str()) {
                 if name == profile {
-                    // Check composites for atis_type
                     if let Some(composites) = prof.get("composites").and_then(|c| c.as_array()) {
                         for (composite_index, composite) in composites.iter().enumerate() {
                             if let Some(identifier) =

@@ -9,7 +9,7 @@ use crate::structs::Settings;
 
 #[tauri::command(rename_all = "snake_case")]
 pub fn write_settings(settings: Settings) -> Result<(), String> {
-    let file_path = "../settings.json";
+    let file_path = "settings.json";
 
     if Path::new(file_path).exists() {
         let file = File::open(file_path).map_err(|e| e.to_string())?;
@@ -32,7 +32,7 @@ pub fn write_settings(settings: Settings) -> Result<(), String> {
 
 #[tauri::command(rename_all = "snake_case")]
 pub fn read_settings() -> Result<Settings, String> {
-    let file = File::open("../settings.json").map_err(|e| e.to_string())?;
+    let file = File::open("settings.json").map_err(|e| e.to_string())?;
     let reader = BufReader::new(file);
     serde_json::from_reader(reader).map_err(|e| e.to_string())
 }

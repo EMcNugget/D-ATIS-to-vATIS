@@ -46,11 +46,11 @@ const profile = computed({
 });
 
 const fetch = () => {
-  fetch_atis(facility.value).then((k) => {
-    atis_store.set_atis(k);
+  fetch_atis(facility.value).then((atis) => {
+    atis_store.set_atis(atis);
     emit("atis", {
       facility: facility.value,
-      atis: k,
+      atis,
     });
   });
 };
