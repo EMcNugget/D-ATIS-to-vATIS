@@ -10,15 +10,10 @@ import { Settings, facilities } from "../types";
 const open_path = () => {
   open({
     multiple: false,
-    directory: false,
-    filters: [
-      {
-        name: "JSON",
-        extensions: ["json"],
-      },
-    ],
+    directory: true, // Set to true to select a directory
+    filters: [], // No filters needed for directories
   }).then((k) => {
-    settings.set_file_path(k ? (k.path as string) : settings.get_file_path());
+    settings.set_file_path(k ? (k as string) : settings.get_file_path());
   });
 };
 
@@ -98,7 +93,11 @@ invoke("read_settings").then((k) => {
         "
         v-model="facility"
       />
-      <button class="btn btn-primary w-half max-w-xs mb-4" @click="fetch()">
+      <button
+        class="btn btn-primary w-half max-w-xs mb-4"
+        @click="fetch()"
+        :disabled="!validateICAO(facility)"
+      >
         Fetch
       </button>
       <dialog id="my_modal_3" class="modal">

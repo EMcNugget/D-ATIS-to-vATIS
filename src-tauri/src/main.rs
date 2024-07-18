@@ -22,13 +22,12 @@ fn main() {
                 for (index, atis_entry) in atis_array.iter().enumerate() {
                     let atis = &atis_entry["atis"];
                     let atis_type = atis_entry["atis_type"].as_str().unwrap_or("unknown");
-                    println!("Writing profile for ATIS: {}", atis);
 
                     let result = write_profile(
                         atis,
                         &settings.profile,
                         facility,
-                        &settings.file_path,
+                        format!("{}\\AppConfig.json", &settings.profile).as_str(),
                         Some(atis_type),
                     );
 
