@@ -28,7 +28,7 @@ const create_template = (
 
 const parse_atis = (atis: ATIS, split: boolean, facility: string): vATIS => {
   const notams = atis.datis.split("NOTAMS... ")[1].split(" ...ADVS")[0];
-  const airport_conditions = atis.datis
+  const airportConditions = atis.datis
     .slice(find_number_of_occurances(atis.datis, ".", 2) + 1)
     .split(
       atis.datis.includes("NOTAMS") ? "NOTAMS..." : "NOTICE TO AIR MISSIONS."
@@ -39,15 +39,15 @@ const parse_atis = (atis: ATIS, split: boolean, facility: string): vATIS => {
     atis_type: atis.type as "arr" | "dep" | "combined",
     atis: {
       id: v4(),
-      name: "REAL WOLRD",
-      airport_conditions,
+      name: "REAL WORLD",
+      airportConditions,
       notams,
       template: create_template(
         facility.slice(1),
         split,
         split ? (atis.type.toUpperCase() as "ARR" | "DEP") : undefined
       ),
-      external_generator: {
+      externalGenerator: {
         enabled: false, // not sure what this does, leaving it as false for now
       },
     },

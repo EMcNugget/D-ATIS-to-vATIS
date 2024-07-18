@@ -61,10 +61,7 @@ fn find_composite(
                             }
                         }
                     }
-                    return Some(FindComposite {
-                        profile_index,
-                        composite_index: usize::MAX,
-                    });
+                    continue;
                 }
             }
         }
@@ -103,13 +100,21 @@ pub fn write_profile(
         serde_json::from_str(&read_json_file(file_path).unwrap().to_string()).unwrap();
     let indexes: FindComposite = find_composite(&data, profile, facility, atis_type).unwrap();
 
-    let presets = data["profiles"][indexes.profile_index]["composites"][indexes.composite_index]
-        ["presets"]
-        .as_array_mut()
-        .unwrap();
+    let presets = &mut data["profiles"][indexes.profile_index]["composites"]
+        [indexes.composite_index]["presets"];
 
-    presets.push(serde_json::json!(atis_preset));
+    if let Some(presets_array) = presets.as_array_mut() {
+        presets_array.retain(|preset| {
+            if let Some(name) = preset["name"].as_str() {
+                !name.contains("REAL WORLD")
+            } else {
+                true
+            }
+        });
+    }
 
-    write_json_file("Output.json", &data.to_string())?;
+    presets.as_array_mut().unwrap().push(atis_preset.clone());
+
+    write_json_file(file_path, &data.to_string())?;
     Ok(())
 }

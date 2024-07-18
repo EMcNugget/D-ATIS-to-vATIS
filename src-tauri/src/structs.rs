@@ -15,13 +15,14 @@ pub struct ExternalGenerator {
 }
 
 #[derive(Serialize, Deserialize, Debug)]
+#[allow(non_snake_case)]
 struct ATIS {
     id: Uuid,
     name: String,
-    airport_conditions: String,
+    airportConditions: String,
     notams: String,
     template: String,
-    external_generator: ExternalGenerator,
+    externalGenerator: ExternalGenerator,
 }
 
 #[derive(Serialize, Deserialize, Debug)]

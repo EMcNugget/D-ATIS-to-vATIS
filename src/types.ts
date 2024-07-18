@@ -10,10 +10,10 @@ type vATIS = {
   atis: {
     id: string; // UUID
     name: string;
-    airport_conditions: string;
+    airportConditions: string;
     notams: string;
     template: string;
-    external_generator: {
+    externalGenerator: {
       enabled: boolean;
     };
   };
