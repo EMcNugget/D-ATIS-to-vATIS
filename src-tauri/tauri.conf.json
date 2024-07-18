@@ -7,6 +7,7 @@
     "devUrl": "http://localhost:5173"
   },
   "bundle": {
+    "createUpdaterArtifacts": true,
     "active": true,
     "category": "Utility",
     "copyright": "MIT",
@@ -43,7 +44,12 @@
   "productName": "d-atis-to-vatis",
   "version": "1.2.0",
   "identifier": "d-atis-to-vatis",
-  "plugins": {},
+  "plugins": {
+    "updater": {
+      "pubkey": "dW50cnVzdGVkIGNvbW1lbnQ6IG1pbmlzaWduIHB1YmxpYyBrZXk6IEIyRkJFMTYxMDQyMzIxM0EKUldRNklTTUVZZUg3c2hkcUlwTmxxc000eXFkSEdVVHFhVlJGYUlPd041dUg0dUk4a3J5OStnY3UK",
+      "endpoints": []
+    }
+  },
   "app": {
     "windows": [
       {

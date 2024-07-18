@@ -12,6 +12,7 @@ use tauri::{Event, Listener};
 
 fn main() {
     tauri::Builder::default()
+        .plugin(tauri_plugin_updater::Builder::new().build())
         .setup(|app| {
             app.listen("atis", |event: Event| {
                 let settings = read_settings().unwrap();
