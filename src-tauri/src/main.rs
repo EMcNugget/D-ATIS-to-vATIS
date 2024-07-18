@@ -20,13 +20,15 @@ fn main() {
                 let facility = &payload["facility"].to_string();
                 let atis_type = &payload["atis"]["atis_type"].to_string();
 
-                let _ = write_profile(
+                write_profile(
                     &atis,
                     &settings.profile,
                     &facility,
                     &settings.file_path,
                     Some(atis_type),
-                );
+                )
+                .err()
+                .map(|e| eprintln!("{}", e));
             });
             Ok(())
         })
