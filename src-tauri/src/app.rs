@@ -29,6 +29,7 @@ fn find_composite(
         match atis_type {
             Some("dep") => "Departure",
             Some("arr") => "Arrival",
+            Some("combined") => "Combined",
             _ => "Combined",
         }
     }
