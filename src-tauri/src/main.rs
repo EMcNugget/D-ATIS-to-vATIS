@@ -6,11 +6,12 @@ mod settings;
 mod structs;
 
 use settings::{read_settings, write_settings};
+use app::write_profile;
 
 fn main() {
     tauri::Builder::default()
-        .setup(|_app| {
-            // Placeholder
+        .setup(|app| {
+            
             Ok(())
         })
         .plugin(tauri_plugin_dialog::init())

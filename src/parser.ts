@@ -36,17 +36,20 @@ const parse_atis = (atis: ATIS, split: boolean, facility: string): vATIS => {
     .trim();
 
   return {
-    id: v4(),
-    name: "REAL WOLRD",
-    airport_conditions,
-    notams,
-    template: create_template(
-      facility.slice(1),
-      split,
-      split ? (atis.type.toUpperCase() as "ARR" | "DEP") : undefined
-    ),
-    external_generator: {
-      enabled: false, // not sure what this does, leaving it as false for now
+    atis_type: atis.type as "arr" | "dep" | "combined",
+    atis: {
+      id: v4(),
+      name: "REAL WOLRD",
+      airport_conditions,
+      notams,
+      template: create_template(
+        facility.slice(1),
+        split,
+        split ? (atis.type.toUpperCase() as "ARR" | "DEP") : undefined
+      ),
+      external_generator: {
+        enabled: false, // not sure what this does, leaving it as false for now
+      },
     },
   };
 };

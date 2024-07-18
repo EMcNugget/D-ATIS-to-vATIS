@@ -15,11 +15,17 @@ pub struct ExternalGenerator {
 }
 
 #[derive(Serialize, Deserialize, Debug)]
-pub struct VATIS {
+struct ATIS {
     id: Uuid,
     name: String,
     airport_conditions: String,
     notams: String,
     template: String,
     external_generator: ExternalGenerator,
+}
+
+#[derive(Serialize, Deserialize, Debug)]
+pub struct VATIS {
+    atis_type: String,
+    atis: ATIS,
 }

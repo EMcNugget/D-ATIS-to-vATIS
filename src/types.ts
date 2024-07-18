@@ -6,13 +6,16 @@ type ATIS = {
 };
 
 type vATIS = {
-  id: string; // UUID
-  name: string;
-  airport_conditions: string;
-  notams: string;
-  template: string;
-  external_generator: {
-    enabled: boolean;
+  atis_type: "arr" | "dep" | "combined";
+  atis: {
+    id: string; // UUID
+    name: string;
+    airport_conditions: string;
+    notams: string;
+    template: string;
+    external_generator: {
+      enabled: boolean;
+    };
   };
 };
 
