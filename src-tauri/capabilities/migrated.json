@@ -18,7 +18,6 @@
     "dialog:allow-message",
     "dialog:allow-ask",
     "dialog:allow-confirm",
-    "dialog:default",
-    "updater:default"
+    "dialog:default"
   ]
 }
