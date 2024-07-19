@@ -10,8 +10,8 @@ import { Settings, facilities } from "../types";
 const open_path = () => {
   open({
     multiple: false,
-    directory: true, // Set to true to select a directory
-    filters: [], // No filters needed for directories
+    directory: true,
+    filters: [],
   }).then((k) => {
     settings.set_file_path(k ? (k as string) : settings.get_file_path());
   });
