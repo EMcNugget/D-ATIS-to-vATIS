@@ -12,8 +12,8 @@ const open_path = () => {
     multiple: false,
     directory: true,
     filters: [],
-  }).then((k) => {
-    settings.set_file_path(k ? (k as string) : settings.get_file_path());
+  }).then((path) => {
+    settings.set_file_path(path ? (path as string) : settings.get_file_path());
   });
 };
 
