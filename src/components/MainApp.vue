@@ -5,7 +5,7 @@ import { use_settings, use_atis_store } from "../stores";
 import { fetch_atis } from "../parser";
 import { invoke } from "@tauri-apps/api/core";
 import { open } from "@tauri-apps/plugin-dialog";
-import { Settings, facilities, Alert } from "../types";
+import { Settings, facilities, Alert, vATIS, ATISCode } from "../types";
 
 const open_path = () => {
   open({
@@ -49,9 +49,36 @@ watch(
     showAlert.value = true;
     setTimeout(() => {
       showAlert.value = false;
-    }, 5000);
+    }, 6000);
   }
 );
+
+const get_atis_code = (atis: vATIS[]): ATISCode[] => {
+  return atis.map((k) => {
+    switch (k.atis_type) {
+      case "arr":
+        return {
+          type: "Arrival",
+          code: k.atis_code,
+        };
+      case "dep":
+        return {
+          type: "Departure",
+          code: k.atis_code,
+        };
+      case "combined":
+        return {
+          type: "Combined",
+          code: k.atis_code,
+        };
+      default:
+        return {
+          type: "Combined",
+          code: k.atis_code,
+        };
+    }
+  });
+};
 
 const fetch = () => {
   fetch_atis(facility.value).then((atis) => {
@@ -60,17 +87,24 @@ const fetch = () => {
       facility: facility.value,
       atis: atis,
     }).then((k) => {
-      message.value = k as Alert;
+      const v: Alert = k as Alert;
+      v.message = v.message.concat(
+        ` | ${get_atis_code(atis)
+          .map((k) => `${k.type}: ${k.code}`)
+          .join(", ")}`
+      );
+      message.value = v;
     });
   });
 };
 
 const validateICAO = (value: string) => {
   if (
-    (value.length !== 4,
+    ((value.length !== 4,
     !value.match(/^[A-Z]{4}$/),
     value.startsWith("K"),
-    !facilities.includes(value))
+    !facilities.includes(value)),
+    settings.get_file_path() === "")
   ) {
     return false;
   } else return true;

@@ -1,12 +1,20 @@
+type ATISType = "arr" | "dep" | "combined";
+
+type ATISCode = {
+  type: "Arrival" | "Departure" | "Combined";
+  code: string;
+};
+
 type ATIS = {
   airport: string;
-  type: "arr" | "dep" | "combined";
+  type: ATISType;
   code: string;
   datis: string;
 };
 
 type vATIS = {
-  atis_type: "arr" | "dep" | "combined";
+  atis_type: ATISType;
+  atis_code: string;
   atis: {
     id: string; // UUID
     name: string;
@@ -110,4 +118,4 @@ export const facilities = [
   "TJSJ",
 ];
 
-export type { ATIS, vATIS, Settings };
+export type { ATIS, vATIS, Settings, ATISType, ATISCode };

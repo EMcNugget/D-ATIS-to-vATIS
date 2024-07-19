@@ -37,6 +37,7 @@ const parse_atis = (atis: ATIS, split: boolean, facility: string): vATIS => {
 
   return {
     atis_type: atis.type as "arr" | "dep" | "combined",
+    atis_code: atis.code,
     atis: {
       id: v4(),
       name: "REAL WORLD",
