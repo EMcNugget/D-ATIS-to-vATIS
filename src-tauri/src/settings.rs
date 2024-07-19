@@ -19,7 +19,6 @@ pub fn write_settings(settings: Settings) -> Result<(), String> {
     let file_path = app_data_path.join("settings.json");
 
     if Path::new(&file_path).exists() {
-        println!("File exists. Attempting to read existing settings...");
         let file = File::open(&file_path).map_err(|e| e.to_string())?;
         let reader = BufReader::new(file);
         if let Ok(existing_settings) = serde_json::from_reader::<_, Settings>(reader) {

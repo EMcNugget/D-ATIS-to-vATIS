@@ -1,11 +1,11 @@
 <script setup lang="ts">
-import { computed } from "vue";
+import Alerts from "./Alerts.vue";
+import { computed, ref, watch } from "vue";
 import { use_settings, use_atis_store } from "../stores";
 import { fetch_atis } from "../parser";
 import { invoke } from "@tauri-apps/api/core";
 import { open } from "@tauri-apps/plugin-dialog";
-import { emit } from "@tauri-apps/api/event";
-import { Settings, facilities } from "../types";
+import { Settings, facilities, Alert } from "../types";
 
 const open_path = () => {
   open({
@@ -40,12 +40,27 @@ const profile = computed({
   set: (value) => settings.set_profile(value),
 });
 
+const message = ref({ message: "", success: false });
+const showAlert = ref(false);
+
+watch(
+  () => message.value,
+  () => {
+    showAlert.value = true;
+    setTimeout(() => {
+      showAlert.value = false;
+    }, 5000);
+  }
+);
+
 const fetch = () => {
   fetch_atis(facility.value).then((atis) => {
     atis_store.set_atis(atis);
-    emit("atis", {
+    invoke("write_atis", {
       facility: facility.value,
-      atis,
+      atis: atis,
+    }).then((k) => {
+      message.value = k as Alert;
     });
   });
 };
@@ -61,7 +76,7 @@ const validateICAO = (value: string) => {
   } else return true;
 };
 
-settings.$subscribe(() => {
+const save_settings = () => {
   invoke("write_settings", {
     settings: {
       facility: settings.get_save_facility() ? settings.get_facility() : "",
@@ -70,7 +85,7 @@ settings.$subscribe(() => {
       profile: settings.get_profile(),
     },
   });
-});
+};
 
 invoke("read_settings").then((k) => {
   const v: Settings = k as Settings;
@@ -82,7 +97,8 @@ invoke("read_settings").then((k) => {
 </script>
 
 <template>
-  <div class="h-screen flex items-center justify-center">
+  <div class="h-screen relative flex flex-col items-center justify-center">
+    <Alerts v-if="showAlert" :message="message" />
     <div class="flex flex-col items-center">
       <input
         type="text"
@@ -130,6 +146,12 @@ invoke("read_settings").then((k) => {
             <span class="label-text text-lg mr-6 font-bold">Save Facility</span>
             <input type="checkbox" class="checkbox" v-model="save_facility" />
           </label>
+          <button
+            class="btn btn-active btn-primary mt-8 w-full"
+            @click="save_settings()"
+          >
+            Save
+          </button>
         </div>
       </dialog>
     </div>

@@ -26,6 +26,11 @@ type Settings = {
   profile: string;
 };
 
+export type Alert = {
+  message: string;
+  success: boolean;
+};
+
 export const facilities = [
   "KABQ",
   "KADW",
