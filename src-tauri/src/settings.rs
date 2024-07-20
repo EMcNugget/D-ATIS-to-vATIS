@@ -1,6 +1,6 @@
 use crate::util::{read_json_file, write_json_file};
 use crate::structs::Settings;
-use log::error;
+use log::{error, info};
 use std::path::Path;
 use tauri::{AppHandle, Manager};
 
@@ -37,7 +37,7 @@ pub fn write_settings(settings: Settings, app_handle: AppHandle) -> Result<(), S
 
     let json_string = serde_json::to_string_pretty(&settings).map_err(|e| e.to_string())?;
     write_json_file(file_path.to_str().unwrap(), &json_string)?;
-
+    info!("Settings written to {}", file_path.display());
     Ok(())
 }
 
@@ -63,4 +63,5 @@ pub fn read_settings(app_handle: AppHandle) -> Result<Settings, String> {
             Err(err)
         }
     }
+    info!("Settings read from {}", file_path.display());
 }

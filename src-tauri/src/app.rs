@@ -128,13 +128,7 @@ pub struct Alert {
 #[tauri::command]
 pub fn write_atis(facility: String, atis: Value, app_handle: AppHandle) -> Result<Alert, String> {
     let settings = read_settings(app_handle).unwrap();
-    let atis_array = atis
-        .as_array()
-        .ok_or(error!(
-            "Failed to parse ATIS array from JSON: {}",
-            atis.to_string()
-        ))
-        .unwrap();
+    let atis_array = atis.as_array().unwrap();
 
     let mut message = Alert {
         success: true,
@@ -156,17 +150,17 @@ pub fn write_atis(facility: String, atis: Value, app_handle: AppHandle) -> Resul
         match result {
             Ok(_) => {
                 let data = &format!("Successfully wrote ATIS for {}\n", &facility);
+                info!("{}", data);
                 if message.message == *data {
                 } else {
-                    info!("{}", data);
                     message.message.push_str(data);
                 }
             }
             Err(e) => {
                 let data = &format!("Error writing ATIS: {}\n", e);
+                error!("{}", data);
                 if message.message == *data {
                 } else {
-                    error!("{}", data);
                     message.message.push_str(data);
                 }
                 message.success = false;
