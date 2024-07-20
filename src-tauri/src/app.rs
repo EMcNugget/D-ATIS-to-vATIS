@@ -3,6 +3,7 @@ use serde::Serialize;
 use serde_json::{self, Value};
 use std::fs::File;
 use std::io::{BufReader, Write};
+use tauri::AppHandle;
 
 fn read_json_file(file_path: &str) -> Result<Value, String> {
     let file = File::open(file_path).map_err(|e| e.to_string())?;
@@ -134,8 +135,8 @@ pub struct Alert {
 }
 
 #[tauri::command]
-pub fn write_atis(facility: String, atis: Value) -> Result<Alert, String> {
-    let settings = read_settings().map_err(|e| e.to_string())?;
+pub fn write_atis(facility: String, atis: Value, app_handle: AppHandle) -> Result<Alert, String> {
+    let settings = read_settings(app_handle).map_err(|e| e.to_string())?;
     let atis_array = atis.as_array().ok_or("Invalid ATIS array")?;
 
     let mut message = Alert {
