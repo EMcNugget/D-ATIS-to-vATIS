@@ -49,7 +49,7 @@ watch(
     showAlert.value = true;
     setTimeout(() => {
       showAlert.value = false;
-    }, 6000);
+    }, 120000);
   }
 );
 
