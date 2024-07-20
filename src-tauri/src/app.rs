@@ -105,7 +105,6 @@ pub fn write_profile(
     if let Some(presets_array) = presets.as_array_mut() {
         presets_array.retain(|preset| {
             if let Some(name) = preset["name"].as_str() {
-                info!("Removing preset {} of ID {}", name, preset["id"]);
                 !name.contains("REAL WORLD")
             } else {
                 true

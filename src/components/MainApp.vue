@@ -100,11 +100,10 @@ const fetch = () => {
 
 const validateICAO = (value: string) => {
   if (
-    ((value.length !== 4,
+    (value.length !== 4,
     !value.match(/^[A-Z]{4}$/),
     value.startsWith("K"),
-    !facilities.includes(value)),
-    settings.get_file_path() === "")
+    !facilities.includes(value))
   ) {
     return false;
   } else return true;
@@ -142,6 +141,7 @@ invoke("read_settings").then((k) => {
           (validateICAO(facility) ? '' : ' input-error')
         "
         v-model="facility"
+        maxlength="4"
       />
       <button
         class="btn btn-primary w-half max-w-xs mb-4"
