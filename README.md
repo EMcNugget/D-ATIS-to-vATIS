@@ -1,5 +1,7 @@
 # Takes real-world D-ATIS's and creates a custom vATIS preset.
 
+**SEE ISSUES FOR LIST OF AIRPORTS THAT AREN"T WORKING**
+
 ## Installation
 
 1. Download the latest [version](https://github.com/EMcNugget/D-ATIS-to-vATIS/releases).

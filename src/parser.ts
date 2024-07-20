@@ -27,10 +27,15 @@ const create_template = (
 };
 
 // so far I've only seen these 3 types in rw atis's
-const notam_varients = ["NOTAMS...", "NOTICE TO AIR MISSIONS.", "NOTAM."];
+const notam_varients = [
+  "NOTAMS...",
+  "NOTICE TO AIR MISSIONS.",
+  "NOTAM.",
+  "NOTICE TO AIR MISSION.",
+  "NOTICES TO AIRMEN."
+];
 
 const parse_atis = (atis: ATIS, split: boolean, facility: string): vATIS => {
-
   // need to add ability to parse atis without NOTAM keyword
   const notam_varient =
     notam_varients.find((varient) => atis.datis.includes(varient)) ||
