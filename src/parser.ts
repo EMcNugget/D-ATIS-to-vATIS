@@ -26,13 +26,19 @@ const create_template = (
   } ATIS INFO [ATIS_CODE] [OBS_TIME]. [FULL_WX_STRING]. [ARPT_COND] [NOTAMS]`;
 };
 
+// so far I've only seen these 3 types in rw atis's
+const notam_varients = ["NOTAMS...", "NOTICE TO AIR MISSIONS.", "NOTAM."];
+
 const parse_atis = (atis: ATIS, split: boolean, facility: string): vATIS => {
-  const notams = atis.datis.split("NOTAMS... ")[1].split(" ...ADVS")[0];
+
+  // need to add ability to parse atis without NOTAM keyword
+  const notam_varient =
+    notam_varients.find((varient) => atis.datis.includes(varient)) ||
+    "NOTAMS...";
+  const notams = atis.datis.split(notam_varient)[1].split(" ...ADVS")[0];
   const airportConditions = atis.datis
     .slice(find_number_of_occurances(atis.datis, ".", 2) + 1)
-    .split(
-      atis.datis.includes("NOTAMS") ? "NOTAMS..." : "NOTICE TO AIR MISSIONS."
-    )[0]
+    .split(notam_varient)[0]
     .trim();
 
   return {
