@@ -4,13 +4,24 @@
 mod app;
 mod settings;
 mod structs;
+mod util;
 
 use app::write_atis;
+use log::info;
 use settings::{read_settings, write_settings};
+use tauri::AppHandle;
 use tauri_plugin_log::{Target, TargetKind};
+
+fn setup(app_handle: AppHandle) {
+    info!(
+        "D-ATIS to vATIS started version {}",
+        app_handle.config().version.as_ref().unwrap()
+    );
+}
 
 fn main() {
     tauri::Builder::default()
+        .setup(|app: &mut tauri::App| Ok(setup(app.handle().clone())))
         .plugin(tauri_plugin_dialog::init())
         .plugin(
             tauri_plugin_log::Builder::new()

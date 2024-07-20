@@ -1,34 +1,42 @@
+use crate::util::{read_json_file, write_json_file};
 use crate::structs::Settings;
-use std::{
-    fs::File,
-    io::{BufReader, Write},
-    path::Path,
-};
+use log::error;
+use std::path::Path;
 use tauri::{AppHandle, Manager};
 
 #[tauri::command(rename_all = "snake_case")]
 pub fn write_settings(settings: Settings, app_handle: AppHandle) -> Result<(), String> {
     let app_data_path = app_handle.path().app_data_dir().unwrap();
     let file_path = app_data_path.join("settings.json");
-    println!("{:?}", file_path);
-    std::fs::create_dir_all(&app_data_path).map_err(|e| e.to_string())?;
+    std::fs::create_dir_all(&app_data_path).map_err(|e| {
+        let err_msg = e.to_string();
+        error!(
+            "Failed to create directory {}: {}",
+            app_data_path.display(),
+            err_msg
+        );
+        err_msg
+    })?;
 
     if Path::new(&file_path).exists() {
-        let file = File::open(&file_path).map_err(|e| e.to_string())?;
-        let reader = BufReader::new(file);
-        if let Ok(existing_settings) = serde_json::from_reader::<_, Settings>(reader) {
-            if existing_settings == settings {
-                return Ok(());
+        match read_json_file(&file_path.to_str().unwrap()) {
+            Ok(json_value) => {
+                if let Ok(existing_settings) = serde_json::from_value::<Settings>(json_value) {
+                    if existing_settings == settings {
+                        return Ok(());
+                    }
+                } else {
+                    error!("{}", "Failed to parse existing settings.");
+                }
             }
-        } else {
-            return Err("Failed to read existing settings.".to_string());
+            Err(err) => {
+                error!("{}", err);
+            }
         }
     }
+
     let json_string = serde_json::to_string_pretty(&settings).map_err(|e| e.to_string())?;
-    let mut file = File::create(&file_path).map_err(|e| e.to_string())?;
-    file.write_all(json_string.as_bytes())
-        .map_err(|e| e.to_string())?;
-    file.flush().map_err(|e| e.to_string())?;
+    write_json_file(file_path.to_str().unwrap(), &json_string)?;
 
     Ok(())
 }
@@ -41,7 +49,18 @@ pub fn read_settings(app_handle: AppHandle) -> Result<Settings, String> {
         return Err("Settings file does not exist.".to_string());
     }
 
-    let file = File::open(&file_path).map_err(|e| e.to_string())?;
-    let reader = BufReader::new(file);
-    serde_json::from_reader(reader).map_err(|e| e.to_string())
+    match read_json_file(&file_path.to_str().unwrap()) {
+        Ok(json_value) => {
+            if let Ok(settings) = serde_json::from_value::<Settings>(json_value) {
+                Ok(settings)
+            } else {
+                error!("Failed to parse settings.");
+                Err("Failed to parse settings.".to_string())
+            }
+        }
+        Err(err) => {
+            error!("{}", err);
+            Err(err)
+        }
+    }
 }

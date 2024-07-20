@@ -1,4 +1,5 @@
 use crate::settings::read_settings;
+use log::{error, info};
 use serde::Serialize;
 use serde_json::{self, Value};
 use std::fs::File;
@@ -6,14 +7,32 @@ use std::io::{BufReader, Write};
 use tauri::AppHandle;
 
 fn read_json_file(file_path: &str) -> Result<Value, String> {
-    let file = File::open(file_path).map_err(|e| e.to_string())?;
+    let file = File::open(file_path).map_err(|e| {
+        let err_msg = e.to_string();
+        error!("Failed to open file {}: {}", file_path, err_msg);
+        err_msg
+    })?;
+
     let reader = BufReader::new(file);
-    serde_json::from_reader(reader).map_err(|e| e.to_string())
+    let json_value = serde_json::from_reader(reader).map_err(|e| {
+        let err_msg = e.to_string();
+        error!("Failed to read file {}: {}", file_path, err_msg);
+        err_msg
+    })?;
+    Ok(json_value)
 }
 
-fn write_json_file(filename: &str, data: &str) -> Result<(), Box<dyn std::error::Error>> {
-    let mut file = File::create(filename)?;
-    file.write_all(data.as_bytes())?;
+fn write_json_file(filename: &str, data: &str) -> Result<(), String> {
+    let mut file = File::create(filename).map_err(|e| {
+        let err_msg = e.to_string();
+        error!("Failed to create file {}: {}", filename, err_msg);
+        err_msg
+    })?;
+    file.write_all(data.as_bytes()).map_err(|e| {
+        let err_msg = e.to_string();
+        error!("Failed to write to file {}: {}", filename, err_msg);
+        err_msg
+    })?;
     Ok(())
 }
 pub struct FindComposite {
@@ -98,13 +117,15 @@ pub fn write_profile(
     facility: &str,
     file_path: &str,
     atis_type: Option<&str>,
-) -> Result<(), Box<dyn std::error::Error>> {
+) -> Result<(), String> {
     let mut data: Value =
         serde_json::from_str(&read_json_file(file_path).unwrap().to_string()).unwrap();
     let indexes: FindComposite = match find_composite(&data, profile, facility, atis_type) {
         Some(result) => result,
         None => {
-            return Err("Could not find profile".into());
+            let err = format!("Could not find profile {} for {}", profile, facility);
+            error!("{}", err);
+            return Err(err);
         }
     };
 
@@ -114,6 +135,7 @@ pub fn write_profile(
     if let Some(presets_array) = presets.as_array_mut() {
         presets_array.retain(|preset| {
             if let Some(name) = preset["name"].as_str() {
+                info!("Removing preset {} of ID {}", name, preset["id"]);
                 !name.contains("REAL WORLD")
             } else {
                 true
@@ -135,8 +157,14 @@ pub struct Alert {
 
 #[tauri::command]
 pub fn write_atis(facility: String, atis: Value, app_handle: AppHandle) -> Result<Alert, String> {
-    let settings = read_settings(app_handle).map_err(|e| e.to_string())?;
-    let atis_array = atis.as_array().ok_or("Invalid ATIS array")?;
+    let settings = read_settings(app_handle).unwrap();
+    let atis_array = atis
+        .as_array()
+        .ok_or(error!(
+            "Failed to parse ATIS array from JSON: {}",
+            atis.to_string()
+        ))
+        .unwrap();
 
     let mut message = Alert {
         success: true,
@@ -160,6 +188,7 @@ pub fn write_atis(facility: String, atis: Value, app_handle: AppHandle) -> Resul
                 let data = &format!("Successfully wrote ATIS for {}\n", &facility);
                 if message.message == *data {
                 } else {
+                    info!("{}", data);
                     message.message.push_str(data);
                 }
             }
@@ -167,6 +196,7 @@ pub fn write_atis(facility: String, atis: Value, app_handle: AppHandle) -> Resul
                 let data = &format!("Error writing ATIS: {}\n", e);
                 if message.message == *data {
                 } else {
+                    error!("{}", data);
                     message.message.push_str(data);
                 }
                 message.success = false;
