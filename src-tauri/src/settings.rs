@@ -1,5 +1,5 @@
-use crate::util::{read_json_file, write_json_file};
 use crate::structs::Settings;
+use crate::util::{read_json_file, write_json_file};
 use log::{error, info};
 use std::path::Path;
 use tauri::{AppHandle, Manager};
@@ -23,6 +23,7 @@ pub fn write_settings(settings: Settings, app_handle: AppHandle) -> Result<(), S
             Ok(json_value) => {
                 if let Ok(existing_settings) = serde_json::from_value::<Settings>(json_value) {
                     if existing_settings == settings {
+                        info!("Settings have not changed.");
                         return Ok(());
                     }
                 } else {
@@ -37,7 +38,7 @@ pub fn write_settings(settings: Settings, app_handle: AppHandle) -> Result<(), S
 
     let json_string = serde_json::to_string_pretty(&settings).map_err(|e| e.to_string())?;
     write_json_file(file_path.to_str().unwrap(), &json_string)?;
-    info!("Settings written to {}", file_path.display());
+    info!("Settings written successfully.");
     Ok(())
 }
 
@@ -52,6 +53,7 @@ pub fn read_settings(app_handle: AppHandle) -> Result<Settings, String> {
     match read_json_file(&file_path.to_str().unwrap()) {
         Ok(json_value) => {
             if let Ok(settings) = serde_json::from_value::<Settings>(json_value) {
+                info!("Settings read successfully.");
                 Ok(settings)
             } else {
                 error!("Failed to parse settings.");
@@ -63,5 +65,4 @@ pub fn read_settings(app_handle: AppHandle) -> Result<Settings, String> {
             Err(err)
         }
     }
-    info!("Settings read from {}", file_path.display());
 }
