@@ -112,14 +112,13 @@ pub fn write_profile(
         [indexes.composite_index]["presets"];
 
     if let Some(presets_array) = presets.as_array_mut() {
-        for preset in presets_array {
+        presets_array.retain(|preset| {
             if let Some(name) = preset["name"].as_str() {
-                if name.contains("REAL WORLD") {
-                    *preset = atis_preset.clone();
-                    break;
-                }
+                !name.contains("REAL WORLD")
+            } else {
+                true
             }
-        }
+        });
     }
 
     presets.as_array_mut().unwrap().push(atis_preset.clone());
