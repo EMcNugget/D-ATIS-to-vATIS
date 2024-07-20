@@ -14,6 +14,9 @@ importers:
       '@tauri-apps/plugin-dialog':
         specifier: 2.0.0-beta.7
         version: 2.0.0-beta.7
+      '@tauri-apps/plugin-log':
+        specifier: 2.0.0-beta.8
+        version: 2.0.0-beta.8
       pinia:
         specifier: ^2.1.7
         version: 2.1.7(typescript@5.5.3)(vue@3.4.32(typescript@5.5.3))
@@ -408,6 +411,9 @@ packages:
 
   '@tauri-apps/plugin-dialog@2.0.0-beta.7':
     resolution: {integrity: sha512-myywwpsKbquDDzl5zaOmmLLv5O8EJ/GgHDAoVSPwO97R4iWzkDvj3HFF91tNh7i25Tu/bP6jYPAdZA1NCRxxtg==}
+
+  '@tauri-apps/plugin-log@2.0.0-beta.8':
+    resolution: {integrity: sha512-l214keCBJqj8jNb5MkaS44oF+1xen5miaKxNH3SIGE4uyFIweDGmbwxqIxRhtb18gxy/mu/ykDmEuKc5+8uzfQ==}
 
   '@types/estree@1.0.5':
     resolution: {integrity: sha512-/kYRxGDLWzHOB7q+wtSUQlFrtcdUccpfy+X+9iMBpHK8QLLhx2wIPYuS5DYtR9Wa/YlZAbIovy7qVdB1Aq6Lyw==}
@@ -1266,6 +1272,10 @@ snapshots:
       '@tauri-apps/cli-win32-x64-msvc': 2.0.0-beta.22
 
   '@tauri-apps/plugin-dialog@2.0.0-beta.7':
+    dependencies:
+      '@tauri-apps/api': 2.0.0-beta.15
+
+  '@tauri-apps/plugin-log@2.0.0-beta.8':
     dependencies:
       '@tauri-apps/api': 2.0.0-beta.15
 

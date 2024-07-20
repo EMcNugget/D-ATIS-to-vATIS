@@ -7,7 +7,7 @@ license = "MIT"
 repository = ""
 default-run = "D-ATIS-to-vATIS"
 edition = "2021"
-rust-version = "1.60"
+rust-version = "1.79"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
@@ -20,6 +20,9 @@ uuid = { version = "1.1", features = ["serde", "v4"] }
 serde = { version = "1.0", features = ["derive"] }
 tauri = { version = "2.0.0-beta", features = [] }
 tauri-plugin-dialog = "2.0.0-alpha.2"
+tauri-plugin-log = { git = "https://github.com/tauri-apps/plugins-workspace", branch = "v2" }
+log = "0.4"
+
 
 [features]
 # this feature is used for production builds or when `devPath` points to the filesystem and the built-in dev server is disabled.
