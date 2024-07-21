@@ -1,4 +1,5 @@
 import type { ATIS, vATIS } from "./types.js";
+import { warn } from "@tauri-apps/plugin-log";
 import { v4 } from "uuid";
 
 const find_number_of_occurances = (
@@ -38,8 +39,30 @@ const notam_varients = [
 const parse_atis = (atis: ATIS, split: boolean, facility: string): vATIS => {
   // need to add ability to parse atis without NOTAM keyword
 
+  let vATIS = {} as vATIS;
+
   if (!notam_varients.some((varient) => atis.datis.includes(varient))) {
-    throw "No NOTAM keyword found in ATIS, unable to parse.";
+    let message = `No NOTAM keyword found in ATIS, unable to parse.`;
+    warn(message);
+    vATIS = {
+      atis_type: atis.type as "arr" | "dep" | "combined",
+      atis_code: atis.code,
+      atis: {
+        id: v4(),
+        name: "REAL WORLD",
+        airportConditions: atis.datis,
+        notams: "",
+        template: create_template(
+          facility.slice(1),
+          split,
+          split ? (atis.type.toUpperCase() as "ARR" | "DEP") : undefined
+        ),
+        externalGenerator: {
+          enabled: false, // not sure what this does, leaving it as false for now
+        },
+      },
+    };
+    throw message;
   }
 
   const notam_varient =
@@ -51,7 +74,7 @@ const parse_atis = (atis: ATIS, split: boolean, facility: string): vATIS => {
     .split(notam_varient)[0]
     .trim();
 
-  return {
+  vATIS = {
     atis_type: atis.type as "arr" | "dep" | "combined",
     atis_code: atis.code,
     atis: {
@@ -69,6 +92,7 @@ const parse_atis = (atis: ATIS, split: boolean, facility: string): vATIS => {
       },
     },
   };
+  return vATIS;
 };
 
 export const fetch_atis = async (facility: string) => {
