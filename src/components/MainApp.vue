@@ -47,9 +47,6 @@ watch(
   () => message.value,
   () => {
     showAlert.value = true;
-    setTimeout(() => {
-      showAlert.value = false;
-    }, 120000);
   }
 );
 
@@ -80,7 +77,7 @@ const get_atis_code = (atis: vATIS[]): ATISCode[] => {
   });
 };
 
-const  fetch = async () => {
+const fetch = async () => {
   try {
     await fetch_atis(facility.value).then((atis) => {
       atis_store.set_atis(atis);
@@ -142,7 +139,7 @@ invoke("read_settings").then((k) => {
 
 <template>
   <div class="h-screen relative flex flex-col items-center justify-center">
-    <Alerts v-if="showAlert" :message="message" />
+    <Alerts :message="message" :show="showAlert" @close="showAlert = false" />
     <div class="flex flex-col items-center">
       <input
         type="text"
