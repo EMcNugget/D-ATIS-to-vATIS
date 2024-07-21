@@ -32,11 +32,16 @@ const notam_varients = [
   "NOTICE TO AIR MISSIONS.",
   "NOTAM.",
   "NOTICE TO AIR MISSION.",
-  "NOTICES TO AIRMEN."
+  "NOTICES TO AIRMEN.",
 ];
 
 const parse_atis = (atis: ATIS, split: boolean, facility: string): vATIS => {
   // need to add ability to parse atis without NOTAM keyword
+
+  if (!notam_varients.some((varient) => atis.datis.includes(varient))) {
+    throw "No NOTAM keyword found in ATIS, unable to parse.";
+  }
+
   const notam_varient =
     notam_varients.find((varient) => atis.datis.includes(varient)) ||
     "NOTAMS...";
@@ -79,7 +84,11 @@ export const fetch_atis = async (facility: string) => {
 
   const atisArray: vATIS[] = [];
   response.forEach((atis: ATIS) => {
-    atisArray.push(parse_atis(atis, split, facility));
+    try {
+      atisArray.push(parse_atis(atis, split, facility));
+    } catch (e) {
+      throw e;
+    }
   });
 
   return atisArray;

@@ -80,22 +80,33 @@ const get_atis_code = (atis: vATIS[]): ATISCode[] => {
   });
 };
 
-const fetch = () => {
-  fetch_atis(facility.value).then((atis) => {
-    atis_store.set_atis(atis);
-    invoke("write_atis", {
-      facility: facility.value,
-      atis: atis,
-    }).then((k) => {
-      const v: Alert = k as Alert;
-      v.message = v.message.concat(
-        ` | ${get_atis_code(atis)
-          .map((k) => `${k.type}: ${k.code}`)
-          .join(", ")}`
-      );
-      message.value = v;
+const  fetch = async () => {
+  try {
+    await fetch_atis(facility.value).then((atis) => {
+      atis_store.set_atis(atis);
+      invoke("write_atis", {
+        facility: facility.value,
+        atis: atis,
+      }).then((k) => {
+        const v: Alert = k as Alert;
+        v.message = v.message.concat(
+          ` | ${
+            v.success
+              ? get_atis_code(atis)
+                  .map((k) => `${k.type}: ${k.code}`)
+                  .join(", ")
+              : ""
+          }`
+        );
+        message.value = v;
+      });
     });
-  });
+  } catch (e) {
+    message.value = {
+      message: e as string,
+      success: false,
+    };
+  }
 };
 
 const validateICAO = (value: string) => {
