@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import Alerts from "./Alerts.vue";
-import { computed, ref, watch } from "vue";
+import { Ref, computed, ref, watch } from "vue";
 import { use_settings, use_atis_store } from "../stores";
 import { fetch_atis } from "../parser";
 import { invoke } from "@tauri-apps/api/core";
@@ -40,7 +40,7 @@ const profile = computed({
   set: (value) => settings.set_profile(value),
 });
 
-const message = ref({ message: "", success: false });
+const message: Ref<Alert> = ref({ message: "", alert_type: "success" });
 const showAlert = ref(false);
 
 watch(
@@ -86,9 +86,10 @@ const fetch = async () => {
         atis: atis,
       }).then((k) => {
         const v: Alert = k as Alert;
+        let success = v.alert_type === "success";
         v.message = v.message.concat(
           ` | ${
-            v.success
+            success
               ? get_atis_code(atis)
                   .map((k) => `${k.type}: ${k.code}`)
                   .join(", ")
@@ -99,10 +100,7 @@ const fetch = async () => {
       });
     });
   } catch (e) {
-    message.value = {
-      message: e as string,
-      success: false,
-    };
+    message.value = e as Alert;
   }
 };
 

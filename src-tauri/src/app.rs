@@ -120,7 +120,7 @@ pub fn write_profile(
 
 #[derive(Serialize)]
 pub struct Alert {
-    success: bool,
+    alert_type: String,
     message: String,
 }
 
@@ -130,7 +130,7 @@ pub fn write_atis(facility: String, atis: Value, app_handle: AppHandle) -> Resul
     let atis_array = atis.as_array().unwrap();
 
     let mut message = Alert {
-        success: true,
+        alert_type: "success".to_string(),
         message: String::new(),
     };
 
@@ -162,7 +162,7 @@ pub fn write_atis(facility: String, atis: Value, app_handle: AppHandle) -> Resul
                 } else {
                     message.message.push_str(data);
                 }
-                message.success = false;
+                message.alert_type = "error".to_string();
             }
         }
     }

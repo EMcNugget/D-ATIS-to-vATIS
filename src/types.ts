@@ -36,7 +36,7 @@ type Settings = {
 
 export type Alert = {
   message: string;
-  success: boolean;
+  alert_type: "error" | "warn" | "success";
 };
 
 export const facilities = [
