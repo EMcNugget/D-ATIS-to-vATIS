@@ -1,11 +1,11 @@
 <script setup lang="ts">
 import Alerts from "./Alerts.vue";
 import { Ref, computed, ref, watch } from "vue";
-import { use_settings, use_atis_store } from "../stores";
-import { fetch_atis } from "../parser";
+import { use_settings, use_atis_store } from "@util/stores";
+import { fetch_atis } from "@util/parser";
 import { invoke } from "@tauri-apps/api/core";
 import { open } from "@tauri-apps/plugin-dialog";
-import { Settings, facilities, Alert, vATIS, ATISCode } from "../types";
+import { Settings, facilities, Alert, vATIS, ATISCode } from "@util/types";
 
 const open_path = () => {
   open({

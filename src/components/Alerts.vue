@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import type { Alert } from "../types";
-const props = defineProps<{ message: Alert, show: boolean }>();
+import type { Alert } from "../util/types";
+const props = defineProps<{ message: Alert; show: boolean }>();
 const emit = defineEmits(["close"]);
 
 const getAlertClass = () => {

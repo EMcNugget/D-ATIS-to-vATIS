@@ -1,4 +1,4 @@
-import type { ATIS, vATIS } from "./types.js";
+import type { ATIS, vATIS } from "./types";
 import { warn } from "@tauri-apps/plugin-log";
 import { v4 } from "uuid";
 
