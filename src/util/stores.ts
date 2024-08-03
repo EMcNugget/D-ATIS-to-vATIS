@@ -42,7 +42,7 @@ export const use_settings = defineStore("settings", {
       };
     },
     set_all(settings: Settings) {
-      this.facility = settings.facility;
+      this.facility = settings.save_facility ? settings.facility : "";
       this.file_path = settings.file_path;
       this.save_facility = settings.save_facility;
       this.profile = settings.profile;

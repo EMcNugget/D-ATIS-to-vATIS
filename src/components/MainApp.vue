@@ -1,11 +1,14 @@
 <script setup lang="ts">
 import Alerts from "./Alerts.vue";
 import { Ref, computed, ref, watch } from "vue";
-import { use_settings, use_atis_store } from "@util/stores";
-import { fetch_atis } from "@util/parser";
+import { use_settings, use_atis_store } from "../util/stores";
+import { fetch_atis } from "../util/parser";
 import { invoke } from "@tauri-apps/api/core";
 import { open } from "@tauri-apps/plugin-dialog";
-import { Settings, facilities, Alert, vATIS, ATISCode } from "@util/types";
+import { Settings, facilities, Alert, vATIS, ATISCode } from "../util/types";
+
+const settings_store = use_settings();
+const atis_store = use_atis_store();
 
 const open_path = () => {
   open({
@@ -13,31 +16,30 @@ const open_path = () => {
     directory: true,
     filters: [],
   }).then((path) => {
-    settings.set_file_path(path ? (path as string) : settings.get_file_path());
+    settings_store.set_file_path(
+      path ? (path as string) : settings_store.get_file_path()
+    );
   });
 };
 
-const settings = use_settings();
-const atis_store = use_atis_store();
-
 const facility = computed({
-  get: () => settings.get_facility(),
-  set: (value) => settings.set_facility(value),
+  get: () => settings_store.get_facility(),
+  set: (value) => settings_store.set_facility(value),
 });
 
 const file_path = computed({
-  get: () => settings.get_file_path(),
-  set: (value) => settings.set_file_path(value),
+  get: () => settings_store.get_file_path(),
+  set: (value) => settings_store.set_file_path(value),
 });
 
 const save_facility = computed({
-  get: () => settings.get_save_facility(),
-  set: (value) => settings.set_save_facility(value),
+  get: () => settings_store.get_save_facility(),
+  set: (value) => settings_store.set_save_facility(value),
 });
 
 const profile = computed({
-  get: () => settings.get_profile(),
-  set: (value) => settings.set_profile(value),
+  get: () => settings_store.get_profile(),
+  set: (value) => settings_store.set_profile(value),
 });
 
 const message: Ref<Alert> = ref({ message: "", alert_type: "success" });
@@ -86,15 +88,13 @@ const fetch = async () => {
         atis: atis,
       }).then((k) => {
         const v: Alert = k as Alert;
-        let success = v.alert_type === "success";
+        const success = v.alert_type === "success";
         v.message = v.message.concat(
-          ` | ${
-            success
-              ? get_atis_code(atis)
-                  .map((k) => `${k.type}: ${k.code}`)
-                  .join(", ")
-              : ""
-          }`
+          success
+            ? ` | ${get_atis_code(atis)
+                .map((k) => `${k.type}: ${k.code}`)
+                .join(", ")}`
+            : ""
         );
         message.value = v;
       });
@@ -116,18 +116,11 @@ const validateICAO = (value: string) => {
 };
 
 const save_settings = () => {
-  invoke("write_settings", {
-    settings: {
-      facility: settings.get_save_facility() ? settings.get_facility() : "",
-      file_path: settings.get_file_path(),
-      save_facility: settings.get_save_facility(),
-      profile: settings.get_profile(),
-    },
-  });
+  invoke("write_settings", settings_store.get_all());
 };
 
 invoke("read_settings").then((k) => {
-  settings.set_all(k as Settings);
+  settings_store.set_all(k as Settings);
 });
 </script>
 
@@ -195,7 +188,7 @@ invoke("read_settings").then((k) => {
       class="btn btn-circle fixed bottom-0 left-0 m-4 flex items-center justify-center"
       onclick="my_modal_3.showModal()"
     >
-      <img src="/settings.svg" alt="Settings" class="md:h-6" />
+      <img src="/settings_store.svg" alt="Settings" class="md:h-6" />
     </button>
   </div>
 </template>
