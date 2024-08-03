@@ -1,11 +1,17 @@
 <script setup lang="ts">
 import Alerts from "./Alerts.vue";
-import { Ref, computed, ref, watch } from "vue";
-import { use_settings, use_atis_store } from "@util/stores";
-import { fetch_atis } from "@util/parser";
+import { Ref, ref, watch } from "vue";
+import { use_settings, use_atis_store } from "../util/stores";
+import { fetch_atis } from "../util/parser";
 import { invoke } from "@tauri-apps/api/core";
 import { open } from "@tauri-apps/plugin-dialog";
-import { Settings, facilities, Alert, vATIS, ATISCode } from "@util/types";
+import { Settings, facilities, Alert, vATIS, ATISCode } from "../util/types";
+
+const settings = use_settings();
+const atis_store = use_atis_store();
+
+const message: Ref<Alert> = ref({ message: "", alert_type: "success" });
+const showAlert = ref(false);
 
 const open_path = () => {
   open({
@@ -13,35 +19,10 @@ const open_path = () => {
     directory: true,
     filters: [],
   }).then((path) => {
-    settings.set_file_path(path ? (path as string) : settings.get_file_path());
+    const file_path = settings.file_path;
+    settings.file_path = path ? (path as string) : file_path;
   });
 };
-
-const settings = use_settings();
-const atis_store = use_atis_store();
-
-const facility = computed({
-  get: () => settings.get_facility(),
-  set: (value) => settings.set_facility(value),
-});
-
-const file_path = computed({
-  get: () => settings.get_file_path(),
-  set: (value) => settings.set_file_path(value),
-});
-
-const save_facility = computed({
-  get: () => settings.get_save_facility(),
-  set: (value) => settings.set_save_facility(value),
-});
-
-const profile = computed({
-  get: () => settings.get_profile(),
-  set: (value) => settings.set_profile(value),
-});
-
-const message: Ref<Alert> = ref({ message: "", alert_type: "success" });
-const showAlert = ref(false);
 
 watch(
   () => message.value,
@@ -79,23 +60,22 @@ const get_atis_code = (atis: vATIS[]): ATISCode[] => {
 
 const fetch = async () => {
   try {
-    await fetch_atis(facility.value).then((atis) => {
+    await fetch_atis(settings.facility).then((atis) => {
       atis_store.set_atis(atis);
       invoke("write_atis", {
-        facility: facility.value,
+        facility: settings.facility,
         atis: atis,
       }).then((k) => {
         const v: Alert = k as Alert;
         let success = v.alert_type === "success";
-        v.message = v.message.concat(
-          ` | ${
-            success
-              ? get_atis_code(atis)
-                  .map((k) => `${k.type}: ${k.code}`)
-                  .join(", ")
-              : ""
-          }`
-        );
+        const success_str = `${
+          success
+            ? get_atis_code(atis)
+                .map((k) => `${k.type}: ${k.code}`)
+                .join(", ")
+            : ""
+        }`;
+        v.message = v.message.concat(` | ${success_str}`);
         message.value = v;
       });
     });
@@ -118,20 +98,13 @@ const validateICAO = (value: string) => {
 const save_settings = () => {
   invoke("write_settings", {
     settings: {
-      facility: settings.get_save_facility() ? settings.get_facility() : "",
-      file_path: settings.get_file_path(),
-      save_facility: settings.get_save_facility(),
-      profile: settings.get_profile(),
+      ...settings.get_all(),
     },
   });
 };
 
 invoke("read_settings").then((k) => {
-  const v: Settings = k as Settings;
-  settings.set_facility(v.facility);
-  settings.set_file_path(v.file_path);
-  settings.set_save_facility(v.save_facility);
-  settings.set_profile(v.profile);
+  settings.set_all(k as Settings);
 });
 </script>
 
@@ -144,15 +117,15 @@ invoke("read_settings").then((k) => {
         placeholder="Airport Code..."
         :class="
           'input input-bordered w-full max-w-xs mb-4 input-uppercase' +
-          (validateICAO(facility) ? '' : ' input-error')
+          (validateICAO(settings.facility) ? '' : ' input-error')
         "
-        v-model="facility"
+        v-model="settings.facility"
         maxlength="4"
       />
       <button
         class="btn btn-primary w-half max-w-xs mb-4"
         @click="fetch()"
-        :disabled="!validateICAO(facility)"
+        :disabled="!validateICAO(settings.facility)"
       >
         Fetch
       </button>
@@ -169,7 +142,7 @@ invoke("read_settings").then((k) => {
           <div class="flex flex-row">
             <input
               type="text"
-              v-model="file_path"
+              v-model="settings.file_path"
               readonly
               placeholder="File Path..."
               class="input input-bordered w-full mr-4 mb-4"
@@ -178,13 +151,17 @@ invoke("read_settings").then((k) => {
           </div>
           <input
             type="text"
-            v-model="profile"
+            v-model="settings.profile"
             placeholder="Profile..."
             class="input input-bordered w-full mr-4 mb-4"
           />
           <label class="label cursor-pointer justify-start">
             <span class="label-text text-lg mr-6 font-bold">Save Facility</span>
-            <input type="checkbox" class="checkbox" v-model="save_facility" />
+            <input
+              type="checkbox"
+              class="checkbox"
+              v-model="settings.save_facility"
+            />
           </label>
           <button
             class="btn btn-active btn-primary mt-8 w-full"
