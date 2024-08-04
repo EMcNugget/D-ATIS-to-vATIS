@@ -116,7 +116,11 @@ const validateICAO = (value: string) => {
 };
 
 const save_settings = () => {
-  invoke("write_settings", settings_store.get_all());
+  invoke("write_settings", {
+    settings: settings_store.get_all(),
+  }).then((k) => {
+    message.value = k as Alert;
+  });
 };
 
 invoke("read_settings").then((k) => {
@@ -188,7 +192,7 @@ invoke("read_settings").then((k) => {
       class="btn btn-circle fixed bottom-0 left-0 m-4 flex items-center justify-center"
       onclick="my_modal_3.showModal()"
     >
-      <img src="/settings_store.svg" alt="Settings" class="md:h-6" />
+      <img src="/settings.svg" alt="Settings" class="md:h-6" />
     </button>
   </div>
 </template>
