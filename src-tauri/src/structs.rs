@@ -30,3 +30,15 @@ pub struct VATIS {
     atis_type: String,
     atis: ATIS,
 }
+
+#[derive(Serialize, Deserialize, Debug)]
+pub struct Response {
+    pub alert_type: String,
+    pub message: String,
+}
+
+#[derive(Serialize, Deserialize, Debug)]
+pub struct FindComposite {
+    pub profile_index: usize,
+    pub composite_index: usize,
+}

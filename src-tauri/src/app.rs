@@ -1,17 +1,12 @@
 use crate::settings::read_settings;
+use crate::structs::FindComposite;
 use crate::util::{read_json_file, write_json_file};
 use log::{error, info};
 use serde::Serialize;
 use serde_json::{self, Value};
 use tauri::AppHandle;
 
-pub struct FindComposite {
-    pub profile_index: usize,
-    pub composite_index: usize,
-}
-
-// I know this is nested if then hell but until I get more confident in rust its going to remain this way
-// Needs a refactor
+// Nested hell, needs a refactor
 fn find_composite(
     data: &Value,
     profile: &str,
@@ -135,15 +130,12 @@ pub fn write_atis(facility: String, atis: Value, app_handle: AppHandle) -> Resul
     };
 
     for atis_entry in atis_array {
-        let atis = &atis_entry["atis"];
-        let atis_type = atis_entry["atis_type"].as_str().unwrap_or("unknown");
-
         let result = write_profile(
-            atis,
+            &atis_entry["atis"],
             &settings.profile,
             &facility,
             &format!("{}\\AppConfig.json", &settings.file_path),
-            Some(atis_type),
+            Some(atis_entry["atis_type"].as_str().unwrap_or("unknown")),
         );
 
         match result {

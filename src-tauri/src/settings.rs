@@ -1,21 +1,28 @@
-use crate::structs::Settings;
+use crate::structs::{Response, Settings};
 use crate::util::{read_json_file, write_json_file};
 use log::{error, info};
 use std::path::Path;
 use tauri::{AppHandle, Manager};
 
-fn response(res: &str, success: bool) -> Result<String, String> {
+
+fn response(res: &str, success: bool) -> Result<Response, String> {
     if success {
         info!("{}", res);
-        Ok(res.to_string())
+        Ok(Response {
+            alert_type: "success".to_string(),
+            message: res.to_string(),
+        })
     } else {
         error!("{}", res);
-        Err(res.to_string())
+        return Ok(Response {
+            alert_type: "error".to_string(),
+            message: res.to_string(),
+        });
     }
 }
 
 #[tauri::command]
-pub fn write_settings(settings: Settings, app_handle: AppHandle) -> Result<String, String> {
+pub fn write_settings(settings: Settings, app_handle: AppHandle) -> Result<Response, String> {
     let app_data_path = app_handle.path().app_data_dir().unwrap();
     let file_path = app_data_path.join("settings.json");
 

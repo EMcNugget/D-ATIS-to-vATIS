@@ -24,22 +24,22 @@ const open_path = () => {
 
 const facility = computed({
   get: () => settings_store.get_facility(),
-  set: (value) => settings_store.set_facility(value),
+  set: (v) => settings_store.set_facility(v),
 });
 
 const file_path = computed({
   get: () => settings_store.get_file_path(),
-  set: (value) => settings_store.set_file_path(value),
+  set: (v) => settings_store.set_file_path(v),
 });
 
 const save_facility = computed({
   get: () => settings_store.get_save_facility(),
-  set: (value) => settings_store.set_save_facility(value),
+  set: (v) => settings_store.set_save_facility(v),
 });
 
 const profile = computed({
   get: () => settings_store.get_profile(),
-  set: (value) => settings_store.set_profile(value),
+  set: (v) => settings_store.set_profile(v),
 });
 
 const message: Ref<Alert> = ref({ message: "", alert_type: "success" });
