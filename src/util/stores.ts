@@ -6,7 +6,7 @@ interface Store {
   settings: Settings;
 }
 
-export const use_settings = defineStore("settings", {
+export const use_store = defineStore("store", {
   state: (): Store => ({
     atis: [] as vATIS[],
     settings: {
@@ -15,7 +15,7 @@ export const use_settings = defineStore("settings", {
       save_facility: false,
       profile: "",
       theme: "light",
-    } ,
+    },
   }),
   actions: {
     set_facility(code: string) {
@@ -45,7 +45,7 @@ export const use_settings = defineStore("settings", {
     get_theme() {
       return this.settings.theme;
     },
-    set_theme(theme: "light" | "dark") {
+    set_theme(theme: "light" | "dark" | "system") {
       this.settings.theme = theme;
     },
     get_all(): Settings {

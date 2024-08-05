@@ -1,5 +1,7 @@
 type ATISType = "arr" | "dep" | "combined";
 
+type Theme = "system" | "light" | "dark";
+
 type ATISCode = {
   type: "Arrival" | "Departure" | "Combined";
   code: string;
@@ -32,7 +34,7 @@ type Settings = {
   file_path: string;
   save_facility: boolean;
   profile: string;
-  theme: "light" | "dark";
+  theme: Theme;
 };
 
 export type Alert = {
@@ -119,4 +121,4 @@ export const facilities = [
   "TJSJ",
 ];
 
-export type { ATIS, vATIS, Settings, ATISType, ATISCode };
+export type { ATIS, vATIS, Settings, ATISType, ATISCode, Theme };

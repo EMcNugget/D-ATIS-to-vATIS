@@ -1,13 +1,22 @@
 <script setup lang="ts">
 import Alerts from "./Alerts.vue";
 import { Ref, computed, ref, watch } from "vue";
-import { use_settings } from "../util/stores";
+import { use_store } from "../util/stores";
 import { fetch_atis } from "../util/parser";
 import { invoke } from "@tauri-apps/api/core";
 import { open } from "@tauri-apps/plugin-dialog";
-import { Settings, facilities, Alert, vATIS, ATISCode } from "../util/types";
+import { getCurrentWindow } from "@tauri-apps/api/window";
+import { listen, TauriEvent } from "@tauri-apps/api/event";
+import {
+  Settings,
+  facilities,
+  Alert,
+  vATIS,
+  ATISCode,
+  Theme,
+} from "../util/types";
 
-const settings_store = use_settings();
+const store = use_store();
 
 const open_path = () => {
   open({
@@ -15,34 +24,70 @@ const open_path = () => {
     directory: true,
     filters: [],
   }).then((path) => {
-    settings_store.set_file_path(
-      path ? (path as string) : settings_store.get_file_path()
-    );
+    store.set_file_path(path ? (path as string) : store.get_file_path());
   });
 };
 
 const facility = computed({
-  get: () => settings_store.get_facility(),
-  set: (v) => settings_store.set_facility(v),
+  get: () => store.get_facility(),
+  set: (v) => store.set_facility(v),
 });
 
 const file_path = computed({
-  get: () => settings_store.get_file_path(),
-  set: (v) => settings_store.set_file_path(v),
+  get: () => store.get_file_path(),
+  set: (v) => store.set_file_path(v),
 });
 
 const save_facility = computed({
-  get: () => settings_store.get_save_facility(),
-  set: (v) => settings_store.set_save_facility(v),
+  get: () => store.get_save_facility(),
+  set: (v) => store.set_save_facility(v),
 });
 
 const profile = computed({
-  get: () => settings_store.get_profile(),
-  set: (v) => settings_store.set_profile(v),
+  get: () => store.get_profile(),
+  set: (v) => store.set_profile(v),
 });
 
 const message: Ref<Alert> = ref({ message: "", alert_type: "success" });
 const showAlert = ref(false);
+const showDropdown = ref(false);
+
+const window = getCurrentWindow();
+const system_theme = ref(await window.theme());
+
+await listen(TauriEvent.WINDOW_THEME_CHANGED, (event) => {
+  system_theme.value = event.payload as "light" | "dark";
+});
+
+const theme = computed({
+  get: () => store.get_theme(),
+  set: (v) => store.set_theme(v),
+});
+
+watch(
+  () => system_theme.value,
+  () => {
+    handleTheme(theme.value);
+  }
+);
+
+const localTheme: Ref<"light" | "dark"> = ref("light");
+const handleTheme = (v: Theme) => {
+  switch (v) {
+    case "system":
+      theme.value = "system";
+      localTheme.value = system_theme.value === "light" ? "light" : "dark";
+      break;
+    case "light":
+      theme.value = "light";
+      localTheme.value = "light";
+      break;
+    case "dark":
+      theme.value = "dark";
+      localTheme.value = "dark";
+      break;
+  }
+};
 
 watch(
   () => message.value,
@@ -81,7 +126,7 @@ const get_atis_code = (atis: vATIS[]): ATISCode[] => {
 const fetch = async () => {
   try {
     await fetch_atis(facility.value).then((atis) => {
-      settings_store.set_atis(atis);
+      store.set_atis(atis);
       invoke("write_atis", {
         facility: facility.value,
         atis: atis,
@@ -116,19 +161,22 @@ const validateICAO = (value: string) => {
 
 const save_settings = () => {
   invoke("write_settings", {
-    settings: settings_store.get_all(),
+    settings: store.get_all(),
   }).then((k) => {
     message.value = k as Alert;
   });
 };
 
 invoke("read_settings").then((k) => {
-  settings_store.set_all(k as Settings);
+  store.set_all(k as Settings);
 });
 </script>
 
 <template>
-  <div class="h-screen relative flex flex-col items-center justify-center">
+  <div
+    class="h-screen relative flex flex-col items-center justify-center"
+    :data-theme="localTheme"
+  >
     <Alerts :message="message" :show="showAlert" @close="showAlert = false" />
     <div class="flex flex-col items-center">
       <input
@@ -174,6 +222,34 @@ invoke("read_settings").then((k) => {
             placeholder="Profile..."
             class="input input-bordered w-full mr-4 mb-4"
           />
+          <label class="label cursor-pointer justify-start">
+            <span class="label-text text-lg mr-6 font-bold">Theme</span>
+            <!-- Really pissing me off, won't close when clicking item, can't figure it out -->
+            <details class="dropdown" @toggle="showDropdown = !showDropdown">
+              <summary class="btn m-1">
+                {{ theme.charAt(0).toUpperCase() + theme.slice(1) }}
+                <img
+                  v-if="showDropdown"
+                  src="/dropdown_up.svg"
+                  alt="Dropdown"
+                  class="md:h-4"
+                />
+                <img
+                  v-if="!showDropdown"
+                  src="/dropdown_down.svg"
+                  alt="Dropdown"
+                  class="md:h-4"
+                />
+              </summary>
+              <ul
+                class="menu dropdown-content bg-base-100 rounded-box z-[1] w-52 p-2 shadow"
+              >
+                <li><a @click="handleTheme('system')">System</a></li>
+                <li><a @click="handleTheme('light')">Light</a></li>
+                <li><a @click="handleTheme('dark')">Dark</a></li>
+              </ul>
+            </details>
+          </label>
           <label class="label cursor-pointer justify-start">
             <span class="label-text text-lg mr-6 font-bold">Save Facility</span>
             <input type="checkbox" class="checkbox" v-model="save_facility" />

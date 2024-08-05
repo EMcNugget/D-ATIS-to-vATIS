@@ -8,7 +8,7 @@ mod util;
 
 use app::write_atis;
 use log::info;
-use settings::{read_settings, write_settings};
+use settings::{create_settings_file, read_settings, write_settings};
 use tauri::AppHandle;
 use tauri_plugin_log::{Target, TargetKind};
 
@@ -17,6 +17,8 @@ fn setup(app_handle: AppHandle) {
         "D-ATIS to vATIS started version {}",
         app_handle.config().version.as_ref().unwrap()
     );
+
+    create_settings_file(app_handle).unwrap();
 }
 
 fn main() {

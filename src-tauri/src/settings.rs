@@ -4,7 +4,6 @@ use log::{error, info};
 use std::path::Path;
 use tauri::{AppHandle, Manager};
 
-
 fn response(res: &str, success: bool) -> Result<Response, String> {
     if success {
         info!("{}", res);
@@ -19,6 +18,28 @@ fn response(res: &str, success: bool) -> Result<Response, String> {
             message: res.to_string(),
         });
     }
+}
+
+pub fn create_settings_file(app_handle: AppHandle) -> Result<Response, String> {
+    let app_data_path = app_handle.path().app_data_dir().unwrap();
+    let file_path = app_data_path.join("settings.json");
+
+    if Path::new(&file_path).exists() {
+        return response("Settings file already exists.", true);
+    }
+
+    let settings = Settings {
+        facility: "".to_string(),
+        file_path: "".to_string(),
+        save_facility: false,
+        profile: "".to_string(),
+        theme: "system".to_string(),
+    };
+
+    let json_string = serde_json::to_string_pretty(&settings).map_err(|e| e.to_string())?;
+    write_json_file(file_path.to_str().unwrap(), &json_string)?;
+
+    response("Settings file created successfully.", true)
 }
 
 #[tauri::command]
@@ -47,20 +68,7 @@ pub fn write_settings(settings: Settings, app_handle: AppHandle) -> Result<Respo
             }
         }
     } else {
-        match std::fs::create_dir_all(&app_data_path) {
-            Ok(_) => info!("Directory created successfully."),
-            Err(e) => {
-                error!("{}", e);
-                return response(
-                    format!("Failed to create directory: {}", app_data_path.display()).as_str(),
-                    false,
-                );
-            }
-        }
-
-        let json_string = serde_json::to_string_pretty(&settings).map_err(|e| e.to_string())?;
-        write_json_file(file_path.to_str().unwrap(), &json_string)?;
-        return response("Settings written successfully.", true);
+        return response("Settings file does not exist, restart the app.", false);
     }
 }
 

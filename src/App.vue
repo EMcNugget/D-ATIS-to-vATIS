@@ -3,8 +3,7 @@ import MainApp from "./components/MainApp.vue";
 </script>
 
 <template>
-  <div>
+  <Suspense>
     <MainApp />
-  </div>
+  </Suspense>
 </template>
-
