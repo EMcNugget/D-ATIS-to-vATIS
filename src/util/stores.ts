@@ -14,7 +14,7 @@ export const use_store = defineStore("store", {
       file_path: "",
       save_facility: false,
       profile: "",
-      theme: "light",
+      theme: "system",
     },
   }),
   actions: {

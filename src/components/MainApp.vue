@@ -52,6 +52,28 @@ const message: Ref<Alert> = ref({ message: "", alert_type: "success" });
 const showAlert = ref(false);
 const showDropdown = ref(false);
 
+const handleTheme = (v: Theme) => {
+  showDropdown.value = false;
+  switch (v) {
+    case "system":
+      theme.value = "system";
+      localTheme.value = system_theme.value === "light" ? "light" : "dark";
+      break;
+    case "light":
+      theme.value = "light";
+      localTheme.value = "light";
+      break;
+    case "dark":
+      theme.value = "dark";
+      localTheme.value = "dark";
+      break;
+  }
+};
+
+const toggleDropdown = () => {
+  showDropdown.value = !showDropdown.value;
+};
+
 const window = getCurrentWindow();
 const system_theme = ref(await window.theme());
 
@@ -72,23 +94,6 @@ watch(
 );
 
 const localTheme: Ref<"light" | "dark"> = ref("light");
-const handleTheme = (v: Theme) => {
-  switch (v) {
-    case "system":
-      theme.value = "system";
-      localTheme.value = system_theme.value === "light" ? "light" : "dark";
-      break;
-    case "light":
-      theme.value = "light";
-      localTheme.value = "light";
-      break;
-    case "dark":
-      theme.value = "dark";
-      localTheme.value = "dark";
-      break;
-  }
-};
-
 watch(
   () => message.value,
   () => {
@@ -183,7 +188,7 @@ invoke("read_settings").then((k) => {
         type="text"
         placeholder="Airport Code..."
         :class="
-          'input input-bordered w-full max-w-xs mb-4 input-uppercase' +
+          'input input-bordered w-full max-w-xs mb-4 input-uppercase ' +
           (validateICAO(facility) ? '' : ' input-error')
         "
         v-model="facility"
@@ -205,7 +210,7 @@ invoke("read_settings").then((k) => {
               ✕
             </button>
           </form>
-          <h3 class="text-lg font-bold mb-6">Settings</h3>
+          <h3 class="text-2xl mb-6 font-bold">Settings</h3>
           <div class="flex flex-row">
             <input
               type="text"
@@ -223,10 +228,9 @@ invoke("read_settings").then((k) => {
             class="input input-bordered w-full mr-4 mb-4"
           />
           <label class="label cursor-pointer justify-start">
-            <span class="label-text text-lg mr-6 font-bold">Theme</span>
-            <!-- Really pissing me off, won't close when clicking item, can't figure it out -->
-            <details class="dropdown" @toggle="showDropdown = !showDropdown">
-              <summary class="btn m-1">
+            <span class="label-text mr-6 text-base font-semibold">Theme</span>
+            <div class="dropdown">
+              <label tabindex="0" class="btn m-1" @click="toggleDropdown">
                 {{ theme.charAt(0).toUpperCase() + theme.slice(1) }}
                 <img
                   v-if="showDropdown"
@@ -240,18 +244,22 @@ invoke("read_settings").then((k) => {
                   alt="Dropdown"
                   class="md:h-4"
                 />
-              </summary>
+              </label>
               <ul
-                class="menu dropdown-content bg-base-100 rounded-box z-[1] w-52 p-2 shadow"
+                v-if="showDropdown"
+                tabindex="0"
+                class="dropdown-content menu p-2 shadow bg-base-200 rounded-box w-52"
               >
                 <li><a @click="handleTheme('system')">System</a></li>
                 <li><a @click="handleTheme('light')">Light</a></li>
                 <li><a @click="handleTheme('dark')">Dark</a></li>
               </ul>
-            </details>
+            </div>
           </label>
           <label class="label cursor-pointer justify-start">
-            <span class="label-text text-lg mr-6 font-bold">Save Facility</span>
+            <span class="label-text mr-6 text-base font-semibold"
+              >Save Facility</span
+            >
             <input type="checkbox" class="checkbox" v-model="save_facility" />
           </label>
           <button
