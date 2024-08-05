@@ -7,6 +7,7 @@ pub struct Settings {
     pub file_path: String,
     pub save_facility: bool,
     pub profile: String,
+    pub theme: String,
 }
 
 #[derive(Serialize, Deserialize, Debug)]

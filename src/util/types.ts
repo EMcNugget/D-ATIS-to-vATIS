@@ -32,6 +32,7 @@ type Settings = {
   file_path: string;
   save_facility: boolean;
   profile: string;
+  theme: "light" | "dark";
 };
 
 export type Alert = {

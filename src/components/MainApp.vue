@@ -1,14 +1,13 @@
 <script setup lang="ts">
 import Alerts from "./Alerts.vue";
 import { Ref, computed, ref, watch } from "vue";
-import { use_settings, use_atis_store } from "../util/stores";
+import { use_settings } from "../util/stores";
 import { fetch_atis } from "../util/parser";
 import { invoke } from "@tauri-apps/api/core";
 import { open } from "@tauri-apps/plugin-dialog";
 import { Settings, facilities, Alert, vATIS, ATISCode } from "../util/types";
 
 const settings_store = use_settings();
-const atis_store = use_atis_store();
 
 const open_path = () => {
   open({
@@ -82,7 +81,7 @@ const get_atis_code = (atis: vATIS[]): ATISCode[] => {
 const fetch = async () => {
   try {
     await fetch_atis(facility.value).then((atis) => {
-      atis_store.set_atis(atis);
+      settings_store.set_atis(atis);
       invoke("write_atis", {
         facility: facility.value,
         atis: atis,
