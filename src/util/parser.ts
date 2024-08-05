@@ -39,65 +39,49 @@ const notam_varients = [
 const parse_atis = (atis: ATIS, split: boolean, facility: string): vATIS => {
   // need to add ability to parse atis without NOTAM keyword
 
-  let vATIS = {} as vATIS;
+  const vATIS = {
+    atis_type: atis.type as "arr" | "dep" | "combined",
+    atis_code: atis.code,
+    atis: {
+      id: v4(),
+      name: "REAL WORLD",
+      airportConditions: "",
+      notams: "",
+      template: create_template(
+        facility.slice(1),
+        split,
+        split ? (atis.type.toUpperCase() as "ARR" | "DEP") : undefined
+      ),
+      externalGenerator: {
+        enabled: false, // not sure what this does, leaving it as false for now
+      },
+    },
+  };
 
   if (!notam_varients.some((varient) => atis.datis.includes(varient))) {
     let message = `No NOTAM keyword found in the ${atis.airport} ATIS, unable to parse. (The preset will still be created, but the NOTAMs will be empty)`;
     warn(message);
-    vATIS = {
-      atis_type: atis.type as "arr" | "dep" | "combined",
-      atis_code: atis.code,
-      atis: {
-        id: v4(),
-        name: "REAL WORLD",
-        airportConditions: atis.datis,
-        notams: "",
-        template: create_template(
-          facility.slice(1),
-          split,
-          split ? (atis.type.toUpperCase() as "ARR" | "DEP") : undefined
-        ),
-        externalGenerator: {
-          enabled: false, // not sure what this does, leaving it as false for now
-        },
-      },
-    };
+    vATIS.atis.airportConditions = atis.datis;
     throw {
       alert_type: "warn",
       message,
     };
-  }
+  } else {
+    try {
+      const notam_varient =
+        notam_varients.find((varient) => atis.datis.includes(varient)) ||
+        "NOTAMS...";
+      const notams = atis.datis.split(notam_varient)[1].split(" ...ADVS")[0];
+      const airportConditions = atis.datis
+        .slice(find_number_of_occurances(atis.datis, ".", 2) + 1)
+        .split(notam_varient)[0]
+        .trim();
 
-  try {
-    const notam_varient =
-      notam_varients.find((varient) => atis.datis.includes(varient)) ||
-      "NOTAMS...";
-    const notams = atis.datis.split(notam_varient)[1].split(" ...ADVS")[0];
-    const airportConditions = atis.datis
-      .slice(find_number_of_occurances(atis.datis, ".", 2) + 1)
-      .split(notam_varient)[0]
-      .trim();
-
-    vATIS = {
-      atis_type: atis.type as "arr" | "dep" | "combined",
-      atis_code: atis.code,
-      atis: {
-        id: v4(),
-        name: "REAL WORLD",
-        airportConditions,
-        notams,
-        template: create_template(
-          facility.slice(1),
-          split,
-          split ? (atis.type.toUpperCase() as "ARR" | "DEP") : undefined
-        ),
-        externalGenerator: {
-          enabled: false, // not sure what this does, leaving it as false for now
-        },
-      },
-    };
-  } catch (e) {
-    throw e;
+      vATIS.atis.notams = notams;
+      vATIS.atis.airportConditions = airportConditions;
+    } catch (e) {
+      throw e;
+    }
   }
   return vATIS;
 };
