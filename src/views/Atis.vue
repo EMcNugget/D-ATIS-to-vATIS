@@ -20,12 +20,7 @@ const message = computed({
 const tooltip = ref("");
 
 const validateICAO = (value: string) => {
-  if (
-    (value.length !== 4,
-    !value.match(/^[A-Z]{4}$/),
-    value.startsWith("K"),
-    !facilities.includes(value))
-  ) {
+  if (!facilities.includes(value) || !store.get_file_path()) {
     return false;
   } else return true;
 };
