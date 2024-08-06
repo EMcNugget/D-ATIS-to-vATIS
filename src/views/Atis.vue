@@ -20,7 +20,12 @@ const message = computed({
 const tooltip = ref("");
 
 const validateICAO = (value: string) => {
-  if (!facilities.includes(value) || !store.get_file_path()) {
+  if (!facilities.includes(value)) {
+    tooltip.value = "Invalid facility";
+    return false;
+  } else if (!store.get_file_path()) {
+    tooltip.value =
+      "Please select the path to your vATIS installation in settings";
     return false;
   } else return true;
 };
@@ -80,36 +85,34 @@ const fetch = async () => {
 
 <template>
   <div class="flex flex-col items-center">
-    <div class="flex flex-row items-center">
-      <input
-        type="text"
-        placeholder="Airport Code..."
-        :class="
-          'input input-bordered w-full max-w-xs ml-6 mb-4 input-uppercase ' +
-          (validateICAO(facility) ? '' : ' input-error')
-        "
-        v-model="facility"
-        maxlength="4"
-      />
-      <div
-        class="tooltip tooltip-right ml-2 mb-4"
-        :data-tip="tooltip"
-        v-if="tooltip"
+    <input
+      type="text"
+      placeholder="Airport Code..."
+      :class="
+        'input input-bordered w-full max-w-xs mb-4 input-uppercase ' +
+        (validateICAO(facility) ? '' : ' input-error')
+      "
+      v-model="facility"
+      maxlength="4"
+    />
+    <div v-if="tooltip" class="tooltip tooltip-bottom" :data-tip="tooltip">
+      <button
+        class="btn btn-primary w-half max-w-xs mb-4"
+        @click="fetch()"
+        :disabled="!validateICAO(facility)"
       >
-        <img
-          src="/tooltip.svg"
-          alt="Tooltip"
-          class="h-auto w-auto max-h-6 max-w-6"
-        />
-      </div>
+        Fetch
+      </button>
     </div>
-    <button
-      class="btn btn-primary w-half max-w-xs mb-4"
-      @click="fetch()"
-      :disabled="!validateICAO(facility)"
-    >
-      Fetch
-    </button>
+    <div v-else>
+      <button
+        class="btn btn-primary w-half max-w-xs mb-4"
+        @click="fetch()"
+        :disabled="!validateICAO(facility)"
+      >
+        Fetch
+      </button>
+    </div>
   </div>
 </template>
 
