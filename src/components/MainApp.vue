@@ -93,7 +93,9 @@ watch(
   }
 );
 
-const localTheme: Ref<"light" | "dark"> = ref("light");
+const localTheme = ref(
+  theme.value === "system" ? system_theme.value : theme.value
+);
 watch(
   () => message.value,
   () => {
