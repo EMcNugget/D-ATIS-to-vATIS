@@ -1,9 +1,10 @@
 import { defineStore } from "pinia";
-import type { vATIS, Settings } from "./types";
+import type { vATIS, Settings, Theme, Alert } from "./types";
 
 interface Store {
   atis: vATIS[];
   settings: Settings;
+  message: Alert;
 }
 
 export const use_store = defineStore("store", {
@@ -15,6 +16,10 @@ export const use_store = defineStore("store", {
       save_facility: false,
       profile: "",
       theme: "system",
+    },
+    message: {
+      message: "",
+      alert_type: "success",
     },
   }),
   actions: {
@@ -45,7 +50,7 @@ export const use_store = defineStore("store", {
     get_theme() {
       return this.settings.theme;
     },
-    set_theme(theme: "light" | "dark" | "system") {
+    set_theme(theme: Theme) {
       this.settings.theme = theme;
     },
     get_all(): Settings {
@@ -69,6 +74,12 @@ export const use_store = defineStore("store", {
     },
     get_atis() {
       return this.atis;
+    },
+    set_message(message: Alert) {
+      this.message = message;
+    },
+    get_message() {
+      return this.message;
     },
   },
 });

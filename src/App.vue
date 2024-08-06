@@ -1,9 +1,9 @@
 <script setup lang="ts">
-import MainApp from "./components/MainApp.vue";
+import Home from "./views/Home.vue";
 </script>
 
 <template>
   <Suspense>
-    <MainApp />
+    <Home />
   </Suspense>
 </template>
