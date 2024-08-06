@@ -37,6 +37,7 @@ pub fn create_settings_file(app_handle: AppHandle) -> Result<Response, String> {
     };
 
     let json_string = serde_json::to_string_pretty(&settings).map_err(|e| e.to_string())?;
+    std::fs::create_dir_all(app_data_path).map_err(|e| e.to_string())?;
     write_json_file(file_path.to_str().unwrap(), &json_string)?;
 
     response("Settings file created successfully.", true)
