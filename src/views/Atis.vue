@@ -1,7 +1,8 @@
 <script setup lang="ts">
-import { fetch_atis } from "../util/parser";
-import { use_store } from "../util/stores";
-import { Alert, ATISCode, facilities, vATIS } from "../util/types";
+import Layout from "./Layout.vue";
+import { fetch_atis } from "../lib/parser";
+import { use_store } from "../lib/stores";
+import { TAlert, TATISCode, facilities, vATIS } from "../lib/types";
 import { invoke } from "@tauri-apps/api/core";
 import { computed, ref } from "vue";
 
@@ -30,7 +31,7 @@ const validateICAO = (value: string) => {
   } else return true;
 };
 
-const get_atis_code = (atis: vATIS[]): ATISCode[] => {
+const get_atis_code = (atis: vATIS[]): TATISCode[] => {
   return atis.map((k) => {
     switch (k.atis_type) {
       case "arr":
@@ -65,7 +66,7 @@ const fetch = async () => {
         facility: facility.value,
         atis: atis,
       }).then((k) => {
-        const v: Alert = k as Alert;
+        const v = k as TAlert;
         const success = v.alert_type === "success";
         v.message = v.message.concat(
           success
@@ -78,42 +79,44 @@ const fetch = async () => {
       });
     });
   } catch (e) {
-    message.value = e as Alert;
+    message.value = e as TAlert;
   }
 };
 </script>
 
 <template>
-  <div class="flex flex-col items-center">
-    <input
-      type="text"
-      placeholder="Airport Code..."
-      :class="
-        'input input-bordered w-full max-w-xs mb-4 input-uppercase ' +
-        (validateICAO(facility) ? '' : ' input-error')
-      "
-      v-model="facility"
-      maxlength="4"
-    />
-    <div v-if="tooltip" class="tooltip tooltip-bottom" :data-tip="tooltip">
-      <button
-        class="btn btn-primary w-half max-w-xs mb-4"
-        @click="fetch()"
-        :disabled="!validateICAO(facility)"
-      >
-        Fetch
-      </button>
+  <Layout>
+    <div class="flex flex-col items-center">
+      <input
+        type="text"
+        placeholder="Airport Code..."
+        :class="
+          'input input-bordered w-full max-w-xs mb-4 input-uppercase ' +
+          (validateICAO(facility) ? '' : ' input-error')
+        "
+        v-model="facility"
+        maxlength="4"
+      />
+      <div v-if="tooltip" class="tooltip tooltip-bottom" :data-tip="tooltip">
+        <button
+          class="btn btn-primary w-half max-w-xs mb-4"
+          @click="fetch()"
+          :disabled="!validateICAO(facility)"
+        >
+          Fetch
+        </button>
+      </div>
+      <div v-else>
+        <button
+          class="btn btn-primary w-half max-w-xs mb-4"
+          @click="fetch()"
+          :disabled="!validateICAO(facility)"
+        >
+          Fetch
+        </button>
+      </div>
     </div>
-    <div v-else>
-      <button
-        class="btn btn-primary w-half max-w-xs mb-4"
-        @click="fetch()"
-        :disabled="!validateICAO(facility)"
-      >
-        Fetch
-      </button>
-    </div>
-  </div>
+  </Layout>
 </template>
 
 <style>

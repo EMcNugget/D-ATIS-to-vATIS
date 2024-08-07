@@ -1,4 +1,4 @@
-import type { ATIS, vATIS } from "./types";
+import type { TATIS, vATIS } from "./types";
 import { warn } from "@tauri-apps/plugin-log";
 import { v4 } from "uuid";
 
@@ -36,7 +36,7 @@ const notam_varients = [
   "NOTICES TO AIRMEN.",
 ];
 
-const parse_atis = (atis: ATIS, split: boolean, facility: string): vATIS => {
+const parse_atis = (atis: TATIS, split: boolean, facility: string): vATIS => {
   // need to add ability to parse atis without NOTAM keyword
 
   const vATIS = {
@@ -98,7 +98,7 @@ export const fetch_atis = async (facility: string) => {
   }
 
   const atisArray: vATIS[] = [];
-  response.forEach((atis: ATIS) => {
+  response.forEach((atis: TATIS) => {
     try {
       atisArray.push(parse_atis(atis, split, facility));
     } catch (e) {

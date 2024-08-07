@@ -1,11 +1,11 @@
 <script setup lang="ts">
 import { computed, ref, watch } from "vue";
-import { use_store } from "../util/stores";
+import { use_store } from "../lib/stores";
 import { invoke } from "@tauri-apps/api/core";
 import { open } from "@tauri-apps/plugin-dialog";
 import { getCurrentWindow } from "@tauri-apps/api/window";
 import { listen, TauriEvent } from "@tauri-apps/api/event";
-import { Settings, Alert } from "../util/types";
+import type { TAlert } from "../lib/types";
 
 const props = defineProps<{
   showModal: boolean;
@@ -96,13 +96,10 @@ const save_settings = () => {
   invoke("write_settings", {
     settings: store.get_all(),
   }).then((k) => {
-    message.value = k as Alert;
+    message.value = k as TAlert;
   });
 };
 
-invoke("read_settings").then((k) => {
-  store.set_all(k as Settings);
-});
 </script>
 
 <template>
@@ -142,13 +139,13 @@ invoke("read_settings").then((k) => {
               v-if="showDropdown"
               src="/dropdown_up.svg"
               alt="Dropdown"
-              class="h-auto w-auto max-h-6 max-w-6" 
+              class="h-auto w-auto max-h-6 max-w-6"
             />
             <img
               v-if="!showDropdown"
               src="/dropdown_down.svg"
               alt="Dropdown"
-              class="h-auto w-auto max-h-6 max-w-6" 
+              class="h-auto w-auto max-h-6 max-w-6"
             />
           </label>
 

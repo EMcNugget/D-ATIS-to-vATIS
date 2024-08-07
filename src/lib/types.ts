@@ -1,21 +1,21 @@
-type ATISType = "arr" | "dep" | "combined";
+type TATISType = "arr" | "dep" | "combined";
 
-type Theme = "system" | "light" | "dark";
+type TTheme = "system" | "light" | "dark";
 
-type ATISCode = {
+type TATISCode = {
   type: "Arrival" | "Departure" | "Combined";
   code: string;
 };
 
-type ATIS = {
+type TATIS = {
   airport: string;
-  type: ATISType;
+  type: TATISType;
   code: string;
   datis: string;
 };
 
 type vATIS = {
-  atis_type: ATISType;
+  atis_type: TATISType;
   atis_code: string;
   atis: {
     id: string; // UUID
@@ -29,15 +29,15 @@ type vATIS = {
   };
 };
 
-type Settings = {
+type TSettings = {
   facility: string;
   file_path: string;
   save_facility: boolean;
   profile: string;
-  theme: Theme;
+  theme: TTheme;
 };
 
-export type Alert = {
+export type TAlert = {
   message: string;
   alert_type: "error" | "warn" | "success";
 };
@@ -121,4 +121,4 @@ export const facilities = [
   "TJSJ",
 ];
 
-export type { ATIS, vATIS, Settings, ATISType, ATISCode, Theme };
+export type { TATIS, vATIS, TSettings, TATISType, TATISCode, TTheme };

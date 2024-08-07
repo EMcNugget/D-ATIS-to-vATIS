@@ -1,42 +1,28 @@
 <script setup lang="ts">
-import { computed, ref, watch } from "vue";
-import Settings from "../components/Settings.vue";
-import { use_store } from "../util/stores";
-import Alerts from "../components/Alerts.vue";
-import Atis from "./Atis.vue";
+import { RouterLink, RouterView } from "vue-router";
+import Layout from "./Layout.vue";
+import { TSettings } from "../lib/types";
+import { use_store } from "../lib/stores";
+import { invoke } from "@tauri-apps/api/core";
 
 const store = use_store();
 
-const message = computed(() => store.get_message());
-const localTheme = computed(() => store.get_theme());
-const showAlert = ref(false);
-const showSettings = ref(false);
-
-watch(
-  () => message.value,
-  () => {
-    showAlert.value = true;
-  }
-);
+invoke("read_settings").then((k) => {
+  store.set_all(k as TSettings);
+});
 </script>
 
 <template>
-  <div
-    class="h-screen relative flex flex-col items-center justify-center"
-    :data-theme="localTheme"
-  >
-    <Alerts :message="message" :show="showAlert" @close="showAlert = false" />
-    <Atis />
-    <Settings :showModal="showSettings" @close="showSettings = !showSettings" />
-    <button
-      class="btn btn-circle fixed bottom-0 left-0 m-4 flex items-center justify-center"
-      @click="showSettings = !showSettings"
-    >
-      <img
-        src="/settings.svg"
-        alt="Settings"
-        class="h-auto w-auto max-h-6 max-w-6"
-      />
-    </button>
-  </div>
+  <Layout v-if="$route.path === '/'">
+    <h1 class="absolute top-0 mt-6 font-semibold text-4xl">vATIS Utilites</h1>
+    <div class="flex flex-row items-center justify-center space-x-8">
+      <RouterLink to="/atis" class="btn btn-primary w-2/3"
+        >vATIS to D-ATIS</RouterLink
+      >
+      <RouterLink to="/record" class="btn btn-primary w-2/3"
+        >Record ATIS</RouterLink
+      >
+    </div>
+  </Layout>
+  <RouterView v-else />
 </template>

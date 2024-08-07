@@ -1,14 +1,14 @@
 import { defineStore } from "pinia";
-import type { vATIS, Settings, Theme, Alert } from "./types";
+import type { vATIS, TSettings, TTheme, TAlert } from "./types";
 
-interface Store {
+type TStore = {
   atis: vATIS[];
-  settings: Settings;
-  message: Alert;
-}
+  settings: TSettings;
+  message: TAlert;
+};
 
 export const use_store = defineStore("store", {
-  state: (): Store => ({
+  state: (): TStore => ({
     atis: [] as vATIS[],
     settings: {
       facility: "",
@@ -50,10 +50,10 @@ export const use_store = defineStore("store", {
     get_theme() {
       return this.settings.theme;
     },
-    set_theme(theme: Theme) {
+    set_theme(theme: TTheme) {
       this.settings.theme = theme;
     },
-    get_all(): Settings {
+    get_all(): TSettings {
       return {
         facility: this.settings.facility,
         file_path: this.settings.file_path,
@@ -62,7 +62,7 @@ export const use_store = defineStore("store", {
         theme: this.settings.theme,
       };
     },
-    set_all(settings: Settings) {
+    set_all(settings: TSettings) {
       this.settings.facility = settings.save_facility ? settings.facility : "";
       this.settings.file_path = settings.file_path;
       this.settings.save_facility = settings.save_facility;
@@ -75,7 +75,7 @@ export const use_store = defineStore("store", {
     get_atis() {
       return this.atis;
     },
-    set_message(message: Alert) {
+    set_message(message: TAlert) {
       this.message = message;
     },
     get_message() {

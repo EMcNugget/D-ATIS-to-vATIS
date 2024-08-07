@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import type { Alert } from "../util/types";
-const props = defineProps<{ message: Alert; show: boolean }>();
+import type { TAlert } from "../lib/types";
+const props = defineProps<{ message: TAlert; show: boolean }>();
 const emit = defineEmits(["close"]);
 
 const getAlertClass = () => {
@@ -31,7 +31,7 @@ const getAlertIconPath = () => {
 </script>
 
 <template>
-  <div class="fixed top-8 max-w-sm" v-if="show">
+  <div class="fixed top-8 max-w-sm z-50" v-if="show">
     <div :class="['alert', getAlertClass()]" role="alert">
       <svg
         xmlns="http://www.w3.org/2000/svg"
