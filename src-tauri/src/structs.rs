@@ -43,3 +43,9 @@ pub struct FindComposite {
     pub profile_index: usize,
     pub composite_index: usize,
 }
+
+#[derive(Serialize)]
+pub struct Alert {
+    pub alert_type: String,
+    pub message: String,
+}

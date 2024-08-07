@@ -1,8 +1,7 @@
 use crate::settings::read_settings;
-use crate::structs::FindComposite;
+use crate::structs::{Alert, FindComposite};
 use crate::util::{read_json_file, write_json_file};
 use log::{error, info};
-use serde::Serialize;
 use serde_json::{self, Value};
 use tauri::AppHandle;
 
@@ -111,12 +110,6 @@ pub fn write_profile(
 
     write_json_file(file_path, &data.to_string())?;
     Ok(())
-}
-
-#[derive(Serialize)]
-pub struct Alert {
-    alert_type: String,
-    message: String,
 }
 
 #[tauri::command]
