@@ -5,6 +5,7 @@ mod app;
 mod settings;
 mod structs;
 mod util;
+mod contraction;
 
 use app::write_atis;
 use log::info;

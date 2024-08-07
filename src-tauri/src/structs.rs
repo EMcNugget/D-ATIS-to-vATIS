@@ -49,3 +49,9 @@ pub struct Alert {
     pub alert_type: String,
     pub message: String,
 }
+
+#[derive(Debug, Deserialize)]
+pub struct Contraction {
+    pub contraction: String,
+    pub description: String,
+}
