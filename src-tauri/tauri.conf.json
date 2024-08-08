@@ -48,7 +48,7 @@
   "identifier": "D-ATIStovATIS",
   "plugins": {
     "updater": {
-      "pubkey": "dW50cnVzdGVkIGNvbW1lbnQ6IG1pbmlzaWduIHB1YmxpYyBrZXk6IEZFQTUyMjMzRkI1MDYyMDkKUldRSllsRDdNeUtsL2lIMDV6OUNCNGl1RUUyVmM4YVhUc2xmYURrQTdpcjA0Um9hV1hoeTFDcjQK",
+      "pubkey": "dW50cnVzdGVkIGNvbW1lbnQ6IG1pbmlzaWduIHB1YmxpYyBrZXk6IEIxRjQ0MkI2MjA5RTg5M0MKUldROGlaNGd0a0wwc1JpdE0wSkd3NnJFbjRRN0N0S2I0UVk1Z3ZlQVh3dmFwMmovNUxWbkxuVUoK",
       "endpoints": [
         "https://github.com/EMcNugget/D-ATIS-to-vATIS/releases/latest/download/latest.json"
       ],
