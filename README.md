@@ -19,3 +19,12 @@
 2. Ensure that vATIS is closed.
 3. Click `Fetch`
 4. Then in vATIS select the profile under the name `REAL WORLD`.
+
+## Creating new contractions:
+
+To create a new contraction you have to edit the custom_contractions.json file.
+
+1. Go your install folder/assets.
+2. Open ```custom_contractions.json```
+3. To add a contraction add the abbreviated versioni as the key and the way it should be said as the value.
+4. Save and relaunch the program.
