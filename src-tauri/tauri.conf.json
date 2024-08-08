@@ -7,6 +7,7 @@
     "devUrl": "http://localhost:5173"
   },
   "bundle": {
+    "createUpdaterArtifacts": true,
     "active": true,
     "category": "Utility",
     "copyright": "MIT",
@@ -43,9 +44,19 @@
     }
   },
   "productName": "D-ATIStovATIS",
-  "version": "1.4.5",
+  "version": "1.4.6",
   "identifier": "D-ATIStovATIS",
-  "plugins": {},
+  "plugins": {
+    "updater": {
+      "pubkey": "dW50cnVzdGVkIGNvbW1lbnQ6IG1pbmlzaWduIHB1YmxpYyBrZXk6IEZFQTUyMjMzRkI1MDYyMDkKUldRSllsRDdNeUtsL2lIMDV6OUNCNGl1RUUyVmM4YVhUc2xmYURrQTdpcjA0Um9hV1hoeTFDcjQK",
+      "endpoints": [
+        "https://github.com/EMcNugget/D-ATIS-to-vATIS/releases/latest/download/latest.json"
+      ],
+      "windows": {
+        "installMode": "passive"
+      }
+    }
+  },
   "app": {
     "windows": [
       {
