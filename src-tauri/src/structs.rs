@@ -12,24 +12,24 @@ pub struct Settings {
 
 #[derive(Serialize, Deserialize, Debug)]
 pub struct ExternalGenerator {
-    enabled: bool,
+    pub enabled: bool,
 }
 
 #[derive(Serialize, Deserialize, Debug)]
 #[allow(non_snake_case)]
-struct ATIS {
-    id: Uuid,
-    name: String,
-    airportConditions: String,
-    notams: String,
-    template: String,
-    externalGenerator: ExternalGenerator,
+pub struct ATIS {
+    pub id: Uuid,
+    pub name: String,
+    pub airportConditions: String,
+    pub notams: String,
+    pub template: String,
+    pub externalGenerator: ExternalGenerator,
 }
 
 #[derive(Serialize, Deserialize, Debug)]
 pub struct VATIS {
-    atis_type: String,
-    atis: ATIS,
+    pub atis_type: String,
+    pub atis: ATIS,
 }
 
 #[derive(Serialize, Deserialize, Debug)]
@@ -50,8 +50,8 @@ pub struct Alert {
     pub message: String,
 }
 
-#[derive(Debug, Deserialize)]
+#[derive(Serialize, Deserialize, Debug, Clone)]
 pub struct Contraction {
-    pub contraction: String,
-    pub description: String,
+    pub string: String,
+    pub spoken: String,
 }

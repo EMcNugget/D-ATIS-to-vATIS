@@ -1,3 +1,4 @@
+use crate::contraction::write_contractions;
 use crate::settings::read_settings;
 use crate::structs::{Alert, FindComposite};
 use crate::util::{read_json_file, write_json_file};
@@ -76,6 +77,7 @@ fn find_composite(
 }
 
 pub fn write_profile(
+    app_handle: &AppHandle,
     atis_preset: &Value,
     profile: &str,
     facility: &str,
@@ -87,14 +89,16 @@ pub fn write_profile(
     let indexes: FindComposite = match find_composite(&data, profile, facility, atis_type) {
         Some(result) => result,
         None => {
-            let err = format!("Could not find profile {} for {}", profile, facility);
+            let err = format!("Could not find profile {} for{}", profile, facility);
             error!("{}", err);
             return Err(err);
         }
     };
 
-    let presets = &mut data["profiles"][indexes.profile_index]["composites"]
-        [indexes.composite_index]["presets"];
+    let atis_position =
+        &mut data["profiles"][indexes.profile_index]["composites"][indexes.composite_index];
+
+    let presets = &mut atis_position["presets"];
 
     if let Some(presets_array) = presets.as_array_mut() {
         presets_array.retain(|preset| {
@@ -108,13 +112,23 @@ pub fn write_profile(
 
     presets.as_array_mut().unwrap().push(atis_preset.clone());
 
+    let mut existing = atis_position["contractions"]
+        .as_array_mut()
+        .unwrap_or(&mut Vec::new())
+        .to_vec();
+
+    atis_position["contractions"] =
+        write_contractions(app_handle, &mut existing, atis_preset.clone())
+            .unwrap()
+            .into();
+
     write_json_file(file_path, &data.to_string())?;
     Ok(())
 }
 
 #[tauri::command]
 pub fn write_atis(facility: String, atis: Value, app_handle: AppHandle) -> Result<Alert, String> {
-    let settings = read_settings(app_handle).unwrap();
+    let settings = read_settings(app_handle.clone()).unwrap();
     let atis_array = atis.as_array().unwrap();
 
     let mut message = Alert {
@@ -124,6 +138,7 @@ pub fn write_atis(facility: String, atis: Value, app_handle: AppHandle) -> Resul
 
     for atis_entry in atis_array {
         let result = write_profile(
+            &app_handle,
             &atis_entry["atis"],
             &settings.profile,
             &facility,
