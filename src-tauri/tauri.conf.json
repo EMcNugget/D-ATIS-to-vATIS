@@ -33,7 +33,9 @@
       "providerShortName": null,
       "signingIdentity": null
     },
-    "resources": ["assets/custom_contractions.json"],
+    "resources": [
+      "assets/custom_contractions.json"
+    ],
     "shortDescription": "",
     "linux": {
       "deb": {
@@ -42,7 +44,7 @@
     }
   },
   "productName": "D-ATIStovATIS",
-  "version": "1.5.1",
+  "version": "1.5.3",
   "identifier": "D-ATIStovATIS",
   "plugins": {
     "updater": {
