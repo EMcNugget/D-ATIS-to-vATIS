@@ -1,7 +1,7 @@
 {
   "name": "d-atis-to-vatis",
   "private": true,
-  "version": "1.4.6",
+  "version": "2.2.0",
   "type": "module",
   "scripts": {
     "dev": "vite",
