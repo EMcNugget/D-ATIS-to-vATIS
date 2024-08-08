@@ -1,6 +1,6 @@
 [package]
 name = "D-ATIS-to-vATIS"
-version = "1.5.0"
+version = "1.5.1"
 description = "Converts real world FAA D-ATIS's to vATIS profiles"
 authors = ["you"]
 license = "MIT"
@@ -22,6 +22,7 @@ tauri = { version = "2.0.0-rc.0", features = [] }
 tauri-plugin-dialog = "2.0.0-rc.0"
 tauri-plugin-log = "2.0.0-rc.0"
 tauri-plugin-process = "2.0.0-rc"
+sysinfo = "0.31.2"
 log = "0.4"
 
 

@@ -4,6 +4,7 @@ use std::{
     fs::File,
     io::{BufReader, Write},
 };
+use sysinfo::System;
 use tauri::{path::BaseDirectory, AppHandle, Manager};
 
 pub fn read_json_file(file_path: &str) -> Result<Value, String> {
@@ -47,4 +48,10 @@ pub fn get_resource(app_handle: &AppHandle, file_name: &str) -> Result<Value, St
     });
 
     json
+}
+#[tauri::command]
+pub fn is_vatis_running() -> bool {
+    let s = System::new_all();
+    let is_running = s.processes().values().any(|p| p.name() == "vatis");
+    is_running
 }

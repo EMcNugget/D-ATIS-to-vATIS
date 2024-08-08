@@ -12,6 +12,7 @@ use log::info;
 use settings::{create_settings_file, read_settings, write_settings};
 use tauri::AppHandle;
 use tauri_plugin_log::{Target, TargetKind};
+use util::is_vatis_running;
 
 fn setup(app_handle: AppHandle) {
     info!(
@@ -39,7 +40,8 @@ fn main() {
         .invoke_handler(tauri::generate_handler![
             write_settings,
             read_settings,
-            write_atis
+            write_atis,
+            is_vatis_running
         ])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");

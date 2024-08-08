@@ -28,7 +28,10 @@ const validateICAO = (value: string) => {
     tooltip.value =
       "Please select the path to your vATIS installation in settings";
     return false;
-  } else return true;
+  } else {
+    tooltip.value = "";
+    return true;
+  }
 };
 
 const get_atis_code = (atis: vATIS[]): TATISCode[] => {
@@ -60,23 +63,33 @@ const get_atis_code = (atis: vATIS[]): TATISCode[] => {
 
 const fetch = async () => {
   try {
-    await fetch_atis(facility.value).then((atis) => {
-      store.set_atis(atis);
-      invoke("write_atis", {
-        facility: facility.value,
-        atis: atis,
-      }).then((k) => {
-        const v = k as TAlert;
-        const success = v.alert_type === "success";
-        v.message = v.message.concat(
-          success
-            ? ` | ${get_atis_code(atis)
-                .map((k) => `${k.type}: ${k.code}`)
-                .join(", ")}`
-            : ""
-        );
-        message.value = v;
-      });
+    invoke("is_vatis_running").then(async (k) => {
+      if (k) {
+        message.value = {
+          alert_type: "error",
+          message: "Close vATIS before fetching ATIS",
+        };
+        return;
+      } else {
+        await fetch_atis(facility.value).then((atis) => {
+          store.set_atis(atis);
+          invoke("write_atis", {
+            facility: facility.value,
+            atis: atis,
+          }).then((k) => {
+            const v = k as TAlert;
+            const success = v.alert_type === "success";
+            v.message = v.message.concat(
+              success
+                ? ` | ${get_atis_code(atis)
+                    .map((k) => `${k.type}: ${k.code}`)
+                    .join(", ")}`
+                : ""
+            );
+            message.value = v;
+          });
+        });
+      }
     });
   } catch (e) {
     message.value = e as TAlert;
