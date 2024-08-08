@@ -1,16 +1,9 @@
 <script setup lang="ts">
-import { RouterLink, RouterView } from "vue-router";
 import Layout from "./Layout.vue";
+import { RouterLink, RouterView } from "vue-router";
 import { TSettings } from "../lib/types";
 import { use_store } from "../lib/stores";
 import { invoke } from "@tauri-apps/api/core";
-import { check } from "@tauri-apps/plugin-updater";
-import { relaunch } from "@tauri-apps/plugin-process";
-const update = await check();
-if (update?.available) {
-  update.downloadAndInstall();
-  relaunch();
-}
 
 const store = use_store();
 
