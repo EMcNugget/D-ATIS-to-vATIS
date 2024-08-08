@@ -1,6 +1,6 @@
 [package]
 name = "D-ATIS-to-vATIS"
-version = "2.2.0"
+version = "1.5.0"
 description = "Converts real world FAA D-ATIS's to vATIS profiles"
 authors = ["you"]
 license = "MIT"

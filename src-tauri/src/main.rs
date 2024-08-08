@@ -2,10 +2,10 @@
 #![cfg_attr(not(debug_assertions), windows_subsystem = "windows")]
 
 mod app;
+mod contraction;
 mod settings;
 mod structs;
 mod util;
-mod contraction;
 
 use app::write_atis;
 use log::info;
@@ -25,6 +25,7 @@ fn setup(app_handle: AppHandle) {
 fn main() {
     tauri::Builder::default()
         .setup(|app: &mut tauri::App| Ok(setup(app.handle().clone())))
+        .plugin(tauri_plugin_updater::Builder::new().build())
         .plugin(tauri_plugin_dialog::init())
         .plugin(
             tauri_plugin_log::Builder::new()
