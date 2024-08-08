@@ -4,7 +4,7 @@ version = 3
 
 [[package]]
 name = "D-ATIS-to-vATIS"
-version = "1.5.0"
+version = "1.5.1"
 dependencies = [
  "log",
  "serde",
@@ -13,6 +13,7 @@ dependencies = [
  "tauri-build",
  "tauri-plugin-dialog",
  "tauri-plugin-log",
+ "tauri-plugin-process",
  "tauri-plugin-updater",
  "uuid",
 ]
@@ -4032,6 +4033,16 @@ dependencies = [
  "tauri-plugin",
  "thiserror",
  "time",
+]
+
+[[package]]
+name = "tauri-plugin-process"
+version = "2.0.0-rc.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "96d3663df0cd3e96feb37d46aad5d499d2edfcca5c62548ad34f1684e0019168"
+dependencies = [
+ "tauri",
+ "tauri-plugin",
 ]
 
 [[package]]
