@@ -29,6 +29,11 @@ const file_path = computed({
   set: (v) => store.set_file_path(v),
 });
 
+const custom_path = computed({
+  get: () => store.get_custom_path(),
+  set: (v) => store.set_custom_path(v),
+});
+
 const save_facility = computed({
   get: () => store.get_save_facility(),
   set: (v) => store.set_save_facility(v),
@@ -47,7 +52,7 @@ const message = computed({
 const showAlert = ref(false);
 const showDropdown = ref(false);
 
-const handleTheme = (v: string) => {
+const handle_theme = (v: string) => {
   showDropdown.value = false;
   switch (v) {
     case "system":
@@ -62,7 +67,7 @@ const handleTheme = (v: string) => {
   }
 };
 
-const toggleDropdown = () => {
+const toggle_dropdown = () => {
   showDropdown.value = !showDropdown.value;
 };
 
@@ -81,7 +86,7 @@ const theme = computed({
 watch(
   () => system_theme.value,
   () => {
-    handleTheme(theme.value);
+    handle_theme(theme.value);
   }
 );
 
@@ -99,7 +104,6 @@ const save_settings = () => {
     message.value = k as TAlert;
   });
 };
-
 </script>
 
 <template>
@@ -114,7 +118,19 @@ const save_settings = () => {
         </button>
       </form>
       <h3 class="text-2xl mb-6 font-bold">Settings</h3>
-      <div class="flex flex-row">
+      <input
+        type="text"
+        v-model="profile"
+        placeholder="Profile..."
+        class="input input-bordered w-full mr-4 mb-4"
+      />
+      <label class="label cursor-pointer justify-start">
+        <span class="label-text mr-6 text-base font-semibold"
+          >Custom vATIS Installation</span
+        >
+        <input type="checkbox" class="toggle" v-model="custom_path" />
+      </label>
+      <div class="flex flex-row" v-if="custom_path">
         <input
           type="text"
           v-model="file_path"
@@ -124,16 +140,10 @@ const save_settings = () => {
         />
         <button class="btn" @click="open_path()">Browse</button>
       </div>
-      <input
-        type="text"
-        v-model="profile"
-        placeholder="Profile..."
-        class="input input-bordered w-full mr-4 mb-4"
-      />
       <label class="label cursor-pointer justify-start">
         <span class="label-text mr-6 text-base font-semibold">Theme</span>
         <div class="dropdown">
-          <label tabindex="0" class="btn m-1" @click="toggleDropdown">
+          <label tabindex="0" class="btn m-1" @click="toggle_dropdown">
             {{ theme.charAt(0).toUpperCase() + theme.slice(1) }}
             <img
               v-if="showDropdown"
@@ -154,9 +164,9 @@ const save_settings = () => {
             tabindex="0"
             class="dropdown-content menu p-2 shadow bg-base-200 rounded-box w-52"
           >
-            <li><a @click="handleTheme('system')">System</a></li>
-            <li><a @click="handleTheme('light')">Light</a></li>
-            <li><a @click="handleTheme('dark')">Dark</a></li>
+            <li><a @click="handle_theme('system')">System</a></li>
+            <li><a @click="handle_theme('light')">Light</a></li>
+            <li><a @click="handle_theme('dark')">Dark</a></li>
           </ul>
         </div>
       </label>

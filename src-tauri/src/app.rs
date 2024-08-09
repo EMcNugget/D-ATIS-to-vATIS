@@ -4,7 +4,7 @@ use crate::structs::{Alert, FindComposite};
 use crate::util::{read_json_file, write_json_file};
 use log::{error, info};
 use serde_json::{self, Value};
-use tauri::AppHandle;
+use tauri::{AppHandle, Manager};
 
 // Nested hell, needs a refactor
 fn find_composite(
@@ -136,19 +136,31 @@ pub fn write_atis(facility: String, atis: Value, app_handle: AppHandle) -> Resul
         message: String::new(),
     };
 
+    let file_path: String;
+
+    if !settings.custom_path {
+        let app_data_path = app_handle.path().app_local_data_dir().unwrap();
+        file_path = format!(
+            "{}\\vATIS-4.0\\AppConfig.json",
+            app_data_path.to_str().unwrap()
+        );
+    } else {
+        file_path = format!("{}\\AppConfig.json", &settings.file_path);
+    }
+
     for atis_entry in atis_array {
         let result = write_profile(
             &app_handle,
             &atis_entry["atis"],
             &settings.profile,
             &facility,
-            &format!("{}\\AppConfig.json", &settings.file_path),
+            &file_path,
             Some(atis_entry["atis_type"].as_str().unwrap_or("unknown")),
         );
 
         match result {
             Ok(_) => {
-                let data = &format!("Successfully wrote ATIS for {}\n", &facility);
+                let data = &format!("Successfully wrote ATIS for {}", &facility);
                 info!("{}", data);
                 if message.message == *data {
                 } else {
@@ -156,7 +168,7 @@ pub fn write_atis(facility: String, atis: Value, app_handle: AppHandle) -> Resul
                 }
             }
             Err(e) => {
-                let data = &format!("Error writing ATIS: {}\n", e);
+                let data = &format!("Error writing ATIS: {}", e);
                 error!("{}", data);
                 if message.message == *data {
                 } else {

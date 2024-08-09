@@ -5,6 +5,7 @@ use uuid::Uuid;
 pub struct Settings {
     pub facility: String,
     pub file_path: String,
+    pub custom_path: bool,
     pub save_facility: bool,
     pub profile: String,
     pub theme: String,

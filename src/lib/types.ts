@@ -32,6 +32,7 @@ type vATIS = {
 type TSettings = {
   facility: string;
   file_path: string;
+  custom_path: boolean;
   save_facility: boolean;
   profile: string;
   theme: TTheme;
