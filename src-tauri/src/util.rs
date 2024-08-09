@@ -52,6 +52,6 @@ pub fn get_resource(app_handle: &AppHandle, file_name: &str) -> Result<Value, St
 #[tauri::command]
 pub fn is_vatis_running() -> bool {
     let s = System::new_all();
-    let is_running = s.processes().values().any(|p| p.name() == "vatis");
+    let is_running = s.processes().values().any(|p| p.name() == "vATIS.exe");
     is_running
 }
