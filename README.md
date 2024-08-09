@@ -25,7 +25,7 @@
 
 To create a new contraction you have to edit the custom_contractions.json file.
 
-1. Go your install folder.
+1. Go tp your install folder.
 2. go to the `assets` folder.
 3. Open ```custom_contractions.json```
 4. To add a contraction add the abbreviated version as the key and the way it should be said as the value.
