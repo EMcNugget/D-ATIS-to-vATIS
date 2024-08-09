@@ -20,7 +20,7 @@ fn response(res: &str, success: bool) -> Result<Response, String> {
     }
 }
 
-pub fn create_settings_file(app_handle: AppHandle) -> Result<Response, String> {
+pub fn create_settings_file(app_handle: &AppHandle) -> Result<Response, String> {
     let app_data_path = app_handle.path().app_data_dir().unwrap();
     let file_path = app_data_path.join("settings.json");
 
@@ -97,4 +97,45 @@ pub fn read_settings(app_handle: AppHandle) -> Result<Settings, String> {
             Err(err)
         }
     }
+}
+
+pub fn check_settings(app_handle: &AppHandle) -> Result<(), String> {
+    let app_data_path = app_handle.path().app_data_dir().unwrap();
+    let file_path = app_data_path.join("settings.json");
+
+    let mut json = read_json_file(file_path.to_str().unwrap()).unwrap();
+
+    let settings = Settings {
+        facility: "".to_string(),
+        file_path: "".to_string(),
+        custom_path: false,
+        save_facility: false,
+        profile: "".to_string(),
+        theme: "system".to_string(),
+    };
+
+    let keys = vec![
+        "facility",
+        "file_path",
+        "custom_path",
+        "save_facility",
+        "profile",
+        "theme",
+    ];
+
+    for key in keys {
+        if json[key].is_null() {
+            json[key] = serde_json::to_value(&settings).unwrap()[key].clone();
+        } else {
+            continue;
+        }
+    }
+
+    write_json_file(
+        file_path.to_str().unwrap(),
+        serde_json::to_string_pretty(&json).unwrap().as_str(),
+    )
+    .unwrap();
+
+    Ok(())
 }

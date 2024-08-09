@@ -9,7 +9,7 @@ mod util;
 
 use app::write_atis;
 use log::info;
-use settings::{create_settings_file, read_settings, write_settings};
+use settings::{check_settings, create_settings_file, read_settings, write_settings};
 use tauri::AppHandle;
 use tauri_plugin_log::{Target, TargetKind};
 use util::is_vatis_running;
@@ -20,7 +20,8 @@ fn setup(app_handle: AppHandle) {
         app_handle.config().version.as_ref().unwrap()
     );
 
-    create_settings_file(app_handle).unwrap();
+    create_settings_file(&app_handle).unwrap();
+    check_settings(&app_handle).unwrap();
 }
 
 fn main() {
