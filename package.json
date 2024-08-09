@@ -17,7 +17,7 @@
     "@tauri-apps/plugin-updater": "2.0.0-rc.0",
     "pinia": "^2.2.1",
     "uuid": "^10.0.0",
-    "vue": "^3.4.36",
+    "vue": "^3.4.37",
     "vue-router": "^4.4.3"
   },
   "devDependencies": {
@@ -28,9 +28,9 @@
     "autoprefixer": "^10.4.20",
     "daisyui": "^4.12.10",
     "postcss": "^8.4.41",
-    "tailwindcss": "^3.4.7",
+    "tailwindcss": "^3.4.9",
     "typescript": "^5.5.4",
-    "vite": "^5.3.5",
+    "vite": "^5.4.0",
     "vue-tsc": "^2.0.29"
   }
 }
