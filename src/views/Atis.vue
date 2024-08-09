@@ -24,7 +24,7 @@ const validateICAO = (value: string) => {
   if (!facilities.includes(value)) {
     tooltip.value = "Invalid facility";
     return false;
-  } else if (!store.get_file_path()) {
+  } else if (!store.get_file_path() && store.get_custom_path()) {
     tooltip.value =
       "Please select the path to your vATIS installation in settings";
     return false;

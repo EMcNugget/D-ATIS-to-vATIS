@@ -1,5 +1,9 @@
 # Takes real-world D-ATIS's and creates a custom vATIS preset.
 
+## Features
+- Works with any facility that has a D-ATIS.
+- Adds appropiate contractions so the voice atis reads it correctly.
+
 ## Installation
 
 1. Download the latest [version](https://github.com/EMcNugget/D-ATIS-to-vATIS/releases).
