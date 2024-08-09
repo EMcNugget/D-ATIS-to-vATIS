@@ -23,10 +23,13 @@ const updateAndRelaunch = async () => {
 };
 
 onMounted(async () => {
-  const update = await check();
-  if (update?.available) {
-    version.value = update.version;
-    showUpdate.value = true;
+  if (!store.get_check_update()) {
+    store.set_check_update(true);
+    const update = await check();
+    if (update?.available) {
+      version.value = update.version;
+      showUpdate.value = true;
+    }
   }
 });
 

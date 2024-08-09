@@ -118,7 +118,7 @@ pub fn write_profile(
         .to_vec();
 
     atis_position["contractions"] =
-        write_contractions(app_handle, &mut existing, atis_preset.clone())
+        write_contractions(app_handle, &mut existing, atis_preset.clone(), facility)
             .unwrap()
             .into();
 

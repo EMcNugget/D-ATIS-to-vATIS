@@ -8,6 +8,7 @@ pub fn write_contractions(
     app_handle: &AppHandle,
     existing: &mut Vec<Value>,
     atis: Value,
+    airport_code: &str,
 ) -> Result<Vec<Value>, String> {
     let json = get_resource(app_handle, "custom_contractions.json");
 
@@ -47,10 +48,11 @@ pub fn write_contractions(
                 .map(|c| serde_json::to_value(c).expect("Failed to serialize custom contractions")),
         );
 
-        info!("Custom contractions updated");
+        info!("Custom contractions updated for {}", airport_code);
         Ok(existing.to_vec())
     } else {
-        error!("Failed to parse custom contractions");
-        Err("Failed to parse custom contractions".to_string())
+        let e = format!("Failed to parse custom contractions for {}", airport_code);
+        error!("{}", e);
+        Err(e)
     }
 }

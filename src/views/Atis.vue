@@ -72,7 +72,6 @@ const fetch = async () => {
         return;
       } else {
         await fetch_atis(facility.value).then((atis) => {
-          store.set_atis(atis);
           invoke("write_atis", {
             facility: facility.value,
             atis: atis,
