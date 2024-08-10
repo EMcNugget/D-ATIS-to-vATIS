@@ -1,7 +1,7 @@
-const { execSync } = require("child_process");
+const exec = require("@actions/exec");
 
-execSync("pnpm changeset version");
+exec.exec("pnpm changeset version");
 
 const packageJson = require("../package.json");
 
-execSync(`pnpm tauri-version ${packageJson.version} --no-git`);
+exec.exec(`pnpm tauri-version ${packageJson.version} --no-git`);
