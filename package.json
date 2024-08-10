@@ -7,6 +7,7 @@
     "dev": "vite",
     "build": "vue-tsc --noEmit && vite build",
     "preview": "vite preview",
+    "release": "node ./scripts/release.cjs",
     "tauri": "tauri"
   },
   "dependencies": {
@@ -21,14 +22,16 @@
     "vue-router": "^4.4.3"
   },
   "devDependencies": {
+    "@changesets/cli": "^2.27.7",
     "@tauri-apps/cli": "2.0.0-beta.22",
-    "@types/node": "^22.1.0",
+    "@types/node": "^22.2.0",
     "@types/uuid": "^10.0.0",
     "@vitejs/plugin-vue": "^5.1.2",
     "autoprefixer": "^10.4.20",
     "daisyui": "^4.12.10",
     "postcss": "^8.4.41",
     "tailwindcss": "^3.4.9",
+    "tauri-version": "^0.4.1",
     "typescript": "^5.5.4",
     "vite": "^5.4.0",
     "vue-tsc": "^2.0.29"
