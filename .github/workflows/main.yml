@@ -12,11 +12,16 @@ jobs:
     if: ${{ github.actor != 'github-actions[bot]' }} || ${{ github.event_name != 'pull_request' }}
     runs-on: ubuntu-latest
 
-    strategy:
-      matrix:
-        node-version: [22.x]
-
     steps:
+      - uses: actions/checkout@v3
+      - uses: pnpm/action-setup@v2
+        with:
+          version: latest
+      - uses: actions/setup-node@v3
+        with:
+          node-version: 22.x
+          cache: "pnpm"
+          
       - name: Check commit message
         id: check_commit
         run: |
