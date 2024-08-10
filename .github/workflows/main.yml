@@ -26,6 +26,9 @@ jobs:
           node-version: 22.x
           cache: "pnpm"
 
+      - name: Install Dependencies
+        run: pnpm install
+
       - name: Check commit message
         id: check_commit
         run: |
