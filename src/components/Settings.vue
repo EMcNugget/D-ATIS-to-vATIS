@@ -54,6 +54,11 @@ const check_update = computed({
   set: (v) => store.set_check_update(v),
 });
 
+const check_update_freq = computed({
+  get: () => store.get_check_update_freq(),
+  set: (v) => store.set_check_update_freq(v),
+});
+
 const update_time = computed({
   get: () => store.get_update_time(),
   set: (v) => store.set_update_time(v),
@@ -207,39 +212,51 @@ const save_settings = () => {
         >
         <input type="checkbox" class="checkbox" v-model="check_update" />
       </label>
-      <label class="label cursor-pointer justify-start" v-if="check_update">
-        <span class="label-text mr-6 text-base font-semibold"
-          >Update Interval</span
-        >
-        <div class="dropdown">
-          <label tabindex="1" class="btn m-1" @click="toggle_dropdown_interval">
-            {{ update_time }}
-            <img
-              v-if="showDropdownInterval"
-              src="/dropdown_up.svg"
-              alt="Dropdown"
-              class="h-auto w-auto max-h-6 max-w-6"
-            />
-            <img
-              v-if="!showDropdownInterval"
-              src="/dropdown_down.svg"
-              alt="Dropdown"
-              class="h-auto w-auto max-h-6 max-w-6"
-            />
-          </label>
-
-          <ul
-            v-if="showDropdownInterval"
-            tabindex="1"
-            class="dropdown-content menu p-2 shadow bg-base-200 rounded-box w-52"
+      <div v-if="check_update">
+        <label class="label cursor-pointer justify-start">
+          <span class="label-text mr-6 text-base font-semibold"
+            >Automatically Change Interval based on Zulu Time</span
           >
-            <li><a @click="handle_interval(15)">15</a></li>
-            <li><a @click="handle_interval(30)">30</a></li>
-            <li><a @click="handle_interval(45)">45</a></li>
-            <li><a @click="handle_interval(60)">60</a></li>
-          </ul>
-        </div>
-      </label>
+          <input type="checkbox" class="checkbox" v-model="check_update_freq" />
+        </label>
+        <label class="label cursor-pointer justify-start">
+          <span class="label-text mr-6 text-base font-semibold"
+            >Update Interval</span
+          >
+          <div class="dropdown">
+            <label
+              tabindex="1"
+              class="btn m-1"
+              @click="toggle_dropdown_interval"
+            >
+              {{ update_time }}
+              <img
+                v-if="showDropdownInterval"
+                src="/dropdown_up.svg"
+                alt="Dropdown"
+                class="h-auto w-auto max-h-6 max-w-6"
+              />
+              <img
+                v-if="!showDropdownInterval"
+                src="/dropdown_down.svg"
+                alt="Dropdown"
+                class="h-auto w-auto max-h-6 max-w-6"
+              />
+            </label>
+
+            <ul
+              v-if="showDropdownInterval"
+              tabindex="1"
+              class="dropdown-content menu p-2 shadow bg-base-200 rounded-box w-52"
+            >
+              <li><a @click="handle_interval(15)">15</a></li>
+              <li><a @click="handle_interval(30)">30</a></li>
+              <li><a @click="handle_interval(45)">45</a></li>
+              <li><a @click="handle_interval(60)">60</a></li>
+            </ul>
+          </div>
+        </label>
+      </div>
       <label class="label cursor-pointer justify-start">
         <span class="label-text mr-6 text-base font-semibold"
           >Open vATIS on Fetch</span

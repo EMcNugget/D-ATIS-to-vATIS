@@ -1,8 +1,11 @@
 # Takes real-world D-ATIS's and creates a custom vATIS preset.
 
 ## Features
+
 - Works with any facility that has a D-ATIS.
 - Adds appropiate contractions so the voice atis reads it correctly.
+- Listens for updates to the D-ATIS at an interval of your choosing, notifying you when it changes.
+  - The interval can be set to a minimum of 15 minutes and a maximum of 60 minutes. By default, from the H+53 -> H+03 it will check it every 2 minutes as this is when the ATIS is most likely to change. This can be disabled.
 
 ## Installation
 
@@ -31,6 +34,8 @@ To create a new contraction you have to edit the custom_contractions.json file.
 
 1. Go tp your install folder.
 2. go to the `assets` folder.
-3. Open ```custom_contractions.json```
+3. Open `custom_contractions.json`
 4. To add a contraction add the abbreviated version as the key and the way it should be said as the value.
 5. Save and relaunch the program.
+
+## [Roadmap](https://github.com/users/EMcNugget/projects/12)

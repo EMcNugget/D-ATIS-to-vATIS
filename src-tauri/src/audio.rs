@@ -13,5 +13,5 @@ pub fn play_audio(app_handle: &AppHandle) -> () {
 
     std::thread::sleep(std::time::Duration::from_secs(2));
 
-    info!("Audio played");
+    info!("ATIS Update audio played");
 }

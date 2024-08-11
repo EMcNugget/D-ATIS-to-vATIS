@@ -19,12 +19,11 @@ const message = computed({
   set: (v) => store.set_message(v),
 });
 
-const update_time = computed({
-  get: () => store.get_update_time(),
-  set: (v) => store.set_update_time(v),
-});
+const update_time = computed(() => store.get_update_time());
 
 const check_update = computed(() => store.get_check_update());
+
+const check_update_freq = computed(() => store.get_check_update_freq());
 
 const codes = computed(() => store.get_codes());
 
@@ -123,6 +122,7 @@ watch(
         facility.value,
         codes.value,
         update_time.value,
+        check_update_freq.value,
         alert_new_codes
       );
     }

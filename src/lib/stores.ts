@@ -16,6 +16,7 @@ export const use_store = defineStore("store", {
       save_facility: false,
       open_vatis_on_fetch: false,
       check_updates: false,
+      check_updates_freq: false,
       update_time: 60,
       profile: "",
       theme: "system",
@@ -53,6 +54,9 @@ export const use_store = defineStore("store", {
       this.settings.custom_path = settings.custom_path;
       this.settings.save_facility = settings.save_facility;
       this.settings.open_vatis_on_fetch = settings.open_vatis_on_fetch;
+      this.settings.check_updates = settings.check_updates;
+      this.settings.check_updates_freq = settings.check_updates_freq;
+      this.settings.update_time = settings.update_time;
       this.settings.profile = settings.profile;
       this.settings.theme = settings.theme;
     },
@@ -61,6 +65,9 @@ export const use_store = defineStore("store", {
     },
     set_check_update(status: boolean) {
       this.settings.check_updates = status;
+    },
+    set_check_update_freq(freq: boolean) {
+      this.settings.check_updates_freq = freq;
     },
     set_codes(codes: string[]) {
       this.codes = codes;
@@ -99,6 +106,7 @@ export const use_store = defineStore("store", {
         save_facility: this.settings.save_facility,
         open_vatis_on_fetch: this.settings.open_vatis_on_fetch,
         check_updates: this.settings.check_updates,
+        check_updates_freq: this.settings.check_updates_freq,
         update_time: this.settings.update_time,
         profile: this.settings.profile,
         theme: this.settings.theme,
@@ -109,6 +117,9 @@ export const use_store = defineStore("store", {
     },
     get_check_update() {
       return this.settings.check_updates;
+    },
+    get_check_update_freq() {
+      return this.settings.check_updates_freq;
     },
     get_codes() {
       return this.codes;

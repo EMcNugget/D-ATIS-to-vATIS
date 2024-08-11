@@ -7,11 +7,13 @@ import { use_store } from "../lib/stores";
 import { router } from "../lib/router";
 import { check } from "@tauri-apps/plugin-updater";
 import { relaunch } from "@tauri-apps/plugin-process";
+import { getVersion } from "@tauri-apps/api/app";
 
 const store = use_store();
 
 const version = ref<string>("Unknown");
 const showUpdate = ref(false);
+const info = computed(() => `v${version.value} Copyright © 2024 Ethan Seys`);
 
 const updateAndRelaunch = async () => {
   const update = await check();
@@ -23,6 +25,7 @@ const updateAndRelaunch = async () => {
 };
 
 onMounted(async () => {
+  version.value = await getVersion();
   if (!store.get_check_update()) {
     store.set_check_update(true);
     const update = await check();
@@ -78,5 +81,15 @@ watch(
     >
       <img src="/back.svg" alt="Back" class="h-auto w-auto max-h-6 max-w-6" />
     </button>
+    <div
+      class="h-auto w-auto max-h-6 max-w-6 fixed bottom-0 right-0 m-4 flex items-center justify-center tooltip tooltip-left"
+      :data-tip="info"
+    >
+      <img
+        src="/info.svg"
+        alt="Info"
+        v-if="router.currentRoute.value.path === '/'"
+      />
+    </div>
   </div>
 </template>

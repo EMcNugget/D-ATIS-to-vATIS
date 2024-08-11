@@ -36,6 +36,7 @@ type TSettings = {
   save_facility: boolean;
   open_vatis_on_fetch: boolean;
   check_updates: boolean;
+  check_updates_freq: boolean;
   update_time: number;
   profile: string;
   theme: TTheme;
