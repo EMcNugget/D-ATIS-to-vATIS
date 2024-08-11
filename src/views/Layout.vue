@@ -26,8 +26,8 @@ const updateAndRelaunch = async () => {
 
 onMounted(async () => {
   version.value = await getVersion();
-  if (!store.get_check_update()) {
-    store.set_check_update(true);
+  if (!store.get_app_update()) {
+    store.set_app_update(true);
     const update = await check();
     if (update?.available) {
       version.value = update.version;
