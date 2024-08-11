@@ -71,18 +71,20 @@ pub fn is_vatis_running() -> bool {
 }
 
 #[tauri::command]
-pub fn open_vatis(app_handle: AppHandle) -> Result<(), String> {
+pub fn open_vatis(app_handle: AppHandle, custom_path: Option<&str>) -> Result<(), String> {
     let s = System::new_all();
     let is_running = s.processes().values().any(|p| p.name() == "vATIS.exe");
 
-    let app_data_path = app_handle.path().app_local_data_dir().unwrap();
+    let mut app_data_path = app_handle.path().app_local_data_dir().unwrap();
+    app_data_path.pop();
     let file_path = format!(
         "{}\\vATIS-4.0\\Application\\vATIS.exe",
         app_data_path.to_str().unwrap()
     );
 
     if !is_running {
-        std::process::Command::new(file_path).spawn().map_err(|e| {
+        let path = custom_path.unwrap_or(&file_path);
+        std::process::Command::new(path).spawn().map_err(|e| {
             error!("Failed to open vATIS: {}", e);
             e.to_string()
         })?;

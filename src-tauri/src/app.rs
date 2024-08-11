@@ -140,7 +140,8 @@ pub fn write_atis(facility: String, atis: Value, app_handle: AppHandle) -> Resul
     let file_path: String;
 
     if !settings.custom_path {
-        let app_data_path = app_handle.path().app_local_data_dir().unwrap();
+        let mut app_data_path = app_handle.path().app_local_data_dir().unwrap();
+        app_data_path.pop();
         file_path = format!(
             "{}\\vATIS-4.0\\AppConfig.json",
             app_data_path.to_str().unwrap()

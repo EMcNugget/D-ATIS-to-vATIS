@@ -25,6 +25,8 @@ const check_update = computed(() => store.get_check_update());
 
 const check_update_freq = computed(() => store.get_check_update_freq());
 
+const open_vatis_on_fetch = computed(() => store.get_open_vatis_on_fetch());
+
 const codes = computed(() => store.get_codes());
 
 const tooltip = ref("");
@@ -96,7 +98,13 @@ const fetch = async () => {
                 : ""
             );
             message.value = v;
-            invoke("open_vatis");
+            if (open_vatis_on_fetch.value && success) {
+              invoke("open_vatis", {
+                custom_path: store.get_custom_path()
+                  ? store.get_file_path()
+                  : null,
+              });
+            }
           });
         });
       }
@@ -109,7 +117,7 @@ const fetch = async () => {
 const alert_new_codes = (codes: string[]) => {
   message.value = {
     alert_type: "info",
-    message: `${facility} information: ${codes.join(", ")} is current`,
+    message: `${facility.value} information: ${codes.join(", ")} is current`,
   };
   emit("new-codes");
 };

@@ -171,36 +171,6 @@ const save_settings = () => {
         <button class="btn" @click="open_path()">Browse</button>
       </div>
       <label class="label cursor-pointer justify-start">
-        <span class="label-text mr-6 text-base font-semibold">Theme</span>
-        <div class="dropdown">
-          <label tabindex="0" class="btn m-1" @click="toggle_dropdown">
-            {{ theme.charAt(0).toUpperCase() + theme.slice(1) }}
-            <img
-              v-if="showDropdown"
-              src="/dropdown_up.svg"
-              alt="Dropdown"
-              class="h-auto w-auto max-h-6 max-w-6"
-            />
-            <img
-              v-if="!showDropdown"
-              src="/dropdown_down.svg"
-              alt="Dropdown"
-              class="h-auto w-auto max-h-6 max-w-6"
-            />
-          </label>
-
-          <ul
-            v-if="showDropdown"
-            tabindex="0"
-            class="dropdown-content menu p-2 shadow bg-base-200 rounded-box w-52"
-          >
-            <li><a @click="handle_theme('system')">System</a></li>
-            <li><a @click="handle_theme('light')">Light</a></li>
-            <li><a @click="handle_theme('dark')">Dark</a></li>
-          </ul>
-        </div>
-      </label>
-      <label class="label cursor-pointer justify-start">
         <span class="label-text mr-6 text-base font-semibold"
           >Save Facility</span
         >
@@ -229,7 +199,7 @@ const save_settings = () => {
               class="btn m-1"
               @click="toggle_dropdown_interval"
             >
-              {{ update_time }}
+              {{ update_time }}m
               <img
                 v-if="showDropdownInterval"
                 src="/dropdown_up.svg"
@@ -247,12 +217,12 @@ const save_settings = () => {
             <ul
               v-if="showDropdownInterval"
               tabindex="1"
-              class="dropdown-content menu p-2 shadow bg-base-200 rounded-box w-52"
+              class="dropdown-content menu p-2 shadow bg-base-200 rounded-box w-52 z-50"
             >
-              <li><a @click="handle_interval(15)">15</a></li>
-              <li><a @click="handle_interval(30)">30</a></li>
-              <li><a @click="handle_interval(45)">45</a></li>
-              <li><a @click="handle_interval(60)">60</a></li>
+              <li><a @click="handle_interval(15)">15m</a></li>
+              <li><a @click="handle_interval(30)">30m</a></li>
+              <li><a @click="handle_interval(45)">45m</a></li>
+              <li><a @click="handle_interval(60)">60m</a></li>
             </ul>
           </div>
         </label>
@@ -262,6 +232,36 @@ const save_settings = () => {
           >Open vATIS on Fetch</span
         >
         <input type="checkbox" class="checkbox" v-model="open_vatis_on_fetch" />
+      </label>
+      <label class="label cursor-pointer justify-start">
+        <span class="label-text mr-6 text-base font-semibold">Theme</span>
+        <div class="dropdown">
+          <label tabindex="0" class="btn m-1" @click="toggle_dropdown">
+            {{ theme.charAt(0).toUpperCase() + theme.slice(1) }}
+            <img
+              v-if="showDropdown"
+              src="/dropdown_up.svg"
+              alt="Dropdown"
+              class="h-auto w-auto max-h-6 max-w-6"
+            />
+            <img
+              v-if="!showDropdown"
+              src="/dropdown_down.svg"
+              alt="Dropdown"
+              class="h-auto w-auto max-h-6 max-w-6"
+            />
+          </label>
+
+          <ul
+            v-if="showDropdown"
+            tabindex="0"
+            class="dropdown-content menu p-2 shadow bg-base-200 rounded-box w-52"
+          >
+            <li><a @click="handle_theme('system')">System</a></li>
+            <li><a @click="handle_theme('light')">Light</a></li>
+            <li><a @click="handle_theme('dark')">Dark</a></li>
+          </ul>
+        </div>
       </label>
       <button
         class="btn btn-active btn-primary mt-8 w-full"
