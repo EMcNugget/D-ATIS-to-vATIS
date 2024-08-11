@@ -5,6 +5,7 @@ type TStore = {
   settings: TSettings;
   message: TAlert;
   codes: string[];
+  app_update: boolean;
 };
 
 export const use_store = defineStore("store", {
@@ -26,6 +27,7 @@ export const use_store = defineStore("store", {
       alert_type: "success",
     },
     codes: [],
+    app_update: false,
   }),
   actions: {
     // Setters
@@ -77,6 +79,9 @@ export const use_store = defineStore("store", {
     },
     set_update_time(time: number) {
       this.settings.update_time = time;
+    },
+    set_app_update(status: boolean) {
+      this.app_update = status;
     },
     // Getters
 
@@ -130,5 +135,8 @@ export const use_store = defineStore("store", {
     get_update_time() {
       return this.settings.update_time;
     },
+    get_app_update() {
+      return this.app_update;
+    }
   },
 });
