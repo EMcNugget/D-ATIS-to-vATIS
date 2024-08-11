@@ -1,5 +1,4 @@
-use crate::structs::Contraction;
-use crate::util::get_resource;
+use crate::{structs::Contraction, util::get_resource_json};
 use log::{error, info};
 use serde_json::Value;
 use tauri::AppHandle;
@@ -10,7 +9,7 @@ pub fn write_contractions(
     atis: Value,
     airport_code: &str,
 ) -> Result<Vec<Value>, String> {
-    let json = get_resource(app_handle, "custom_contractions.json");
+    let json = get_resource_json(app_handle, "custom_contractions.json");
 
     if let Ok(Value::Object(map)) = json {
         let new_contractions: Vec<Contraction> = map

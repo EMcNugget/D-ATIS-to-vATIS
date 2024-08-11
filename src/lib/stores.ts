@@ -4,7 +4,7 @@ import type { TSettings, TTheme, TAlert } from "./types";
 type TStore = {
   settings: TSettings;
   message: TAlert;
-  checkUpdate: boolean;
+  codes: string[];
 };
 
 export const use_store = defineStore("store", {
@@ -14,6 +14,9 @@ export const use_store = defineStore("store", {
       file_path: "",
       custom_path: false,
       save_facility: false,
+      open_vatis_on_fetch: false,
+      check_updates: false,
+      update_time: 60,
       profile: "",
       theme: "system",
     },
@@ -21,7 +24,7 @@ export const use_store = defineStore("store", {
       message: "",
       alert_type: "success",
     },
-    checkUpdate: false,
+    codes: [],
   }),
   actions: {
     // Setters
@@ -49,6 +52,7 @@ export const use_store = defineStore("store", {
       this.settings.file_path = settings.file_path;
       this.settings.custom_path = settings.custom_path;
       this.settings.save_facility = settings.save_facility;
+      this.settings.open_vatis_on_fetch = settings.open_vatis_on_fetch;
       this.settings.profile = settings.profile;
       this.settings.theme = settings.theme;
     },
@@ -56,7 +60,16 @@ export const use_store = defineStore("store", {
       this.message = message;
     },
     set_check_update(status: boolean) {
-      this.checkUpdate = status;
+      this.settings.check_updates = status;
+    },
+    set_codes(codes: string[]) {
+      this.codes = codes;
+    },
+    set_open_vatis_on_fetch(open: boolean) {
+      this.settings.open_vatis_on_fetch = open;
+    },
+    set_update_time(time: number) {
+      this.settings.update_time = time;
     },
     // Getters
 
@@ -84,6 +97,9 @@ export const use_store = defineStore("store", {
         file_path: this.settings.file_path,
         custom_path: this.settings.custom_path,
         save_facility: this.settings.save_facility,
+        open_vatis_on_fetch: this.settings.open_vatis_on_fetch,
+        check_updates: this.settings.check_updates,
+        update_time: this.settings.update_time,
         profile: this.settings.profile,
         theme: this.settings.theme,
       };
@@ -92,7 +108,16 @@ export const use_store = defineStore("store", {
       return this.message;
     },
     get_check_update() {
-      return this.checkUpdate;
+      return this.settings.check_updates;
+    },
+    get_codes() {
+      return this.codes;
+    },
+    get_open_vatis_on_fetch() {
+      return this.settings.open_vatis_on_fetch;
+    },
+    get_update_time() {
+      return this.settings.update_time;
     },
   },
 });

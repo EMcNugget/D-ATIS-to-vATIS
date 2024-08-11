@@ -37,7 +37,7 @@ pub fn write_json_file(filename: &str, data: &str) -> Result<(), String> {
     Ok(())
 }
 
-pub fn get_resource(app_handle: &AppHandle, file_name: &str) -> Result<Value, String> {
+pub fn get_resource_json(app_handle: &AppHandle, file_name: &str) -> Result<Value, String> {
     let resource = app_handle
         .path()
         .resolve(format!("assets/{}", file_name), BaseDirectory::Resource);
@@ -49,9 +49,44 @@ pub fn get_resource(app_handle: &AppHandle, file_name: &str) -> Result<Value, St
 
     json
 }
+
+pub fn get_resource(app_handle: &AppHandle, file_name: &str) -> Result<File, String> {
+    let resource = app_handle
+        .path()
+        .resolve(format!("assets/{}", file_name), BaseDirectory::Resource);
+
+    let file = File::open(&resource.unwrap()).map_err(|e| {
+        error!("Failed to open file {}: {}", file_name, e);
+        e.to_string()
+    });
+
+    file
+}
+
 #[tauri::command]
 pub fn is_vatis_running() -> bool {
     let s = System::new_all();
     let is_running = s.processes().values().any(|p| p.name() == "vATIS.exe");
     is_running
+}
+
+#[tauri::command]
+pub fn open_vatis(app_handle: AppHandle) -> Result<(), String> {
+    let s = System::new_all();
+    let is_running = s.processes().values().any(|p| p.name() == "vATIS.exe");
+
+    let app_data_path = app_handle.path().app_local_data_dir().unwrap();
+    let file_path = format!(
+        "{}\\vATIS-4.0\\Application\\vATIS.exe",
+        app_data_path.to_str().unwrap()
+    );
+
+    if !is_running {
+        std::process::Command::new(file_path).spawn().map_err(|e| {
+            error!("Failed to open vATIS: {}", e);
+            e.to_string()
+        })?;
+    }
+
+    Ok(())
 }

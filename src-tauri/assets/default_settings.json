@@ -1,0 +1,11 @@
+{
+  "facility": "",
+  "file_path": "",
+  "custom_path": false,
+  "save_facility": false,
+  "open_vatis_on_fetch": false,
+  "check_updates": false,
+  "update_time": 60,
+  "profile": "",
+  "theme": "system"
+}

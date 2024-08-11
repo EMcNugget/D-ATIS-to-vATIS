@@ -2,31 +2,41 @@
 #![cfg_attr(not(debug_assertions), windows_subsystem = "windows")]
 
 mod app;
+mod audio;
 mod contraction;
 mod settings;
 mod structs;
 mod util;
 
 use app::write_atis;
+use audio::play_audio;
 use log::info;
-use settings::{check_settings, create_settings_file, read_settings, write_settings};
-use tauri::AppHandle;
+use settings::{check_settings_file, read_settings, write_settings};
+use tauri::{AppHandle, Listener};
 use tauri_plugin_log::{Target, TargetKind};
-use util::is_vatis_running;
+use util::{is_vatis_running, open_vatis};
 
-fn setup(app_handle: AppHandle) {
+fn setup(app_handle: &AppHandle) {
     info!(
         "D-ATIS to vATIS started version {}",
         app_handle.config().version.as_ref().unwrap()
     );
 
-    create_settings_file(&app_handle).unwrap();
-    check_settings(&app_handle).unwrap();
+    check_settings_file(&app_handle).unwrap();
 }
 
 fn main() {
     tauri::Builder::default()
-        .setup(|app: &mut tauri::App| Ok(setup(app.handle().clone())))
+        .setup(|app: &mut tauri::App| {
+            let handle = app.handle().clone();
+            setup(&handle);
+
+            app.listen("new-codes", move |_event| {
+                play_audio(&handle);
+            });
+
+            Ok(())
+        })
         .plugin(tauri_plugin_updater::Builder::new().build())
         .plugin(tauri_plugin_dialog::init())
         .plugin(
@@ -42,7 +52,8 @@ fn main() {
             write_settings,
             read_settings,
             write_atis,
-            is_vatis_running
+            is_vatis_running,
+            open_vatis
         ])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");

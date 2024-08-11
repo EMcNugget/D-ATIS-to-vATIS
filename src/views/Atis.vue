@@ -1,10 +1,11 @@
 <script setup lang="ts">
 import Layout from "./Layout.vue";
-import { fetch_atis } from "../lib/parser";
+import { fetch_atis, watch_atis } from "../lib/parser";
 import { use_store } from "../lib/stores";
 import { TAlert, TATISCode, facilities, vATIS } from "../lib/types";
 import { invoke } from "@tauri-apps/api/core";
-import { computed, ref } from "vue";
+import { emit } from "@tauri-apps/api/event";
+import { computed, ref, watch } from "vue";
 
 const store = use_store();
 
@@ -17,6 +18,15 @@ const message = computed({
   get: () => store.get_message(),
   set: (v) => store.set_message(v),
 });
+
+const update_time = computed({
+  get: () => store.get_update_time(),
+  set: (v) => store.set_update_time(v),
+});
+
+const check_update = computed(() => store.get_check_update());
+
+const codes = computed(() => store.get_codes());
 
 const tooltip = ref("");
 
@@ -72,6 +82,7 @@ const fetch = async () => {
         return;
       } else {
         await fetch_atis(facility.value).then((atis) => {
+          store.set_codes(atis.map((k) => k.atis_code));
           invoke("write_atis", {
             facility: facility.value,
             atis: atis,
@@ -86,6 +97,7 @@ const fetch = async () => {
                 : ""
             );
             message.value = v;
+            invoke("open_vatis");
           });
         });
       }
@@ -94,6 +106,28 @@ const fetch = async () => {
     message.value = e as TAlert;
   }
 };
+
+const alert_new_codes = (codes: string[]) => {
+  message.value = {
+    alert_type: "info",
+    message: `${facility} information: ${codes.join(", ")} is current`,
+  };
+  emit("new-codes");
+};
+
+watch(
+  () => check_update.value,
+  (val) => {
+    if (val) {
+      watch_atis(
+        facility.value,
+        codes.value,
+        update_time.value,
+        alert_new_codes
+      );
+    }
+  }
+);
 </script>
 
 <template>

@@ -6,6 +6,7 @@ use log::{error, info};
 use serde_json::{self, Value};
 use tauri::{AppHandle, Manager};
 
+
 // Nested hell, needs a refactor
 fn find_composite(
     data: &Value,

@@ -1,5 +1,5 @@
 import type { TATIS, vATIS } from "./types";
-import { warn } from "@tauri-apps/plugin-log";
+import { warn, info } from "@tauri-apps/plugin-log";
 import { v4 } from "uuid";
 
 const find_number_of_occurances = (
@@ -71,14 +71,14 @@ const parse_atis = (atis: TATIS, split: boolean, facility: string): vATIS => {
       const notam_varient =
         notam_varients.find((varient) => atis.datis.includes(varient)) ||
         "NOTAMS...";
-      const notams = atis.datis.split(notam_varient)[1].split(" ...ADVS")[0];
-      const airportConditions = atis.datis
+
+      vATIS.atis.notams = atis.datis
+        .split(notam_varient)[1]
+        .split(" ...ADVS")[0];
+      vATIS.atis.airportConditions = atis.datis
         .slice(find_number_of_occurances(atis.datis, ".", 2) + 1)
         .split(notam_varient)[0]
         .trim();
-
-      vATIS.atis.notams = notams;
-      vATIS.atis.airportConditions = airportConditions;
     } catch (e) {
       throw e;
     }
@@ -86,10 +86,12 @@ const parse_atis = (atis: TATIS, split: boolean, facility: string): vATIS => {
   return vATIS;
 };
 
-export const fetch_atis = async (facility: string) => {
-  const response = await fetch(`https://datis.clowd.io/api/${facility}`).then(
-    (res) => res.json()
-  );
+export const fetch_atis = async (facility: string, res?: any) => {
+  const response =
+    res ??
+    (await fetch(`https://datis.clowd.io/api/${facility}`).then((res) =>
+      res.json()
+    ));
 
   let split = false;
 
@@ -107,4 +109,33 @@ export const fetch_atis = async (facility: string) => {
   });
 
   return atisArray;
+};
+
+/**
+ * @param codes First element is the departure code, second is the arrival code, if there is only one code then the ATIS is combined.
+ */
+export const watch_atis = async (
+  facility: string,
+  codes: string[],
+  update_time: number,
+  on_new_code: (codes: string[]) => void
+) => {
+  let new_codes: string[] = [];
+  setInterval(async () => {
+    const response = (await fetch(
+      `https://datis.clowd.io/api/${facility}`
+    ).then((res) => res.json())) as TATIS[];
+
+    response.forEach((v: TATIS) => {
+      if (!codes.includes(v.code)) {
+        info(`New ATIS found for ${facility} with code ${v.code}`);
+        new_codes.push(v.code);
+      }
+    });
+
+    if (new_codes.length > 0) {
+      on_new_code(new_codes);
+      new_codes = [];
+    }
+  }, update_time * 60000);
 };

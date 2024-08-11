@@ -34,13 +34,16 @@ type TSettings = {
   file_path: string;
   custom_path: boolean;
   save_facility: boolean;
+  open_vatis_on_fetch: boolean;
+  check_updates: boolean;
+  update_time: number;
   profile: string;
   theme: TTheme;
 };
 
 export type TAlert = {
   message: string;
-  alert_type: "error" | "warn" | "success";
+  alert_type: "error" | "warn" | "success" | "info";
 };
 
 export const facilities = [

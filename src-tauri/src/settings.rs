@@ -1,6 +1,7 @@
 use crate::structs::{Response, Settings};
-use crate::util::{read_json_file, write_json_file};
+use crate::util::{get_resource_json, read_json_file, write_json_file};
 use log::{error, info};
+use serde_json::from_value;
 use std::path::Path;
 use tauri::{AppHandle, Manager};
 
@@ -20,24 +21,46 @@ fn response(res: &str, success: bool) -> Result<Response, String> {
     }
 }
 
-pub fn create_settings_file(app_handle: &AppHandle) -> Result<Response, String> {
+pub fn check_settings_file(app_handle: &AppHandle) -> Result<Response, String> {
     let app_data_path = app_handle.path().app_data_dir().unwrap();
     let file_path = app_data_path.join("settings.json");
 
+    let settings = get_resource_json(app_handle, "default_settings.json").unwrap();
+
     if Path::new(&file_path).exists() {
+        let mut json = read_json_file(file_path.to_str().unwrap()).unwrap();
+
+        let mut changed = false;
+
+        let binding = serde_json::to_value(&settings).unwrap();
+        let keys = binding.as_object().unwrap().keys();
+
+        for key in keys {
+            if json[key].is_null() {
+                changed = true;
+                json[key] = serde_json::to_value(&settings).unwrap()[key].clone();
+            } else {
+                continue;
+            }
+        }
+
+        if changed {
+            write_json_file(
+                file_path.to_str().unwrap(),
+                serde_json::to_string_pretty(&json).unwrap().as_str(),
+            )
+            .unwrap();
+        }
+
         return response("Settings file already exists", true);
     }
 
-    let settings = Settings {
-        facility: "".to_string(),
-        file_path: "".to_string(),
-        custom_path: false,
-        save_facility: false,
-        profile: "".to_string(),
-        theme: "system".to_string(),
-    };
-
-    let json_string = serde_json::to_string_pretty(&settings).map_err(|e| e.to_string())?;
+    let json_string = serde_json::to_string_pretty(
+        &from_value::<Settings>(settings)
+            .map_err(|e| e.to_string())
+            .unwrap(),
+    )
+    .map_err(|e| e.to_string())?;
     std::fs::create_dir_all(app_data_path).map_err(|e| e.to_string())?;
     write_json_file(file_path.to_str().unwrap(), &json_string)?;
 
@@ -97,45 +120,4 @@ pub fn read_settings(app_handle: AppHandle) -> Result<Settings, String> {
             Err(err)
         }
     }
-}
-
-pub fn check_settings(app_handle: &AppHandle) -> Result<(), String> {
-    let app_data_path = app_handle.path().app_data_dir().unwrap();
-    let file_path = app_data_path.join("settings.json");
-
-    let mut json = read_json_file(file_path.to_str().unwrap()).unwrap();
-
-    let settings = Settings {
-        facility: "".to_string(),
-        file_path: "".to_string(),
-        custom_path: false,
-        save_facility: false,
-        profile: "".to_string(),
-        theme: "system".to_string(),
-    };
-
-    let keys = vec![
-        "facility",
-        "file_path",
-        "custom_path",
-        "save_facility",
-        "profile",
-        "theme",
-    ];
-
-    for key in keys {
-        if json[key].is_null() {
-            json[key] = serde_json::to_value(&settings).unwrap()[key].clone();
-        } else {
-            continue;
-        }
-    }
-
-    write_json_file(
-        file_path.to_str().unwrap(),
-        serde_json::to_string_pretty(&json).unwrap().as_str(),
-    )
-    .unwrap();
-
-    Ok(())
 }
