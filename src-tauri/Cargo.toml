@@ -12,18 +12,18 @@ rust-version = "1.80"
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [build-dependencies]
-tauri-build = { version = "^2.0.0-rc.0", features = [] }
+tauri-build = { version = "^2.0.0-rc.2", features = [] }
 
 [dependencies]
-serde_json = { version = "1.0", features = ["preserve_order"] }
+serde_json = { version = "1.0.123", features = ["preserve_order"] }
 uuid = { version = "1.1", features = ["serde", "v4"] }
-serde = { version = "1.0", features = ["derive"] }
-tauri = { version = "^2.0.0-rc.0", features = [] }
+serde = { version = "1.0.206", features = ["derive"] }
+tauri = { version = "^2.0.0-rc.2", features = [] }
 tauri-plugin-dialog = "^2.0.0-rc.0"
 tauri-plugin-log = "^2.0.0-rc.0"
-tauri-plugin-process = "^2.0.0-rc"
+tauri-plugin-process = "^2.0.0-rc.0"
 sysinfo = "0.31.2"
-log = "0.4"
+log = "0.4.22"
 rodio = "0.19.0"
 
 
