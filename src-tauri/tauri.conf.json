@@ -41,7 +41,7 @@
       "signingIdentity": null
     },
     "resources": [
-      "assets/custom_contractions.json"
+      "assets/**/*"
     ],
     "shortDescription": "",
     "linux": {
