@@ -1,8 +1,8 @@
 <script setup lang="ts">
 import Layout from "./Layout.vue";
-import { fetch_atis, watch_atis } from "../lib/parser";
+import { fetch_atis } from "../lib/parser";
 import { use_store } from "../lib/stores";
-import { TAlert, TATISCode, facilities, vATIS } from "../lib/types";
+import { TAlert, TATISCode, facilities, vATIS, TATIS } from "../lib/types";
 import { invoke } from "@tauri-apps/api/core";
 import { emit } from "@tauri-apps/api/event";
 import { computed, ref, watch } from "vue";
@@ -19,7 +19,10 @@ const message = computed({
   set: (v) => store.set_message(v),
 });
 
-const update_time = computed(() => store.get_update_time());
+const update_time = computed({
+  get: () => store.get_update_time(),
+  set: (v) => store.set_update_time(v),
+});
 
 const check_update = computed(() => store.get_check_update());
 
@@ -27,7 +30,10 @@ const check_update_freq = computed(() => store.get_check_update_freq());
 
 const open_vatis_on_fetch = computed(() => store.get_open_vatis_on_fetch());
 
-const codes = computed(() => store.get_codes());
+const codes = computed({
+  get: () => store.get_codes(),
+  set: (v) => store.set_codes(v),
+});
 
 const tooltip = ref("");
 
@@ -72,7 +78,7 @@ const get_atis_code = (atis: vATIS[]): TATISCode[] => {
   });
 };
 
-const fetch = async () => {
+const get_atis = async () => {
   try {
     invoke("is_vatis_running").then(async (k) => {
       if (k) {
@@ -122,19 +128,70 @@ const alert_new_codes = (codes: string[]) => {
   emit("new-codes");
 };
 
+const get_zulu_time = () => {
+  const now = new Date();
+
+  const hours = now.getUTCHours().toString().padStart(2, "0");
+  const minutes = now.getUTCMinutes().toString().padStart(2, "0");
+
+  return hours + minutes;
+};
+
+let temp_time = ref(update_time.value);
+
 watch(
-  () => check_update.value,
+  () => check_update_freq.value,
   (val) => {
     if (val) {
-      watch_atis(
-        facility.value,
-        codes.value,
-        update_time.value,
-        check_update_freq.value,
-        alert_new_codes
-      );
+      setInterval(() => {
+        let time = get_zulu_time();
+        const minutes = parseInt(time.slice(2, 4), 10);
+        if (minutes >= 53 || minutes <= 3) {
+          temp_time.value = 2;
+        } else {
+          temp_time.value = update_time.value;
+        }
+      }, 60000);
     }
-  }
+  },
+  { immediate: true }
+);
+
+let interval_id: NodeJS.Timeout | undefined;
+
+watch(
+  () => temp_time.value,
+  (val) => {
+    if (check_update.value) {
+      if (interval_id) {
+        clearInterval(interval_id);
+      }
+
+      interval_id = setInterval(async () => {
+        const response = await fetch(
+          `https://datis.clowd.io/api/${facility.value}`
+        ).then((res) => res.json());
+
+        let changed = false;
+        let new_codes: string[] = [];
+
+        response.forEach((k: TATIS) => {
+          if (!codes.value.includes(k.code)) {
+            changed = true;
+            new_codes.push(k.code);
+          }
+        });
+
+        if (changed) {
+          alert_new_codes(new_codes);
+          codes.value = new_codes;
+        }
+      }, val * 60000);
+
+      return interval_id;
+    }
+  },
+  { immediate: true } // Run immediately to set up the initial interval
 );
 </script>
 
@@ -154,7 +211,7 @@ watch(
       <div v-if="tooltip" class="tooltip tooltip-bottom" :data-tip="tooltip">
         <button
           class="btn btn-primary w-half max-w-xs mb-4"
-          @click="fetch()"
+          @click="get_atis()"
           :disabled="!validateICAO(facility)"
         >
           Fetch
@@ -163,7 +220,7 @@ watch(
       <div v-else>
         <button
           class="btn btn-primary w-half max-w-xs mb-4"
-          @click="fetch()"
+          @click="get_atis()"
           :disabled="!validateICAO(facility)"
         >
           Fetch

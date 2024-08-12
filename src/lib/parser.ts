@@ -1,5 +1,5 @@
 import type { TATIS, vATIS } from "./types";
-import { warn, info } from "@tauri-apps/plugin-log";
+import { warn } from "@tauri-apps/plugin-log";
 import { v4 } from "uuid";
 
 const find_number_of_occurances = (
@@ -109,54 +109,4 @@ export const fetch_atis = async (facility: string, res?: any) => {
   });
 
   return atisArray;
-};
-
-const get_zulu_time = () => {
-  const now = new Date();
-
-  const hours = now.getUTCHours().toString().padStart(2, "0");
-  const minutes = now.getUTCMinutes().toString().padStart(2, "0");
-
-  return hours + minutes;
-};
-
-/**
- * @param codes First element is the departure code, second is the arrival code, if there is only one code then the ATIS is combined.
- */
-export const watch_atis = async (
-  facility: string,
-  codes: string[],
-  update_time: number,
-  auto_freq: boolean,
-  on_new_code: (codes: string[]) => void
-) => {
-  let new_codes: string[] = [];
-  let freq = update_time;
-
-  if (auto_freq) {
-    setInterval(() => {
-      let time = get_zulu_time();
-      if (time.slice(2, 4) >= "53" || time.slice(2, 4) <= "03") {
-        freq = 2;
-      }
-    }, 60000);
-  } else freq = update_time;
-
-  setInterval(async () => {
-    const response = (await fetch(
-      `https://datis.clowd.io/api/${facility}`
-    ).then((res) => res.json())) as TATIS[];
-
-    response.forEach((v: TATIS) => {
-      if (!codes.includes(v.code)) {
-        info(`New ATIS found for ${facility} with code ${v.code}`);
-        new_codes.push(v.code);
-      }
-    });
-
-    if (new_codes.length > 0) {
-      on_new_code(new_codes);
-      new_codes = [];
-    }
-  }, freq * 60000);
 };

@@ -26,6 +26,9 @@ jobs:
           node-version: 22.x
           cache: "pnpm"
 
+      - name: Install Dependencies
+        run: pnpm install
+
       - name: Check commit message
         id: check_commit
         run: |
@@ -35,10 +38,6 @@ jobs:
           else
             echo "release=false" >> "$GITHUB_OUTPUT"
           fi
-
-      - name: Install Dependencies
-        if: steps.check_commit.outputs.release == 'true'
-        run: pnpm install
 
       - name: Update Version
         if: steps.check_commit.outputs.release == 'true'
