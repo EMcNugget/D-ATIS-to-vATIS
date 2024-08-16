@@ -9,9 +9,11 @@ pub fn write_contractions(
     atis: Value,
     airport_code: &str,
 ) -> Result<Vec<Value>, String> {
-    let json = get_resource_json(app_handle, "custom_contractions.json")["notam_contractions"];
+    let json = get_resource_json(app_handle, "custom_contractions.json").unwrap()
+        ["notam_contractions"]
+        .clone();
 
-    if let Ok(Value::Object(map)) = json {
+    if let Value::Object(map) = json {
         let new_contractions: Vec<Contraction> = map
             .into_iter()
             .filter_map(|(key, value)| {

@@ -1,11 +1,11 @@
 [package]
-name = "D-ATIS-to-vATIS"
+name = "D_ATIS_to_VATIS"
 version = "1.6.0"
 description = "Converts real world FAA D-ATIS's to vATIS profiles"
 authors = ["you"]
 license = "MIT"
 repository = ""
-default-run = "D-ATIS-to-vATIS"
+default-run = "D_ATIS_to_VATIS"
 edition = "2021"
 rust-version = "1.80"
 

@@ -1,13 +1,9 @@
 // Prevents additional console window on Windows in release, DO NOT REMOVE!!
 #![cfg_attr(not(debug_assertions), windows_subsystem = "windows")]
 
-use app::write_atis;
-use audio::play_audio;
 use log::info;
-use settings::{check_settings_file, read_settings, write_settings};
 use tauri::{AppHandle, Listener};
 use tauri_plugin_log::{Target, TargetKind};
-use util::{is_vatis_running, open_vatis};
 
 fn setup(app_handle: &AppHandle) {
     info!(
@@ -15,7 +11,7 @@ fn setup(app_handle: &AppHandle) {
         app_handle.config().version.as_ref().unwrap()
     );
 
-    check_settings_file(&app_handle).unwrap();
+    D_ATIS_to_VATIS::settings::check_settings_file(&app_handle).unwrap();
 }
 
 fn main() {
@@ -25,7 +21,7 @@ fn main() {
             setup(&handle);
 
             app.listen("new-codes", move |_event| {
-                play_audio(&handle);
+                D_ATIS_to_VATIS::audio::play_audio(&handle);
             });
 
             Ok(())
@@ -42,11 +38,11 @@ fn main() {
                 .build(),
         )
         .invoke_handler(tauri::generate_handler![
-            write_settings,
-            read_settings,
-            write_atis,
-            is_vatis_running,
-            open_vatis
+            D_ATIS_to_VATIS::settings::write_settings,
+            D_ATIS_to_VATIS::settings::read_settings,
+            D_ATIS_to_VATIS::app::write_atis,
+            D_ATIS_to_VATIS::util::is_vatis_running,
+            D_ATIS_to_VATIS::util::open_vatis
         ])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");

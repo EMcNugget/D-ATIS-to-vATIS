@@ -3,7 +3,7 @@
 version = 3
 
 [[package]]
-name = "D-ATIS-to-vATIS"
+name = "D_ATIS_to_VATIS"
 version = "1.6.0"
 dependencies = [
  "dotenv",
