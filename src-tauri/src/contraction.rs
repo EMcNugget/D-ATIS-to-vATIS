@@ -3,6 +3,25 @@ use log::{error, info};
 use serde_json::Value;
 use tauri::AppHandle;
 
+pub fn get_intro_contraction(
+    app_handle: &AppHandle,
+    airport_code: &str,
+    atis_type: &str,
+) -> Vec<Contraction> {
+    let json = get_resource_json(app_handle, "contractions.json").unwrap()["airports"].clone();
+
+    let atis_type = match atis_type {
+        "dep" => "DEPARTURE",
+        "arr" => "ARRIVAL",
+        _ => "",
+    };
+
+    let string = format!("{} {} INFO", &airport_code[1..], atis_type);
+    let spoken = format!("{} AIRPORT {} INFORMATION", json[airport_code], atis_type);
+
+    vec![Contraction { string, spoken }]
+}
+
 pub fn write_contractions(
     app_handle: &AppHandle,
     existing: &mut Vec<Value>,
@@ -47,6 +66,12 @@ pub fn write_contractions(
             new_contractions
                 .iter()
                 .map(|c| serde_json::to_value(c).expect("Failed to serialize custom contractions")),
+        );
+
+        existing.extend(
+            get_intro_contraction(app_handle, airport_code, atis["atisType"].as_str().unwrap())
+                .iter()
+                .map(|c| serde_json::to_value(c).expect("Failed to serialize intro contractions")),
         );
 
         info!("Custom contractions updated for {}", airport_code);
