@@ -8,6 +8,8 @@ import { router } from "../lib/router";
 import { check } from "@tauri-apps/plugin-updater";
 import { relaunch } from "@tauri-apps/plugin-process";
 import { getVersion } from "@tauri-apps/api/app";
+import { invoke } from "@tauri-apps/api/core";
+import type { TSettings } from "src/lib/types";
 
 const store = use_store();
 
@@ -25,6 +27,10 @@ const updateAndRelaunch = async () => {
 };
 
 onMounted(async () => {
+  invoke("get_default_settings").then((res) => {
+    store.set_all(res as TSettings);
+  });
+
   version.value = await getVersion();
   if (!store.get_app_update()) {
     store.set_app_update(true);
@@ -36,7 +42,7 @@ onMounted(async () => {
   }
 });
 
-const message = computed(() => store.get_message());
+const message = computed(() => store.get_alert());
 const localTheme = computed(() => store.get_theme());
 const showAlert = ref(false);
 const showSettings = ref(false);

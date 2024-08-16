@@ -3,7 +3,7 @@ import type { TSettings, TTheme, TAlert } from "./types";
 
 type TStore = {
   settings: TSettings;
-  message: TAlert;
+  alert: TAlert;
   codes: string[];
   app_update: boolean;
   airports_in_profile: string[];
@@ -11,19 +11,8 @@ type TStore = {
 
 export const use_store = defineStore("store", {
   state: (): TStore => ({
-    settings: {
-      facility: "",
-      file_path: "",
-      custom_path: false,
-      save_facility: false,
-      open_vatis_on_fetch: false,
-      check_updates: false,
-      check_updates_freq: false,
-      update_time: 60,
-      profile: "",
-      theme: "system",
-    },
-    message: {
+    settings: {} as TSettings,
+    alert: {
       message: "",
       alert_type: "success",
     },
@@ -64,8 +53,8 @@ export const use_store = defineStore("store", {
       this.settings.profile = settings.profile;
       this.settings.theme = settings.theme;
     },
-    set_message(message: TAlert) {
-      this.message = message;
+    set_alert(message: TAlert) {
+      this.alert = message;
     },
     set_check_update(status: boolean) {
       this.settings.check_updates = status;
@@ -122,8 +111,8 @@ export const use_store = defineStore("store", {
         theme: this.settings.theme,
       };
     },
-    get_message() {
-      return this.message;
+    get_alert() {
+      return this.alert;
     },
     get_check_update() {
       return this.settings.check_updates;

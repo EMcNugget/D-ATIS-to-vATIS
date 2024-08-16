@@ -46,9 +46,9 @@ const profile = computed({
 
 const profiles = ref<string[]>([]);
 
-const message = computed({
-  get: () => store.get_message(),
-  set: (v) => store.set_message(v),
+const alert = computed({
+  get: () => store.get_alert(),
+  set: (v) => store.set_alert(v),
 });
 
 const check_update = computed({
@@ -133,7 +133,7 @@ watch(
 );
 
 watch(
-  () => message.value,
+  () => alert.value,
   () => {
     showAlert.value = true;
   }
@@ -154,7 +154,7 @@ const save_settings = () => {
   invoke("write_settings", {
     settings: store.get_all(),
   }).then((k) => {
-    message.value = k as TAlert;
+    alert.value = k as TAlert;
   });
 };
 </script>
