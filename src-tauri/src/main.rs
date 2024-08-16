@@ -40,9 +40,11 @@ fn main() {
         .invoke_handler(tauri::generate_handler![
             d_atis_to_vatis::settings::write_settings,
             d_atis_to_vatis::settings::read_settings,
+            d_atis_to_vatis::settings::get_profiles,
+            d_atis_to_vatis::settings::get_airports_in_profile,
             d_atis_to_vatis::app::write_atis,
             d_atis_to_vatis::util::is_vatis_running,
-            d_atis_to_vatis::util::open_vatis
+            d_atis_to_vatis::util::open_vatis,
         ])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");

@@ -7,6 +7,8 @@ use std::{
 use sysinfo::System;
 use tauri::{path::BaseDirectory, AppHandle, Manager};
 
+use crate::settings::read_settings;
+
 pub fn read_json_file(file_path: &str) -> Result<Value, String> {
     let file = File::open(file_path).map_err(|e| {
         let err_msg = e.to_string();
@@ -68,6 +70,16 @@ pub fn is_vatis_running() -> bool {
     let s = System::new_all();
     let is_running = s.processes().values().any(|p| p.name() == "vATIS.exe");
     is_running
+}
+
+pub fn get_vatis_path(app_handle: &AppHandle) -> String {
+    let settings = read_settings(app_handle.clone()).unwrap();
+    let mut app_data_path = app_handle.path().app_local_data_dir().unwrap();
+    app_data_path.pop();
+    if settings.custom_path {
+        return settings.file_path.clone();
+    }
+    format!("{}\\vATIS-4.0", app_data_path.to_str().unwrap())
 }
 
 #[tauri::command]

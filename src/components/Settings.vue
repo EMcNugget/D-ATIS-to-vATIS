@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, ref, watch } from "vue";
+import { computed, onMounted, ref, watch } from "vue";
 import { use_store } from "../lib/stores";
 import { invoke } from "@tauri-apps/api/core";
 import { open } from "@tauri-apps/plugin-dialog";
@@ -44,6 +44,8 @@ const profile = computed({
   set: (v) => store.set_profile(v),
 });
 
+const profiles = ref<string[]>([]);
+
 const message = computed({
   get: () => store.get_message(),
   set: (v) => store.set_message(v),
@@ -72,6 +74,7 @@ const open_vatis_on_fetch = computed({
 const showAlert = ref(false);
 const showDropdown = ref(false);
 const showDropdownInterval = ref(false);
+const showDropdownProfile = ref(false);
 
 const handle_theme = (v: string) => {
   showDropdown.value = false;
@@ -96,9 +99,18 @@ const toggle_dropdown_interval = () => {
   showDropdownInterval.value = !showDropdownInterval.value;
 };
 
+const toggle_dropdown_profile = () => {
+  showDropdownProfile.value = !showDropdownProfile.value;
+};
+
 const handle_interval = (v: number) => {
   showDropdownInterval.value = false;
   update_time.value = v;
+};
+
+const handle_profile = (v: string) => {
+  showDropdownProfile.value = false;
+  profile.value = v;
 };
 
 const window = getCurrentWindow();
@@ -127,6 +139,17 @@ watch(
   }
 );
 
+onMounted(async () => {
+  profiles.value = await invoke<string[]>("get_profiles");
+  profile.value = profiles.value[0];
+
+  store.set_airports_in_profile(
+    await invoke<string[]>("get_airports_in_profile", {
+      profile: profiles.value.indexOf(profile.value),
+    })
+  );
+});
+
 const save_settings = () => {
   invoke("write_settings", {
     settings: store.get_all(),
@@ -148,12 +171,35 @@ const save_settings = () => {
         </button>
       </form>
       <h3 class="text-2xl mb-6 font-bold">Settings</h3>
-      <input
-        type="text"
-        v-model="profile"
-        placeholder="Profile..."
-        class="input input-bordered w-full mr-4 mb-4"
-      />
+      <label class="label cursor-pointer justify-start">
+        <span class="label-text mr-6 text-base font-semibold">Profile</span>
+        <div class="dropdown">
+          <label tabindex="2" class="btn m-1" @click="toggle_dropdown_profile">
+            {{ profile }}
+            <img
+              v-if="showDropdownProfile"
+              src="/dropdown_up.svg"
+              alt="Dropdown"
+              class="h-auto w-auto max-h-6 max-w-6"
+            />
+            <img
+              v-if="!showDropdownProfile"
+              src="/dropdown_down.svg"
+              alt="Dropdown"
+              class="h-auto w-auto max-h-6 max-w-6"
+            />
+          </label>
+          <ul
+            v-if="showDropdownProfile"
+            tabindex="2"
+            class="dropdown-content menu p-2 shadow bg-base-200 rounded-box w-52 z-50"
+          >
+            <li v-for="v in profiles">
+              <a @click="handle_profile(v)">{{ v }}</a>
+            </li>
+          </ul>
+        </div>
+      </label>
       <label class="label cursor-pointer justify-start">
         <span class="label-text mr-6 text-base font-semibold"
           >Custom vATIS Installation</span

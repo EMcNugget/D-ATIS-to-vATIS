@@ -1,10 +1,10 @@
 use crate::contraction::write_contractions;
 use crate::settings::read_settings;
 use crate::structs::{Alert, FindComposite};
-use crate::util::{read_json_file, write_json_file};
+use crate::util::{get_vatis_path, read_json_file, write_json_file};
 use log::{error, info};
 use serde_json::{self, Value};
-use tauri::{AppHandle, Manager};
+use tauri::AppHandle;
 
 // Nested hell, needs a refactor
 fn find_composite(
@@ -136,18 +136,7 @@ pub fn write_atis(facility: String, atis: Value, app_handle: AppHandle) -> Resul
         message: String::new(),
     };
 
-    let file_path: String;
-
-    if !settings.custom_path {
-        let mut app_data_path = app_handle.path().app_local_data_dir().unwrap();
-        app_data_path.pop();
-        file_path = format!(
-            "{}\\vATIS-4.0\\AppConfig.json",
-            app_data_path.to_str().unwrap()
-        );
-    } else {
-        file_path = format!("{}\\AppConfig.json", &settings.file_path);
-    }
+    let file_path = get_vatis_path(&app_handle);
 
     for atis_entry in atis_array {
         let result = write_profile(

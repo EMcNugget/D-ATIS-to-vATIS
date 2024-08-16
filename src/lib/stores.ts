@@ -6,6 +6,7 @@ type TStore = {
   message: TAlert;
   codes: string[];
   app_update: boolean;
+  airports_in_profile: string[];
 };
 
 export const use_store = defineStore("store", {
@@ -28,6 +29,7 @@ export const use_store = defineStore("store", {
     },
     codes: [],
     app_update: false,
+    airports_in_profile: [],
   }),
   actions: {
     // Setters
@@ -83,6 +85,9 @@ export const use_store = defineStore("store", {
     set_app_update(status: boolean) {
       this.app_update = status;
     },
+    set_airports_in_profile(airports: string[]) {
+      this.airports_in_profile = airports;
+    },
     // Getters
 
     get_facility() {
@@ -137,6 +142,9 @@ export const use_store = defineStore("store", {
     },
     get_app_update() {
       return this.app_update;
-    }
+    },
+    get_airports_in_profile() {
+      return this.airports_in_profile;
+    },
   },
 });

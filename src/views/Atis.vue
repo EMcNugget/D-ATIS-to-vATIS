@@ -30,6 +30,8 @@ const check_update_freq = computed(() => store.get_check_update_freq());
 
 const open_vatis_on_fetch = computed(() => store.get_open_vatis_on_fetch());
 
+const airports_in_profile = computed(() => store.get_airports_in_profile());
+
 const codes = computed({
   get: () => store.get_codes(),
   set: (v) => store.set_codes(v),
@@ -44,6 +46,9 @@ const validateICAO = (value: string) => {
   } else if (!store.get_file_path() && store.get_custom_path()) {
     tooltip.value =
       "Please select the path to your vATIS installation in settings";
+    return false;
+  } else if (!airports_in_profile.value.includes(value)) {
+    tooltip.value = "Facility not in profile";
     return false;
   } else {
     tooltip.value = "";

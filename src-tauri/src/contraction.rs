@@ -68,11 +68,15 @@ pub fn write_contractions(
                 .map(|c| serde_json::to_value(c).expect("Failed to serialize custom contractions")),
         );
 
-        existing.extend(
-            get_intro_contraction(app_handle, airport_code, atis["atisType"].as_str().unwrap())
-                .iter()
-                .map(|c| serde_json::to_value(c).expect("Failed to serialize intro contractions")),
+        let intro_contraction = get_intro_contraction(
+            app_handle,
+            airport_code,
+            atis["atis_type"].as_str().unwrap(),
         );
+
+        if !existing.contains(&serde_json::to_value(intro_contraction.first().unwrap()).unwrap()) {
+            existing.push(serde_json::to_value(intro_contraction.first().unwrap()).unwrap());
+        }
 
         info!("Custom contractions updated for {}", airport_code);
         Ok(existing.to_vec())
