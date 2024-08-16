@@ -3,25 +3,6 @@
 version = 3
 
 [[package]]
-name = "D_ATIS_to_VATIS"
-version = "1.6.0"
-dependencies = [
- "dotenv",
- "log",
- "rodio",
- "serde",
- "serde_json",
- "sysinfo",
- "tauri",
- "tauri-build",
- "tauri-plugin-dialog",
- "tauri-plugin-log",
- "tauri-plugin-process",
- "tauri-plugin-updater",
- "uuid",
-]
-
-[[package]]
 name = "addr2line"
 version = "0.22.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -994,6 +975,25 @@ checksum = "edb49164822f3ee45b17acd4a208cfc1251410cf0cad9a833234c9890774dd9f"
 dependencies = [
  "quote",
  "syn 2.0.74",
+]
+
+[[package]]
+name = "d_atis_to_vatis"
+version = "1.6.0"
+dependencies = [
+ "dotenv",
+ "log",
+ "rodio",
+ "serde",
+ "serde_json",
+ "sysinfo",
+ "tauri",
+ "tauri-build",
+ "tauri-plugin-dialog",
+ "tauri-plugin-log",
+ "tauri-plugin-process",
+ "tauri-plugin-updater",
+ "uuid",
 ]
 
 [[package]]

@@ -11,7 +11,7 @@ fn setup(app_handle: &AppHandle) {
         app_handle.config().version.as_ref().unwrap()
     );
 
-    D_ATIS_to_VATIS::settings::check_settings_file(&app_handle).unwrap();
+    d_atis_to_vatis::settings::check_settings_file(&app_handle).unwrap();
 }
 
 fn main() {
@@ -21,7 +21,7 @@ fn main() {
             setup(&handle);
 
             app.listen("new-codes", move |_event| {
-                D_ATIS_to_VATIS::audio::play_audio(&handle);
+                d_atis_to_vatis::audio::play_audio(&handle);
             });
 
             Ok(())
@@ -38,11 +38,11 @@ fn main() {
                 .build(),
         )
         .invoke_handler(tauri::generate_handler![
-            D_ATIS_to_VATIS::settings::write_settings,
-            D_ATIS_to_VATIS::settings::read_settings,
-            D_ATIS_to_VATIS::app::write_atis,
-            D_ATIS_to_VATIS::util::is_vatis_running,
-            D_ATIS_to_VATIS::util::open_vatis
+            d_atis_to_vatis::settings::write_settings,
+            d_atis_to_vatis::settings::read_settings,
+            d_atis_to_vatis::app::write_atis,
+            d_atis_to_vatis::util::is_vatis_running,
+            d_atis_to_vatis::util::open_vatis
         ])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");
