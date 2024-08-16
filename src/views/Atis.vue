@@ -15,8 +15,8 @@ const facility = computed({
 });
 
 const message = computed({
-  get: () => store.get_message(),
-  set: (v) => store.set_message(v),
+  get: () => store.get_alert(),
+  set: (v) => store.set_alert(v),
 });
 
 const update_time = computed({
