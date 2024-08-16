@@ -27,7 +27,6 @@ const create_template = (
   } ATIS INFO [ATIS_CODE] [OBS_TIME]. [FULL_WX_STRING]. [ARPT_COND] [NOTAMS]`;
 };
 
-// so far I've only seen these 3 types in rw atis's
 const notam_varients = [
   "NOTAMS...",
   "NOTICE TO AIR MISSIONS.",
@@ -53,7 +52,7 @@ const parse_atis = (atis: TATIS, split: boolean, facility: string): vATIS => {
         split ? (atis.type.toUpperCase() as "ARR" | "DEP") : undefined
       ),
       externalGenerator: {
-        enabled: false, // not sure what this does, leaving it as false for now
+        enabled: false,
       },
     },
   };
@@ -86,12 +85,10 @@ const parse_atis = (atis: TATIS, split: boolean, facility: string): vATIS => {
   return vATIS;
 };
 
-export const fetch_atis = async (facility: string, res?: any) => {
-  const response =
-    res ??
-    (await fetch(`https://datis.clowd.io/api/${facility}`).then((res) =>
-      res.json()
-    ));
+export const fetch_atis = async (facility: string) => {
+  const response = await fetch(`https://datis.clowd.io/api/${facility}`).then(
+    (res) => res.json()
+  );
 
   let split = false;
 
