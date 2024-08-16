@@ -5,15 +5,17 @@ use serde_json::{from_value, Map, Value};
 use std::path::Path;
 use tauri::{AppHandle, Manager};
 
-fn response(res: &str, success: bool) -> Result<Response, String> {
+fn response(res: &str, success: bool, log_msg: Option<&str>) -> Result<Response, String> {
+    let log_msg = log_msg.unwrap_or(res);
+
     if success {
-        info!("{}", res);
+        info!("{}", log_msg);
         Ok(Response {
             alert_type: "success".to_string(),
             message: res.to_string(),
         })
     } else {
-        error!("{}", res);
+        error!("{}", log_msg);
         return Ok(Response {
             alert_type: "error".to_string(),
             message: res.to_string(),

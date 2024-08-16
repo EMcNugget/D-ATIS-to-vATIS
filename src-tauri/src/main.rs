@@ -35,6 +35,8 @@ fn main() {
                     Target::new(TargetKind::LogDir { file_name: None }),
                     Target::new(TargetKind::Webview),
                 ])
+                .timezone_strategy(tauri_plugin_log::TimezoneStrategy::Local)
+                .rotation_strategy(tauri_plugin_log::RotationStrategy::KeepOne)
                 .build(),
         )
         .invoke_handler(tauri::generate_handler![
