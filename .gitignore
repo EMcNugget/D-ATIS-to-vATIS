@@ -27,3 +27,4 @@ settings.json
 
 ./test
 AppConfig.json
+.env
