@@ -27,7 +27,7 @@ pub fn write_contractions(
     existing: &mut Vec<Value>,
     atis: Value,
     airport_code: &str,
-) -> Result<Vec<Value>, String> {
+) -> Result<Vec<Value>, anyhow::Error> {
     let json = get_resource_json(app_handle, "custom_contractions.json").unwrap()
         ["notam_contractions"]
         .clone();
@@ -83,6 +83,6 @@ pub fn write_contractions(
     } else {
         let e = format!("Failed to parse custom contractions for {}", airport_code);
         error!("{}", e);
-        Err(e)
+        Err(anyhow::Error::msg(e.to_string()))
     }
 }

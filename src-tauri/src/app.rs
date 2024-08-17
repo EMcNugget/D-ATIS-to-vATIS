@@ -86,14 +86,7 @@ pub fn write_profile(
 ) -> Result<(), String> {
     let mut data: Value =
         serde_json::from_str(&read_json_file(file_path).unwrap().to_string()).unwrap();
-    let indexes: FindComposite = match find_composite(&data, profile, facility, atis_type) {
-        Some(result) => result,
-        None => {
-            let err = format!("Could not find profile {} for{}", profile, facility);
-            error!("{}", err);
-            return Err(err);
-        }
-    };
+    let indexes: FindComposite = find_composite(&data, profile, facility, atis_type).unwrap();
 
     let atis_position =
         &mut data["profiles"][indexes.profile_index]["composites"][indexes.composite_index];
@@ -122,7 +115,7 @@ pub fn write_profile(
             .unwrap()
             .into();
 
-    write_json_file(file_path, &data.to_string())?;
+    write_json_file(file_path, &data.to_string()).unwrap();
     Ok(())
 }
 
@@ -131,7 +124,7 @@ pub fn write_atis(facility: String, atis: Value, app_handle: AppHandle) -> Resul
     let settings = read_settings(app_handle.clone()).unwrap();
     let atis_array = atis.as_array().unwrap();
 
-    let mut message = Alert {
+    let mut alert = Alert {
         alert_type: "success".to_string(),
         message: String::new(),
     };
@@ -152,22 +145,22 @@ pub fn write_atis(facility: String, atis: Value, app_handle: AppHandle) -> Resul
             Ok(_) => {
                 let data = &format!("Successfully wrote ATIS for {}", &facility);
                 info!("{}", data);
-                if message.message == *data {
+                if alert.message == *data {
                 } else {
-                    message.message.push_str(data);
+                    alert.message.push_str(data);
                 }
             }
             Err(e) => {
                 let data = &format!("Error writing ATIS: {}", e);
                 error!("{}", data);
-                if message.message == *data {
+                if alert.message == *data {
                 } else {
-                    message.message.push_str(data);
+                    alert.message.push_str(data);
                 }
-                message.alert_type = "error".to_string();
+                alert.alert_type = "error".to_string();
             }
         }
     }
 
-    Ok(message)
+    Ok(alert)
 }

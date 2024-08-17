@@ -9,60 +9,38 @@ use tauri::{path::BaseDirectory, AppHandle, Manager};
 
 use crate::settings::read_settings;
 
-pub fn read_json_file(file_path: &str) -> Result<Value, String> {
-    let file = File::open(file_path).map_err(|e| {
-        let err_msg = e.to_string();
-        error!("Failed to open file {}: {}", file_path, err_msg);
-        err_msg
-    })?;
+pub fn read_json_file(file_path: &str) -> Result<Value, anyhow::Error> {
+    let file = File::open(file_path);
 
-    let reader = BufReader::new(file);
-    let json_value = serde_json::from_reader(reader).map_err(|e| {
-        let err_msg = e.to_string();
-        error!("Failed to read file {}: {}", file_path, err_msg);
-        err_msg
-    })?;
-    Ok(json_value)
+    let reader = BufReader::new(file.unwrap());
+    let json_value = serde_json::from_reader(reader);
+    Ok(json_value.unwrap())
 }
 
-pub fn write_json_file(filename: &str, data: &str) -> Result<(), String> {
-    let mut file = File::create(filename).map_err(|e| {
-        let err_msg = e.to_string();
-        error!("Failed to create file {}: {}", filename, err_msg);
-        err_msg
-    })?;
-    file.write_all(data.as_bytes()).map_err(|e| {
-        let err_msg = e.to_string();
-        error!("Failed to write to file {}: {}", filename, err_msg);
-        err_msg
-    })?;
+pub fn write_json_file(filename: &str, data: &str) -> Result<(), anyhow::Error> {
+    let file = File::create(filename);
+    file.unwrap().write_all(data.as_bytes()).unwrap();
     Ok(())
 }
 
-pub fn get_resource_json(app_handle: &AppHandle, file_name: &str) -> Result<Value, String> {
+pub fn get_resource_json(app_handle: &AppHandle, file_name: &str) -> Result<Value, anyhow::Error> {
     let resource = app_handle
         .path()
         .resolve(format!("assets/{}", file_name), BaseDirectory::Resource);
 
-    let json = read_json_file(&resource.unwrap().to_str().unwrap()).map_err(|e| {
-        error!("Failed to read file {}: {}", file_name, e);
-        e
-    });
+    let json = read_json_file(&resource.unwrap().to_str().unwrap());
 
     json
 }
 
-pub fn get_resource(app_handle: &AppHandle, file_name: &str) -> Result<File, String> {
+pub fn get_resource(app_handle: &AppHandle, file_name: &str) -> Result<File, anyhow::Error> {
     let resource = app_handle
         .path()
         .resolve(format!("assets/{}", file_name), BaseDirectory::Resource);
 
-    let file = File::open(&resource.unwrap()).map_err(|e| {
-        error!("Failed to open file {}: {}", file_name, e);
-        e.to_string()
-    });
+    let file = File::open(&resource.unwrap());
 
-    file
+    Ok(file?)
 }
 
 #[tauri::command]
@@ -106,6 +84,12 @@ pub fn open_vatis(app_handle: AppHandle, custom_path: Option<&str>) -> Result<()
 }
 
 #[tauri::command]
-pub fn get_default_settings(app_handle: AppHandle) -> Result<Value, String> {
-    return Ok(get_resource_json(&app_handle, "default-settings.json").unwrap());
+pub fn get_default_settings(app_handle: AppHandle) -> Value {
+    return match get_resource_json(&app_handle, "default-settings.json") {
+        Ok(json) => json,
+        Err(e) => {
+            error!("Failed to get default settings: {}", e);
+            Value::Null
+        }
+    };
 }

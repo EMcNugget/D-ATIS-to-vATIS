@@ -11,7 +11,7 @@ fn setup(app_handle: &AppHandle) {
         app_handle.config().version.as_ref().unwrap()
     );
 
-    d_atis_to_vatis::settings::check_settings_file(&app_handle).unwrap();
+    d_atis_to_vatis::settings::check_settings_file(&app_handle);
 }
 
 fn main() {
@@ -32,8 +32,9 @@ fn main() {
             tauri_plugin_log::Builder::new()
                 .targets([
                     Target::new(TargetKind::Stdout),
-                    Target::new(TargetKind::LogDir { file_name: None }),
-                    Target::new(TargetKind::Webview),
+                    Target::new(TargetKind::LogDir {
+                        file_name: Some("log".to_string()),
+                    }),
                 ])
                 .timezone_strategy(tauri_plugin_log::TimezoneStrategy::UseLocal)
                 .rotation_strategy(tauri_plugin_log::RotationStrategy::KeepOne)
