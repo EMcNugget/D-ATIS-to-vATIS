@@ -1,5 +1,5 @@
 use crate::structs::{Response, Settings};
-use crate::util::{get_resource_json, get_vatis_path, read_json_file, write_json_file};
+use crate::util::{get_resource_json, read_json_file, write_json_file};
 use log::{error, info};
 use serde_json::{from_value, Map, Value};
 use std::path::Path;
@@ -120,47 +120,5 @@ pub fn read_settings(app_handle: AppHandle) -> Result<Settings, String> {
             error!("{}", err);
             Err(err.to_string())
         }
-    }
-}
-
-#[tauri::command]
-pub fn get_profiles(app_handle: AppHandle) -> Result<Vec<String>, String> {
-    let json =
-        read_json_file(&format!("{}\\AppConfig.json", &get_vatis_path(&app_handle))).unwrap();
-
-    let mut profiles = Vec::new();
-
-    profiles.push("No Profile".to_string());
-
-    for profile in json["profiles"].as_array().unwrap() {
-        profiles.push(profile["name"].as_str().unwrap().to_string());
-    }
-
-    match profiles.len() {
-        0 => Err("No profiles found".to_string()),
-        _ => Ok(profiles),
-    }
-}
-
-#[tauri::command]
-
-pub fn get_airports_in_profile(
-    app_handle: AppHandle,
-    profile: usize,
-) -> Result<Vec<String>, String> {
-    let json =
-        read_json_file(&format!("{}\\AppConfig.json", &get_vatis_path(&app_handle))).unwrap();
-
-    let mut airports = Vec::new();
-
-    while let Some(composite) = json["profiles"].get(profile) {
-        if !airports.contains(&composite["identifier"].as_str().unwrap().to_string()) {
-            airports.push(composite["identifier"].to_string());
-        }
-    }
-
-    match airports.len() {
-        0 => Err("No airports found".to_string()),
-        _ => Ok(airports),
     }
 }

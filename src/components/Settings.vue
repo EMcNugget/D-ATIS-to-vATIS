@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, onMounted, ref, watch } from "vue";
+import { computed, ref, watch } from "vue";
 import CLabel from "./CLabel.vue";
 import Dropdown from "./Dropdown.vue";
 import { use_store } from "../lib/stores";
@@ -141,16 +141,6 @@ watch(
   }
 );
 
-onMounted(async () => {
-  profiles.value = await invoke<string[]>("get_profiles");
-  profile.value = profiles.value[0];
-
-  store.set_airports_in_profile(
-    await invoke<string[]>("get_airports_in_profile", {
-      profile: profiles.value.indexOf(profile.value),
-    })
-  );
-});
 
 const save_settings = () => {
   invoke("write_settings", {

@@ -82,14 +82,3 @@ pub fn open_vatis(app_handle: AppHandle, custom_path: Option<&str>) -> Result<()
 
     Ok(())
 }
-
-#[tauri::command]
-pub fn get_default_settings(app_handle: AppHandle) -> Value {
-    return match get_resource_json(&app_handle, "default-settings.json") {
-        Ok(json) => json,
-        Err(e) => {
-            error!("Failed to get default settings: {}", e);
-            Value::Null
-        }
-    };
-}
