@@ -68,7 +68,7 @@ watch(
       @close-update="showUpdate = false"
       @download-and-install="updateAndRelaunch"
     />
-    <slot />
+    <slot></slot>
     <Settings :showModal="showSettings" @close="showSettings = !showSettings" />
     <button
       class="btn btn-circle fixed bottom-0 left-0 m-4 flex items-center justify-center"

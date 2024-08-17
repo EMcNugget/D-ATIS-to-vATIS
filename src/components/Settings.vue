@@ -1,5 +1,7 @@
 <script setup lang="ts">
 import { computed, onMounted, ref, watch } from "vue";
+import CLabel from "./CLabel.vue";
+import Dropdown from "./Dropdown.vue";
 import { use_store } from "../lib/stores";
 import { invoke } from "@tauri-apps/api/core";
 import { open } from "@tauri-apps/plugin-dialog";
@@ -171,41 +173,21 @@ const save_settings = () => {
         </button>
       </form>
       <h3 class="text-2xl mb-6 font-bold">Settings</h3>
-      <label class="label cursor-pointer justify-start">
-        <span class="label-text mr-6 text-base font-semibold">Profile</span>
-        <div class="dropdown">
-          <label tabindex="2" class="btn m-1" @click="toggle_dropdown_profile">
-            {{ profile }}
-            <img
-              v-if="showDropdownProfile"
-              src="/dropdown_up.svg"
-              alt="Dropdown"
-              class="h-auto w-auto max-h-6 max-w-6"
-            />
-            <img
-              v-if="!showDropdownProfile"
-              src="/dropdown_down.svg"
-              alt="Dropdown"
-              class="h-auto w-auto max-h-6 max-w-6"
-            />
-          </label>
-          <ul
-            v-if="showDropdownProfile"
-            tabindex="2"
-            class="dropdown-content menu p-2 shadow bg-base-200 rounded-box w-52 z-50"
-          >
-            <li v-for="v in profiles">
-              <a @click="handle_profile(v)">{{ v }}</a>
-            </li>
-          </ul>
-        </div>
-      </label>
-      <label class="label cursor-pointer justify-start">
-        <span class="label-text mr-6 text-base font-semibold"
-          >Custom vATIS Installation</span
+      <CLabel title="Profile">
+        <Dropdown
+          :name="profile"
+          :click="toggle_dropdown_profile"
+          :show="showDropdownProfile"
+          :tab_index="2"
         >
+          <li v-for="v in profiles">
+            <a @click="handle_profile(v)">{{ v }}</a>
+          </li>
+        </Dropdown>
+      </CLabel>
+      <CLabel title="Custom vATIS Installation">
         <input type="checkbox" class="toggle" v-model="custom_path" />
-      </label>
+      </CLabel>
       <div class="flex flex-row" v-if="custom_path">
         <input
           type="text"
@@ -216,99 +198,46 @@ const save_settings = () => {
         />
         <button class="btn" @click="open_path()">Browse</button>
       </div>
-      <label class="label cursor-pointer justify-start">
-        <span class="label-text mr-6 text-base font-semibold"
-          >Save Facility</span
-        >
-        <input type="checkbox" class="checkbox" v-model="save_facility" />
-      </label>
-      <label class="label cursor-pointer justify-start">
-        <span class="label-text mr-6 text-base font-semibold"
-          >Check for ATIS Updates</span
-        >
+      <CLabel title="Save Facility">
+        <input type="checkbox" class="toggle" v-model="save_facility" />
+      </CLabel>
+      <CLabel title="Check for ATIS Updates">
         <input type="checkbox" class="checkbox" v-model="check_update" />
-      </label>
+      </CLabel>
+
       <div v-if="check_update">
-        <label class="label cursor-pointer justify-start">
-          <span class="label-text mr-6 text-base font-semibold"
-            >Automatically Change Interval based on Zulu Time</span
-          >
+        <CLabel title="Automatically Change Interval based on Zulu Time">
           <input type="checkbox" class="checkbox" v-model="check_update_freq" />
-        </label>
-        <label class="label cursor-pointer justify-start">
-          <span class="label-text mr-6 text-base font-semibold"
-            >Update Interval</span
+        </CLabel>
+        <CLabel title="Update Interval">
+          <Dropdown
+            :name="`${update_time}m`"
+            :click="toggle_dropdown_interval"
+            :show="showDropdownInterval"
+            :tab_index="1"
           >
-          <div class="dropdown">
-            <label
-              tabindex="1"
-              class="btn m-1"
-              @click="toggle_dropdown_interval"
-            >
-              {{ update_time }}m
-              <img
-                v-if="showDropdownInterval"
-                src="/dropdown_up.svg"
-                alt="Dropdown"
-                class="h-auto w-auto max-h-6 max-w-6"
-              />
-              <img
-                v-if="!showDropdownInterval"
-                src="/dropdown_down.svg"
-                alt="Dropdown"
-                class="h-auto w-auto max-h-6 max-w-6"
-              />
-            </label>
-
-            <ul
-              v-if="showDropdownInterval"
-              tabindex="1"
-              class="dropdown-content menu p-2 shadow bg-base-200 rounded-box w-52 z-50"
-            >
-              <li><a @click="handle_interval(15)">15m</a></li>
-              <li><a @click="handle_interval(30)">30m</a></li>
-              <li><a @click="handle_interval(45)">45m</a></li>
-              <li><a @click="handle_interval(60)">60m</a></li>
-            </ul>
-          </div>
-        </label>
+            <li><a @click="handle_interval(15)">15m</a></li>
+            <li><a @click="handle_interval(30)">30m</a></li>
+            <li><a @click="handle_interval(45)">45m</a></li>
+            <li><a @click="handle_interval(60)">60m</a></li>
+          </Dropdown>
+        </CLabel>
       </div>
-      <label class="label cursor-pointer justify-start">
-        <span class="label-text mr-6 text-base font-semibold"
-          >Open vATIS on Fetch</span
-        >
+      <CLabel title="Open vATIS on Fetch">
         <input type="checkbox" class="checkbox" v-model="open_vatis_on_fetch" />
-      </label>
-      <label class="label cursor-pointer justify-start">
-        <span class="label-text mr-6 text-base font-semibold">Theme</span>
-        <div class="dropdown">
-          <label tabindex="0" class="btn m-1" @click="toggle_dropdown">
-            {{ theme.charAt(0).toUpperCase() + theme.slice(1) }}
-            <img
-              v-if="showDropdown"
-              src="/dropdown_up.svg"
-              alt="Dropdown"
-              class="h-auto w-auto max-h-6 max-w-6"
-            />
-            <img
-              v-if="!showDropdown"
-              src="/dropdown_down.svg"
-              alt="Dropdown"
-              class="h-auto w-auto max-h-6 max-w-6"
-            />
-          </label>
-
-          <ul
-            v-if="showDropdown"
-            tabindex="0"
-            class="dropdown-content menu p-2 shadow bg-base-200 rounded-box w-52"
-          >
-            <li><a @click="handle_theme('system')">System</a></li>
-            <li><a @click="handle_theme('light')">Light</a></li>
-            <li><a @click="handle_theme('dark')">Dark</a></li>
-          </ul>
-        </div>
-      </label>
+      </CLabel>
+      <CLabel title="Theme">
+        <Dropdown
+          :name="theme.charAt(0).toUpperCase() + theme.slice(1)"
+          :click="toggle_dropdown"
+          :show="showDropdown"
+          :tab_index="0"
+        >
+          <li><a @click="handle_theme('system')">System</a></li>
+          <li><a @click="handle_theme('light')">Light</a></li>
+          <li><a @click="handle_theme('dark')">Dark</a></li>
+        </Dropdown>
+      </CLabel>
       <button
         class="btn btn-active btn-primary mt-8 w-full"
         @click="save_settings()"
