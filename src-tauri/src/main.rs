@@ -35,7 +35,7 @@ fn main() {
                     Target::new(TargetKind::LogDir { file_name: None }),
                     Target::new(TargetKind::Webview),
                 ])
-                .timezone_strategy(tauri_plugin_log::TimezoneStrategy::Local)
+                .timezone_strategy(tauri_plugin_log::TimezoneStrategy::UseLocal)
                 .rotation_strategy(tauri_plugin_log::RotationStrategy::KeepOne)
                 .build(),
         )
@@ -44,10 +44,10 @@ fn main() {
             d_atis_to_vatis::settings::read_settings,
             d_atis_to_vatis::settings::get_profiles,
             d_atis_to_vatis::settings::get_airports_in_profile,
-            d_atis_to_vatis::settings::get_default_settings,
             d_atis_to_vatis::app::write_atis,
             d_atis_to_vatis::util::is_vatis_running,
             d_atis_to_vatis::util::open_vatis,
+            d_atis_to_vatis::util::get_default_settings,
         ])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");
