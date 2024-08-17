@@ -981,6 +981,7 @@ dependencies = [
 name = "d_atis_to_vatis"
 version = "1.6.0"
 dependencies = [
+ "anyhow",
  "dotenv",
  "log",
  "rodio",

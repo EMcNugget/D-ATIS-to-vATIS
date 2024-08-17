@@ -54,10 +54,10 @@ pub fn check_settings_file(app_handle: &AppHandle) -> Result<Response, String> {
                 serde_json::to_string_pretty(&new_json).unwrap().as_str(),
             )
             .unwrap();
-            return response("Settings file validated", true);
+            return response("Settings file validated", true, None);
         }
 
-        return response("Settings file already exists", true);
+        return response("Settings file already exists", true, None);
     }
 
     let json_string = serde_json::to_string_pretty(
@@ -69,7 +69,7 @@ pub fn check_settings_file(app_handle: &AppHandle) -> Result<Response, String> {
     std::fs::create_dir_all(app_data_path).map_err(|e| e.to_string())?;
     write_json_file(file_path.to_str().unwrap(), &json_string)?;
 
-    response("Settings file created successfully", true)
+    response("Settings file created successfully", true, None)
 }
 
 #[tauri::command]
@@ -82,23 +82,23 @@ pub fn write_settings(settings: Settings, app_handle: AppHandle) -> Result<Respo
             Ok(json_value) => {
                 if let Ok(existing_settings) = serde_json::from_value::<Settings>(json_value) {
                     if existing_settings == settings {
-                        return response("Settings have not changed", true);
+                        return response("Settings have not changed", true, None);
                     } else {
                         let json_string = serde_json::to_string_pretty(&settings)
-                            .map_err(|e| response(e.to_string().as_str(), false));
+                            .map_err(|e| response(e.to_string().as_str(), false, None));
                         write_json_file(file_path.to_str().unwrap(), &json_string.unwrap())?;
-                        return response("Settings updated successfully", true);
+                        return response("Settings updated successfully", true, None);
                     }
                 } else {
-                    return response("Failed to parse existing settings", false);
+                    return response("Failed to parse existing settings", false, None);
                 }
             }
             Err(err) => {
-                return response(&err, false);
+                return response(&err, false, None);
             }
         }
     } else {
-        return response("Settings file does not exist, restart the app", false);
+        return response("Settings file does not exist, restart the app", false, None);
     }
 }
 
