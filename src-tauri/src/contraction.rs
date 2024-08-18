@@ -8,7 +8,8 @@ pub fn get_intro_contraction(
     airport_code: &str,
     atis_type: &str,
 ) -> Vec<Contraction> {
-    let json = get_resource_json(app_handle, "contractions.json").unwrap()["airports"].clone();
+    let json =
+        get_resource_json(app_handle, "custom_contractions.json").unwrap()["airports"].clone();
 
     let atis_type = match atis_type {
         "dep" => "DEPARTURE",
@@ -27,10 +28,13 @@ pub fn write_contractions(
     existing: &mut Vec<Value>,
     atis: Value,
     airport_code: &str,
+    atis_type: &str,
 ) -> Result<Vec<Value>, anyhow::Error> {
     let json = get_resource_json(app_handle, "custom_contractions.json").unwrap()
         ["notam_contractions"]
         .clone();
+
+    error!("{:?}", atis);
 
     if let Value::Object(map) = json {
         let new_contractions: Vec<Contraction> = map
@@ -68,11 +72,7 @@ pub fn write_contractions(
                 .map(|c| serde_json::to_value(c).expect("Failed to serialize custom contractions")),
         );
 
-        let intro_contraction = get_intro_contraction(
-            app_handle,
-            airport_code,
-            atis["atis_type"].as_str().unwrap(),
-        );
+        let intro_contraction = get_intro_contraction(app_handle, airport_code, atis_type);
 
         if !existing.contains(&serde_json::to_value(intro_contraction.first().unwrap()).unwrap()) {
             existing.push(serde_json::to_value(intro_contraction.first().unwrap()).unwrap());

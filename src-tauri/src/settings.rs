@@ -1,5 +1,5 @@
 use crate::structs::{Response, Settings};
-use crate::util::{get_resource_json, read_json_file, write_json_file};
+use crate::util::{read_json_file, write_json_file};
 use log::{error, info};
 use serde_json::{from_value, Map, Value};
 use std::path::Path;
@@ -27,7 +27,16 @@ pub fn check_settings_file(app_handle: &AppHandle) -> Response {
     let app_data_path = app_handle.path().app_data_dir().unwrap();
     let file_path = app_data_path.join("settings.json");
 
-    let settings = get_resource_json(app_handle, "default_settings.json").unwrap();
+    let settings = match read_json_file(file_path.to_str().unwrap()) {
+        Ok(json) => json,
+        Err(err) => {
+            return response(
+                "Failed to validate settings file",
+                false,
+                Some(&err.to_string()),
+            );
+        }
+    };
 
     if Path::new(&file_path).exists() {
         let json_value = read_json_file(file_path.to_str().unwrap()).unwrap();
@@ -49,12 +58,17 @@ pub fn check_settings_file(app_handle: &AppHandle) -> Response {
         }
 
         if changed {
-            write_json_file(
+            match write_json_file(
                 file_path.to_str().unwrap(),
                 serde_json::to_string_pretty(&new_json).unwrap().as_str(),
-            )
-            .unwrap();
-            return response("Settings file updated successfully", true, None);
+            ) {
+                Ok(_) => return response("Settings file updated successfully", true, None),
+                Err(err) => response(
+                    "Failed to update settings file",
+                    false,
+                    Some(&err.to_string()),
+                ),
+            };
         }
 
         return response("Settings file already exists", true, None);
@@ -69,7 +83,7 @@ pub fn check_settings_file(app_handle: &AppHandle) -> Response {
 }
 
 #[tauri::command]
-pub fn write_settings(settings: Settings, app_handle: AppHandle) -> Result<Response, Response> {
+pub fn write_settings(settings: Settings, app_handle: AppHandle) -> Response {
     let app_data_path = app_handle.path().app_data_dir().unwrap();
     let file_path = app_data_path.join("settings.json");
 
@@ -78,47 +92,51 @@ pub fn write_settings(settings: Settings, app_handle: AppHandle) -> Result<Respo
             Ok(json_value) => {
                 if let Ok(existing_settings) = serde_json::from_value::<Settings>(json_value) {
                     if existing_settings == settings {
-                        return Ok(response("Settings have not changed", true, None));
+                        return response("Settings have not changed", true, None);
                     } else {
                         let json_string = serde_json::to_string_pretty(&settings);
-                        write_json_file(file_path.to_str().unwrap(), &json_string.unwrap())
-                            .unwrap();
-                        return Ok(response("Settings updated successfully", true, None));
+                        match write_json_file(file_path.to_str().unwrap(), &json_string.unwrap()) {
+                            Ok(_) => return response("Settings updated successfully", true, None),
+                            Err(err) => {
+                                return response(
+                                    "Failed to write settings",
+                                    false,
+                                    Some(&err.to_string()),
+                                );
+                            }
+                        }
                     }
                 } else {
-                    return Err(response("Failed to parse existing settings", false, None));
+                    return response("Failed to parse existing settings", false, None);
                 }
             }
             Err(err) => {
-                return Err(response(&err.to_string(), false, None));
+                return response(
+                    "Failed to read existing settings",
+                    false,
+                    Some(&err.to_string()),
+                );
             }
         }
     } else {
-        return Err(response("Settings file does not exist", false, None));
+        return response("Settings file does not exist", false, None);
     }
 }
 
 #[tauri::command]
-pub fn read_settings(app_handle: AppHandle) -> Result<Settings, String> {
+pub fn read_settings(app_handle: AppHandle) -> Result<Settings, Response> {
     let app_data_path = app_handle.path().app_data_dir().unwrap();
     let file_path = app_data_path.join("settings.json");
     if !Path::new(&file_path).exists() {
-        return Err("Settings file does not exist".to_string());
+        return Err(response("Settings file does not exist", false, None));
     }
 
     match read_json_file(&file_path.to_str().unwrap()) {
-        Ok(json_value) => {
-            if let Ok(settings) = serde_json::from_value::<Settings>(json_value) {
-                info!("Settings read successfully");
-                Ok(settings)
-            } else {
-                error!("Failed to parse settings");
-                Err("Failed to parse settings".to_string())
-            }
-        }
-        Err(err) => {
-            error!("{}", err);
-            Err(err.to_string())
-        }
+        Ok(json_value) => Ok(serde_json::from_value::<Settings>(json_value).unwrap()),
+        Err(err) => Err(response(
+            "Failed to read settings",
+            false,
+            Some(&err.to_string()),
+        )),
     }
 }

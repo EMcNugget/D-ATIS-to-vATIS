@@ -84,8 +84,9 @@ pub fn write_profile(
     file_path: &str,
     atis_type: Option<&str>,
 ) -> Result<(), String> {
-    let mut data: Value =
-        serde_json::from_str(&read_json_file(file_path).unwrap().to_string()).unwrap();
+    let file_path = format!("{}\\AppConfig.json", file_path);
+
+    let mut data = read_json_file(&file_path).unwrap();
     let indexes: FindComposite = find_composite(&data, profile, facility, atis_type).unwrap();
 
     let atis_position =
@@ -110,12 +111,17 @@ pub fn write_profile(
         .unwrap_or(&mut Vec::new())
         .to_vec();
 
-    atis_position["contractions"] =
-        write_contractions(app_handle, &mut existing, atis_preset.clone(), facility)
-            .unwrap()
-            .into();
+    atis_position["contractions"] = write_contractions(
+        app_handle,
+        &mut existing,
+        atis_preset.clone(),
+        facility,
+        &atis_type.unwrap(),
+    )
+    .unwrap()
+    .into();
 
-    write_json_file(file_path, &data.to_string()).unwrap();
+    write_json_file(&file_path, &data.to_string()).unwrap();
     Ok(())
 }
 

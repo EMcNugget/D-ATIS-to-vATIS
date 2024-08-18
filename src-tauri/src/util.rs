@@ -10,16 +10,16 @@ use tauri::{path::BaseDirectory, AppHandle, Manager};
 use crate::settings::read_settings;
 
 pub fn read_json_file(file_path: &str) -> Result<Value, anyhow::Error> {
-    let file = File::open(file_path);
+    let file = File::open(file_path)?;
 
-    let reader = BufReader::new(file.unwrap());
-    let json_value = serde_json::from_reader(reader);
-    Ok(json_value.unwrap())
+    let reader = BufReader::new(file);
+    let json_value = serde_json::from_reader(reader).map_err(anyhow::Error::from);
+    json_value
 }
 
 pub fn write_json_file(filename: &str, data: &str) -> Result<(), anyhow::Error> {
     let file = File::create(filename);
-    file.unwrap().write_all(data.as_bytes()).unwrap();
+    file?.write_all(data.as_bytes())?;
     Ok(())
 }
 
@@ -28,9 +28,7 @@ pub fn get_resource_json(app_handle: &AppHandle, file_name: &str) -> Result<Valu
         .path()
         .resolve(format!("assets/{}", file_name), BaseDirectory::Resource);
 
-    let json = read_json_file(&resource.unwrap().to_str().unwrap());
-
-    json
+    Ok(read_json_file(&resource?.to_str().unwrap())?)
 }
 
 pub fn get_resource(app_handle: &AppHandle, file_name: &str) -> Result<File, anyhow::Error> {
@@ -38,7 +36,7 @@ pub fn get_resource(app_handle: &AppHandle, file_name: &str) -> Result<File, any
         .path()
         .resolve(format!("assets/{}", file_name), BaseDirectory::Resource);
 
-    let file = File::open(&resource.unwrap());
+    let file = File::open(&resource?);
 
     Ok(file?)
 }
