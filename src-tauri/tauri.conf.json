@@ -11,14 +11,7 @@
     "active": true,
     "category": "Utility",
     "copyright": "MIT",
-    "targets": [
-      "deb",
-      "rpm",
-      "appimage",
-      "msi",
-      "app",
-      "dmg"
-    ],
+    "targets": ["deb", "rpm", "appimage", "msi", "app", "dmg"],
     "externalBin": [],
     "icon": [
       "icons/32x32.png",
@@ -40,9 +33,7 @@
       "providerShortName": null,
       "signingIdentity": null
     },
-    "resources": [
-      "assets/**/*"
-    ],
+    "resources": ["assets/**/*"],
     "shortDescription": "",
     "linux": {
       "deb": {

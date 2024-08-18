@@ -60,3 +60,9 @@ pub struct Contraction {
     pub string: String,
     pub spoken: String,
 }
+
+#[derive(Serialize, Deserialize, Debug)]
+pub struct Preset {
+    pub name: String,
+    pub index: usize,
+}

@@ -11,14 +11,18 @@ pub fn get_intro_contraction(
     let json =
         get_resource_json(app_handle, "custom_contractions.json").unwrap()["airports"].clone();
 
-    let atis_type = match atis_type {
+    let atis_type_spoken = match atis_type {
         "dep" => "DEPARTURE",
         "arr" => "ARRIVAL",
         _ => "",
     };
 
     let string = format!("{} {} INFO", &airport_code[1..], atis_type);
-    let spoken = format!("{} AIRPORT {} INFORMATION", json[airport_code], atis_type);
+    let spoken = format!(
+        "{} AIRPORT {} INFORMATION",
+        json[airport_code].to_string(),
+        atis_type_spoken
+    );
 
     vec![Contraction { string, spoken }]
 }
@@ -33,8 +37,6 @@ pub fn write_contractions(
     let json = get_resource_json(app_handle, "custom_contractions.json").unwrap()
         ["notam_contractions"]
         .clone();
-
-    error!("{:?}", atis);
 
     if let Value::Object(map) = json {
         let new_contractions: Vec<Contraction> = map

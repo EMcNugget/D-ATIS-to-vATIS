@@ -22,9 +22,11 @@ const create_template = (
   combined: boolean,
   type?: "ARR" | "DEP"
 ): string => {
-  return `${facility}${
-    combined ? ` ${type}` : ""
-  } ATIS INFO [ATIS_CODE] [OBS_TIME]. [FULL_WX_STRING]. [ARPT_COND] [NOTAMS]`;
+  if (combined) {
+    return "[FACILITY] ATIS INFO [ATIS_CODE] [OBS_TIME]. [FULL_WX_STRING]. [ARPT_COND] [NOTAMS]";
+  } else {
+    return `${facility} ${type} INFO [ATIS_CODE] [OBS_TIME]. [FULL_WX_STRING]. [ARPT_COND] [NOTAMS]`;
+  }
 };
 
 const notam_varients = [

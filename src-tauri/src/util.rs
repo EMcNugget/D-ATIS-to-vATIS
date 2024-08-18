@@ -7,7 +7,7 @@ use std::{
 use sysinfo::System;
 use tauri::{path::BaseDirectory, AppHandle, Manager};
 
-use crate::settings::read_settings;
+use crate::{settings::read_settings, structs::Preset};
 
 pub fn read_json_file(file_path: &str) -> Result<Value, anyhow::Error> {
     let file = File::open(file_path)?;
@@ -79,4 +79,27 @@ pub fn open_vatis(app_handle: AppHandle, custom_path: Option<&str>) -> Result<()
     }
 
     Ok(())
+}
+
+#[tauri::command]
+pub fn get_profiles(app_handle: AppHandle) -> Vec<Preset> {
+    let json = read_json_file(&format!("{}\\AppConfig.json", &get_vatis_path(&app_handle)));
+    match json {
+        Ok(json) => {
+            let mut profiles: Vec<Preset> = Vec::new();
+
+            for (index, profile) in json["profiles"].as_array().unwrap().iter().enumerate() {
+                profiles.push(Preset {
+                    index,
+                    name: profile["name"].to_string(),
+                });
+            }
+
+            profiles
+        }
+        Err(e) => {
+            error!("Failed to read AppConfig.json: {}", e);
+            Vec::new()
+        }
+    }
 }
