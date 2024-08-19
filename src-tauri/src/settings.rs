@@ -1,5 +1,5 @@
 use crate::structs::{Response, Settings};
-use crate::util::{read_json_file, write_json_file};
+use crate::util::{get_resource_json, read_json_file, write_json_file};
 use log::{error, info};
 use serde_json::{from_value, Map, Value};
 use std::path::Path;
@@ -27,18 +27,18 @@ pub fn check_settings_file(app_handle: &AppHandle) -> Response {
     let app_data_path = app_handle.path().app_data_dir().unwrap();
     let file_path = app_data_path.join("settings.json");
 
-    let settings = match read_json_file(file_path.to_str().unwrap()) {
-        Ok(json) => json,
-        Err(err) => {
-            return response(
-                "Failed to validate settings file",
-                false,
-                Some(&err.to_string()),
-            );
-        }
-    };
-
     if Path::new(&file_path).exists() {
+        let settings = match read_json_file(file_path.to_str().unwrap()) {
+            Ok(json) => json,
+            Err(err) => {
+                return response(
+                    "Failed to validate settings file",
+                    false,
+                    Some(&err.to_string()),
+                );
+            }
+        };
+
         let json_value = read_json_file(file_path.to_str().unwrap()).unwrap();
         let mut json = json_value.as_object().unwrap().clone();
 
@@ -72,13 +72,16 @@ pub fn check_settings_file(app_handle: &AppHandle) -> Response {
         }
 
         return response("Settings file already exists", true, None);
-    }
+    } else {
+        let default_settings = get_resource_json(app_handle, "default_settings.json").unwrap();
 
-    let json_string = serde_json::to_string_pretty(&from_value::<Settings>(settings).unwrap());
-    std::fs::create_dir_all(app_data_path).unwrap();
-    match write_json_file(file_path.to_str().unwrap(), &json_string.unwrap()) {
-        Ok(_) => return response("Settings file created successfully", true, None),
-        Err(_) => return response("Failed to create settings file", false, None),
+        let json_string =
+            serde_json::to_string_pretty(&from_value::<Settings>(default_settings).unwrap());
+        std::fs::create_dir_all(app_data_path).unwrap();
+        match write_json_file(file_path.to_str().unwrap(), &json_string.unwrap()) {
+            Ok(_) => return response("Settings file created successfully", true, None),
+            Err(_) => return response("Failed to create settings file", false, None),
+        }
     }
 }
 

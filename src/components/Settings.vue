@@ -46,8 +46,6 @@ const profile = computed({
   set: (v) => store.set_profile(v),
 });
 
-const profiles = ref<string[]>([]);
-
 const alert = computed({
   get: () => store.get_alert(),
   set: (v) => store.set_alert(v),
@@ -76,7 +74,6 @@ const open_vatis_on_fetch = computed({
 const showAlert = ref(false);
 const showDropdown = ref(false);
 const showDropdownInterval = ref(false);
-const showDropdownProfile = ref(false);
 
 const handle_theme = (v: string) => {
   showDropdown.value = false;
@@ -101,18 +98,9 @@ const toggle_dropdown_interval = () => {
   showDropdownInterval.value = !showDropdownInterval.value;
 };
 
-const toggle_dropdown_profile = () => {
-  showDropdownProfile.value = !showDropdownProfile.value;
-};
-
 const handle_interval = (v: number) => {
   showDropdownInterval.value = false;
   update_time.value = v;
-};
-
-const handle_profile = (v: string) => {
-  showDropdownProfile.value = false;
-  profile.value = v;
 };
 
 const window = getCurrentWindow();
@@ -163,18 +151,12 @@ const save_settings = () => {
         </button>
       </form>
       <h3 class="text-2xl mb-6 font-bold">Settings</h3>
-      <CLabel title="Profile">
-        <Dropdown
-          :name="profile"
-          :click="toggle_dropdown_profile"
-          :show="showDropdownProfile"
-          :tab_index="2"
-        >
-          <li v-for="v in profiles">
-            <a @click="handle_profile(v)">{{ v }}</a>
-          </li>
-        </Dropdown>
-      </CLabel>
+      <input
+        type="text"
+        v-model="profile"
+        placeholder="Profile..."
+        class="input input-bordered w-full mr-4 mb-4"
+      />
       <CLabel title="Custom vATIS Installation">
         <input type="checkbox" class="toggle" v-model="custom_path" />
       </CLabel>
