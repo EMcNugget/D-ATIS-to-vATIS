@@ -19,7 +19,7 @@ dotenv = "0.15.0"
 serde_json = { version = "1.0.123", features = ["preserve_order"] }
 uuid = { version = "1.1", features = ["serde", "v4"] }
 serde = { version = "1.0.206", features = ["derive"] }
-tauri = { version = "^2.0.0-rc.2", features = [] }
+tauri = { version = "^2.0.0-rc.5", features = [] }
 tauri-plugin-dialog = "^2.0.0-rc.0"
 tauri-plugin-log = "^2.0.0-rc.0"
 tauri-plugin-process = "^2.0.0-rc.0"
