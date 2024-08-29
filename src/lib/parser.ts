@@ -68,21 +68,15 @@ const parse_atis = (atis: TATIS, split: boolean, facility: string): vATIS => {
       message,
     };
   } else {
-    try {
-      const notam_varient =
-        notam_varients.find((varient) => atis.datis.includes(varient)) ||
-        "NOTAMS...";
+    const notam_varient =
+      notam_varients.find((varient) => atis.datis.includes(varient)) ||
+      "NOTAMS...";
 
-      vATIS.atis.notams = atis.datis
-        .split(notam_varient)[1]
-        .split(" ...ADVS")[0];
-      vATIS.atis.airportConditions = atis.datis
-        .slice(find_number_of_occurances(atis.datis, ".", 2) + 1)
-        .split(notam_varient)[0]
-        .trim();
-    } catch (e) {
-      throw e;
-    }
+    vATIS.atis.notams = atis.datis.split(notam_varient)[1].split(" ...ADVS")[0];
+    vATIS.atis.airportConditions = atis.datis
+      .slice(find_number_of_occurances(atis.datis, ".", 2) + 1)
+      .split(notam_varient)[0]
+      .trim();
   }
   return vATIS;
 };
@@ -100,11 +94,7 @@ export const fetch_atis = async (facility: string) => {
 
   const atisArray: vATIS[] = [];
   response.forEach((atis: TATIS) => {
-    try {
-      atisArray.push(parse_atis(atis, split, facility));
-    } catch (e) {
-      throw e;
-    }
+    atisArray.push(parse_atis(atis, split, facility));
   });
 
   return atisArray;
