@@ -8,7 +8,7 @@ import { invoke } from "@tauri-apps/api/core";
 const store = use_store();
 
 invoke("read_settings").then((k) => {
-  store.set_all(k as TSettings);
+  store.set_settings(k as TSettings);
 });
 </script>
 

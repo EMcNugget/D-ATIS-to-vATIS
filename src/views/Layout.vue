@@ -37,7 +37,7 @@ onMounted(async () => {
 });
 
 const message = computed(() => store.get_alert());
-const localTheme = computed(() => store.get_theme());
+const localTheme = computed(() => store.get_individual("theme"));
 const showAlert = ref(false);
 const showSettings = ref(false);
 

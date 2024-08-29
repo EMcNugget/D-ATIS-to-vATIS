@@ -22,28 +22,31 @@ const open_path = () => {
     directory: true,
     filters: [],
   }).then((path) => {
-    store.set_file_path(path ? (path as string) : store.get_file_path());
+    store.set_individual(
+      "file_path",
+      path ? (path as string) : store.get_individual("file_path")
+    );
   });
 };
 
 const file_path = computed({
-  get: () => store.get_file_path(),
-  set: (v) => store.set_file_path(v),
+  get: () => store.get_individual("file_path"),
+  set: (v) => store.set_individual("file_path", v),
 });
 
 const custom_path = computed({
-  get: () => store.get_custom_path(),
-  set: (v) => store.set_custom_path(v),
+  get: () => store.get_individual("custom_path"),
+  set: (v) => store.set_individual("custom_path", v),
 });
 
 const save_facility = computed({
-  get: () => store.get_save_facility(),
-  set: (v) => store.set_save_facility(v),
+  get: () => store.get_individual("save_facility"),
+  set: (v) => store.set_individual("save_facility", v),
 });
 
 const profile = computed({
-  get: () => store.get_profile(),
-  set: (v) => store.set_profile(v),
+  get: () => store.get_individual("profile"),
+  set: (v) => store.set_individual("profile", v),
 });
 
 const alert = computed({
@@ -51,24 +54,24 @@ const alert = computed({
   set: (v) => store.set_alert(v),
 });
 
-const check_update = computed({
-  get: () => store.get_check_update(),
-  set: (v) => store.set_check_update(v),
+const check_updates = computed({
+  get: () => store.get_individual("check_updates"),
+  set: (v) => store.set_individual("check_updates", v),
 });
 
-const check_update_freq = computed({
-  get: () => store.get_check_update_freq(),
-  set: (v) => store.set_check_update_freq(v),
+const check_updates_freq = computed({
+  get: () => store.get_individual("check_updates_freq"),
+  set: (v) => store.set_individual("check_updates_freq", v),
 });
 
 const update_time = computed({
-  get: () => store.get_update_time(),
-  set: (v) => store.set_update_time(v),
+  get: () => store.get_individual("update_time"),
+  set: (v) => store.set_individual("update_time", v),
 });
 
 const open_vatis_on_fetch = computed({
-  get: () => store.get_open_vatis_on_fetch(),
-  set: (v) => store.set_open_vatis_on_fetch(v),
+  get: () => store.get_individual("open_vatis_on_fetch"),
+  set: (v) => store.set_individual("open_vatis_on_fetch", v),
 });
 
 const showAlert = ref(false);
@@ -111,8 +114,8 @@ await listen(TauriEvent.WINDOW_THEME_CHANGED, (event) => {
 });
 
 const theme = computed({
-  get: () => store.get_theme(),
-  set: (v) => store.set_theme(v),
+  get: () => store.get_individual("theme"),
+  set: (v) => store.set_individual("theme", v),
 });
 
 watch(
@@ -129,10 +132,9 @@ watch(
   }
 );
 
-
 const save_settings = () => {
   invoke("write_settings", {
-    settings: store.get_all(),
+    settings: store.get_settings(),
   }).then((k) => {
     alert.value = k as TAlert;
   });
@@ -174,12 +176,12 @@ const save_settings = () => {
         <input type="checkbox" class="toggle" v-model="save_facility" />
       </CLabel>
       <CLabel title="Check for ATIS Updates">
-        <input type="checkbox" class="checkbox" v-model="check_update" />
+        <input type="checkbox" class="checkbox" v-model="check_updates" />
       </CLabel>
 
-      <div v-if="check_update">
+      <div v-if="check_updates">
         <CLabel title="Automatically Change Interval based on Zulu Time">
-          <input type="checkbox" class="checkbox" v-model="check_update_freq" />
+          <input type="checkbox" class="checkbox" v-model="check_updates_freq" />
         </CLabel>
         <CLabel title="Update Interval">
           <Dropdown

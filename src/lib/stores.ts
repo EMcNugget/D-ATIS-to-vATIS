@@ -1,5 +1,5 @@
 import { defineStore } from "pinia";
-import type { TSettings, TTheme, TAlert } from "./types";
+import type { TSettings, TAlert } from "./types";
 
 type TStore = {
   settings: TSettings;
@@ -23,53 +23,21 @@ export const use_store = defineStore("store", {
   actions: {
     // Setters
 
-    set_facility(code: string) {
-      this.settings.facility = code.toUpperCase();
+    /**
+     * Only for settings
+     */
+    set_individual<K extends keyof TSettings>(key: K, value: TSettings[K]) {
+      this.settings[key] = value;
     },
-    set_file_path(path: string) {
-      this.settings.file_path = path;
-    },
-    set_custom_path(custom: boolean) {
-      this.settings.custom_path = custom;
-    },
-    set_save_facility(save: boolean) {
-      this.settings.save_facility = save;
-    },
-    set_profile(profile: string) {
-      this.settings.profile = profile;
-    },
-    set_theme(theme: TTheme) {
-      this.settings.theme = theme;
-    },
-    set_all(settings: TSettings) {
+    set_settings(settings: TSettings) {
+      this.settings = settings;
       this.settings.facility = settings.save_facility ? settings.facility : "";
-      this.settings.file_path = settings.file_path;
-      this.settings.custom_path = settings.custom_path;
-      this.settings.save_facility = settings.save_facility;
-      this.settings.open_vatis_on_fetch = settings.open_vatis_on_fetch;
-      this.settings.check_updates = settings.check_updates;
-      this.settings.check_updates_freq = settings.check_updates_freq;
-      this.settings.update_time = settings.update_time;
-      this.settings.profile = settings.profile;
-      this.settings.theme = settings.theme;
-    },
-    set_alert(message: TAlert) {
-      this.alert = message;
-    },
-    set_check_update(status: boolean) {
-      this.settings.check_updates = status;
-    },
-    set_check_update_freq(freq: boolean) {
-      this.settings.check_updates_freq = freq;
     },
     set_codes(codes: string[]) {
       this.codes = codes;
     },
-    set_open_vatis_on_fetch(open: boolean) {
-      this.settings.open_vatis_on_fetch = open;
-    },
-    set_update_time(time: number) {
-      this.settings.update_time = time;
+    set_alert(message: TAlert) {
+      this.alert = message;
     },
     set_app_update(status: boolean) {
       this.app_update = status;
@@ -77,57 +45,23 @@ export const use_store = defineStore("store", {
     set_airports_in_profile(airports: string[]) {
       this.airports_in_profile = airports;
     },
+
     // Getters
 
-    get_facility() {
-      return this.settings.facility;
+    /**
+     * Only for settings
+     */
+    get_individual<K extends keyof TSettings>(key: K): TSettings[K] {
+      return this.settings[key];
     },
-    get_file_path() {
-      return this.settings.file_path;
-    },
-    get_custom_path() {
-      return this.settings.custom_path;
-    },
-    get_save_facility() {
-      return this.settings.save_facility;
-    },
-    get_profile() {
-      return this.settings.profile;
-    },
-    get_theme() {
-      return this.settings.theme;
-    },
-    get_all(): TSettings {
-      return {
-        facility: this.settings.facility,
-        file_path: this.settings.file_path,
-        custom_path: this.settings.custom_path,
-        save_facility: this.settings.save_facility,
-        open_vatis_on_fetch: this.settings.open_vatis_on_fetch,
-        check_updates: this.settings.check_updates,
-        check_updates_freq: this.settings.check_updates_freq,
-        update_time: this.settings.update_time,
-        profile: this.settings.profile,
-        theme: this.settings.theme,
-      };
-    },
-    get_alert() {
-      return this.alert;
-    },
-    get_check_update() {
-      return this.settings.check_updates;
-    },
-    get_check_update_freq() {
-      return this.settings.check_updates_freq;
+    get_settings() {
+      return this.settings;
     },
     get_codes() {
       return this.codes;
     },
-    get_open_vatis_on_fetch() {
-      return this.settings.open_vatis_on_fetch;
-    },
-    get_update_time() {
-      return this.settings.update_time;
+    get_alert() {
+      return this.alert;
     },
     get_app_update() {
       return this.app_update;

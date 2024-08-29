@@ -10,8 +10,8 @@ import { computed, ref, watch } from "vue";
 const store = use_store();
 
 const facility = computed({
-  get: () => store.get_facility(),
-  set: (v) => store.set_facility(v),
+  get: () => store.get_individual("facility"),
+  set: (v) => store.set_individual("facility", v),
 });
 
 const message = computed({
@@ -20,15 +20,19 @@ const message = computed({
 });
 
 const update_time = computed({
-  get: () => store.get_update_time(),
-  set: (v) => store.set_update_time(v),
+  get: () => store.get_individual("update_time"),
+  set: (v) => store.set_individual("update_time", v),
 });
 
-const check_update = computed(() => store.get_check_update());
+const check_update = computed(() => store.get_individual("check_updates"));
 
-const check_update_freq = computed(() => store.get_check_update_freq());
+const check_updates_freq = computed(() =>
+  store.get_individual("check_updates_freq")
+);
 
-const open_vatis_on_fetch = computed(() => store.get_open_vatis_on_fetch());
+const open_vatis_on_fetch = computed(() =>
+  store.get_individual("open_vatis_on_fetch")
+);
 
 const airports_in_profile = computed(() => store.get_airports_in_profile());
 
@@ -43,7 +47,10 @@ const validateICAO = (value: string) => {
   if (!facilities.includes(value)) {
     tooltip.value = "Invalid facility";
     return false;
-  } else if (!store.get_file_path() && store.get_custom_path()) {
+  } else if (
+    !store.get_individual("file_path") &&
+    store.get_individual("custom_path")
+  ) {
     tooltip.value =
       "Please select the path to your vATIS installation in settings";
     return false;
@@ -85,6 +92,7 @@ const get_atis_code = (atis: vATIS[]): TATISCode[] => {
 
 const get_atis = async () => {
   try {
+    console.log(store.get_individual("check_updates"));
     invoke("is_vatis_running").then(async (k) => {
       if (k) {
         message.value = {
@@ -111,8 +119,8 @@ const get_atis = async () => {
             message.value = v;
             if (open_vatis_on_fetch.value && success) {
               invoke("open_vatis", {
-                custom_path: store.get_custom_path()
-                  ? store.get_file_path()
+                custom_path: store.get_individual("custom_path")
+                  ? store.get_individual("custom_path")
                   : null,
               });
             }
@@ -145,7 +153,7 @@ const get_zulu_time = () => {
 let temp_time = ref(update_time.value);
 
 watch(
-  () => check_update_freq.value,
+  () => check_updates_freq.value,
   (val) => {
     if (val) {
       setInterval(() => {
