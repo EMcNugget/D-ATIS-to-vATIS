@@ -5,12 +5,12 @@ use log::info;
 use tauri::{AppHandle, Listener};
 use tauri_plugin_log::{Target, TargetKind};
 
-pub mod app;
-pub mod audio;
-pub mod contraction;
-pub mod settings;
-pub mod structs;
-pub mod util;
+mod app;
+mod audio;
+mod contraction;
+mod settings;
+mod structs;
+mod util;
 
 fn setup(app_handle: &AppHandle) {
     info!(
