@@ -11,8 +11,8 @@ import { getVersion } from "@tauri-apps/api/app";
 
 const store = use_store();
 
-const version = ref<string>("Unknown");
-const showUpdate = ref(false);
+const version = ref("Unknown");
+const show_update = ref(false);
 const info = computed(() => `v${version.value} Copyright © 2024 Ethan Seys`);
 
 const updateAndRelaunch = async () => {
@@ -31,20 +31,20 @@ onMounted(async () => {
     const update = await check();
     if (update?.available) {
       version.value = update.version;
-      showUpdate.value = true;
+      show_update.value = true;
     }
   }
 });
 
 const message = computed(() => store.get_alert());
-const localTheme = computed(() => store.get_individual("theme"));
-const showAlert = ref(false);
-const showSettings = ref(false);
+const local_theme = computed(() => store.get_individual("theme"));
+const show_alert = ref(false);
+const show_settings = ref(false);
 
 watch(
   () => message.value,
   () => {
-    showAlert.value = true;
+    show_alert.value = true;
   }
 );
 </script>
@@ -52,21 +52,21 @@ watch(
 <template>
   <div
     class="h-screen relative flex flex-col items-center justify-center"
-    :data-theme="localTheme"
+    :data-theme="local_theme"
   >
-    <Alerts :message="message" :show="showAlert" @close="showAlert = false" />
+    <Alerts :message="message" :show="show_alert" @close="show_alert = false" />
     <Update
-      v-if="showUpdate"
-      :show="showUpdate"
+      v-if="show_update"
+      :show="show_update"
       :version="version"
-      @close-update="showUpdate = false"
+      @close-update="show_update = false"
       @download-and-install="updateAndRelaunch"
     />
     <slot></slot>
-    <Settings :showModal="showSettings" @close="showSettings = !showSettings" />
+    <Settings :showModal="show_settings" @close="show_settings = !show_settings" />
     <button
       class="btn btn-circle fixed bottom-0 left-0 m-4 flex items-center justify-center"
-      @click="showSettings = !showSettings"
+      @click="show_settings = !show_settings"
     >
       <img
         src="/settings.svg"
