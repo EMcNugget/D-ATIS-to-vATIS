@@ -118,9 +118,7 @@ const get_atis = async () => {
             message.value = v;
             if (open_vatis_on_fetch.value && success) {
               invoke("open_vatis", {
-                custom_path: store.get_individual("custom_path")
-                  ? store.get_individual("custom_path")
-                  : null,
+                custom_path: store.get_individual("custom_path"),
               });
             }
           });

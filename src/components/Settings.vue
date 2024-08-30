@@ -22,10 +22,7 @@ const open_path = () => {
     directory: true,
     filters: [],
   }).then((path) => {
-    store.set_individual(
-      "file_path",
-      path ? (path as string) : store.get_individual("file_path")
-    );
+    if (path) file_path.value = path as string;
   });
 };
 
@@ -49,7 +46,7 @@ const profile = computed({
   set: (v) => store.set_individual("profile", v),
 });
 
-const profiles = ref<string[]>(["No Profile"]);
+const profiles = ref(["No Profile"]);
 
 const alert = computed({
   get: () => store.get_alert(),
