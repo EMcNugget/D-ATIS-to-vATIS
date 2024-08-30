@@ -5,13 +5,20 @@ use log::info;
 use tauri::{AppHandle, Listener};
 use tauri_plugin_log::{Target, TargetKind};
 
+pub mod app;
+pub mod audio;
+pub mod contraction;
+pub mod settings;
+pub mod structs;
+pub mod util;
+
 fn setup(app_handle: &AppHandle) {
     info!(
         "D-ATIS to vATIS started version {}",
         app_handle.config().version.as_ref().unwrap()
     );
 
-    d_atis_to_vatis::settings::check_settings_file(&app_handle);
+    crate::settings::check_settings_file(&app_handle);
 }
 
 fn main() {
@@ -21,7 +28,7 @@ fn main() {
             setup(&handle);
 
             app.listen("new-codes", move |_event| {
-                d_atis_to_vatis::audio::play_audio(&handle);
+                crate::audio::play_audio(&handle);
             });
 
             Ok(())
@@ -41,11 +48,13 @@ fn main() {
                 .build(),
         )
         .invoke_handler(tauri::generate_handler![
-            d_atis_to_vatis::settings::write_settings,
-            d_atis_to_vatis::settings::read_settings,
-            d_atis_to_vatis::app::write_atis,
-            d_atis_to_vatis::util::is_vatis_running,
-            d_atis_to_vatis::util::open_vatis,
+            crate::settings::write_settings,
+            crate::settings::read_settings,
+            crate::app::write_atis,
+            crate::app::is_vatis_running,
+            crate::app::open_vatis,
+            crate::app::get_profiles,
+            crate::app::get_airports_in_profile
         ])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");

@@ -49,6 +49,8 @@ const profile = computed({
   set: (v) => store.set_individual("profile", v),
 });
 
+const profiles = ref<string[]>(["No Profile"]);
+
 const alert = computed({
   get: () => store.get_alert(),
   set: (v) => store.set_alert(v),
@@ -74,12 +76,13 @@ const open_vatis_on_fetch = computed({
   set: (v) => store.set_individual("open_vatis_on_fetch", v),
 });
 
-const showAlert = ref(false);
-const showDropdown = ref(false);
-const showDropdownInterval = ref(false);
+const show_alert = ref(false);
+const show_dropdown_theme = ref(false);
+const show_dropdown_interval = ref(false);
+const show_dropdown_profile = ref(false);
 
 const handle_theme = (v: string) => {
-  showDropdown.value = false;
+  show_dropdown_theme.value = false;
   switch (v) {
     case "system":
       theme.value = "system";
@@ -93,16 +96,25 @@ const handle_theme = (v: string) => {
   }
 };
 
-const toggle_dropdown = () => {
-  showDropdown.value = !showDropdown.value;
+const handle_dropdown_theme = () => {
+  show_dropdown_theme.value = !show_dropdown_theme.value;
 };
 
-const toggle_dropdown_interval = () => {
-  showDropdownInterval.value = !showDropdownInterval.value;
+const handle_dropdown_interval = () => {
+  show_dropdown_interval.value = !show_dropdown_interval.value;
+};
+
+const handle_dropdown_profile = () => {
+  show_dropdown_profile.value = !show_dropdown_profile.value;
+};
+
+const handle_profile = (v: string) => {
+  show_dropdown_profile.value = false;
+  profile.value = v;
 };
 
 const handle_interval = (v: number) => {
-  showDropdownInterval.value = false;
+  show_dropdown_interval.value = false;
   update_time.value = v;
 };
 
@@ -128,7 +140,7 @@ watch(
 watch(
   () => alert.value,
   () => {
-    showAlert.value = true;
+    show_alert.value = true;
   }
 );
 
@@ -139,6 +151,19 @@ const save_settings = () => {
     alert.value = k as TAlert;
   });
 };
+
+watch(
+  () => store.settings.profile,
+  async () => {
+    profiles.value.push(...(await invoke<string[]>("get_profiles")));
+    store.set_airports_in_profile(
+      await invoke<string[]>("get_airports_in_profile", {
+        profile: profile.value,
+      })
+    );
+  },
+  { immediate: true }
+);
 </script>
 
 <template>
@@ -153,12 +178,18 @@ const save_settings = () => {
         </button>
       </form>
       <h3 class="text-2xl mb-6 font-bold">Settings</h3>
-      <input
-        type="text"
-        v-model="profile"
-        placeholder="Profile..."
-        class="input input-bordered w-full mr-4 mb-4"
-      />
+      <CLabel title="Profile">
+        <Dropdown
+          :name="profile"
+          :click="handle_dropdown_profile"
+          :show="show_dropdown_profile"
+          :tab_index="2"
+        >
+          <li v-for="p in profiles" :key="p">
+            <a @click="handle_profile(p)">{{ p }}</a>
+          </li>
+        </Dropdown>
+      </CLabel>
       <CLabel title="Custom vATIS Installation">
         <input type="checkbox" class="toggle" v-model="custom_path" />
       </CLabel>
@@ -181,13 +212,17 @@ const save_settings = () => {
 
       <div v-if="check_updates">
         <CLabel title="Automatically Change Interval based on Zulu Time">
-          <input type="checkbox" class="checkbox" v-model="check_updates_freq" />
+          <input
+            type="checkbox"
+            class="checkbox"
+            v-model="check_updates_freq"
+          />
         </CLabel>
         <CLabel title="Update Interval">
           <Dropdown
             :name="`${update_time}m`"
-            :click="toggle_dropdown_interval"
-            :show="showDropdownInterval"
+            :click="handle_dropdown_interval"
+            :show="show_dropdown_interval"
             :tab_index="1"
           >
             <li><a @click="handle_interval(15)">15m</a></li>
@@ -203,8 +238,8 @@ const save_settings = () => {
       <CLabel title="Theme">
         <Dropdown
           :name="theme.charAt(0).toUpperCase() + theme.slice(1)"
-          :click="toggle_dropdown"
-          :show="showDropdown"
+          :click="handle_dropdown_theme"
+          :show="show_dropdown_theme"
           :tab_index="0"
         >
           <li><a @click="handle_theme('system')">System</a></li>

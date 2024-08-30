@@ -11,7 +11,7 @@ const store = use_store();
 
 const facility = computed({
   get: () => store.get_individual("facility"),
-  set: (v) => store.set_individual("facility", v),
+  set: (v) => store.set_individual("facility", v.toUpperCase()),
 });
 
 const message = computed({
@@ -92,7 +92,6 @@ const get_atis_code = (atis: vATIS[]): TATISCode[] => {
 
 const get_atis = async () => {
   try {
-    console.log(store.get_individual("check_updates"));
     invoke("is_vatis_running").then(async (k) => {
       if (k) {
         message.value = {
@@ -101,7 +100,7 @@ const get_atis = async () => {
         };
         return;
       } else {
-        await fetch_atis(facility.value).then((atis) => {
+        fetch_atis(facility.value).then((atis) => {
           store.set_codes(atis.map((k) => k.atis_code));
           invoke("write_atis", {
             facility: facility.value,
