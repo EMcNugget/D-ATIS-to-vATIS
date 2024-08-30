@@ -1,5 +1,12 @@
 # D-ATIS to vATIS
 
+## [1.6.1](#1.6.1) - 8/29/2024
+
+### Patch Changes
+
+- 44e85ef: Added contractions for atis introduction (e.g "ATL DEP INFO" -> "ATL DEPARTURE ")
+- ad5569a: Added dropdown for profiles
+
 ## [1.6.0](#1.6.0) - 8/11/2024
 
 ### Minor Changes
