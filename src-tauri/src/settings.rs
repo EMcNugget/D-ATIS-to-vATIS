@@ -1,7 +1,7 @@
 use crate::structs::{Response, Settings};
 use crate::util::{get_resource_json, read_json_file, write_json_file};
 use log::{error, info};
-use serde_json::{from_value, Map, Value};
+use serde_json::{from_value, Map};
 use std::path::Path;
 use tauri::{AppHandle, Manager};
 
@@ -27,40 +27,43 @@ pub fn check_settings_file(app_handle: &AppHandle) -> Response {
     let app_data_path = app_handle.path().app_data_dir().unwrap();
     let file_path = app_data_path.join("settings.json");
 
+    let default_settings = get_resource_json(app_handle, "default_settings.json").unwrap();
+
     if Path::new(&file_path).exists() {
         let settings = match read_json_file(file_path.to_str().unwrap()) {
             Ok(json) => json,
             Err(err) => {
                 return response(
-                    "Failed to validate settings file",
+                    "Failed to read settings file",
                     false,
                     Some(&err.to_string()),
                 );
             }
         };
 
-        let json_value = read_json_file(file_path.to_str().unwrap()).unwrap();
-        let mut json = json_value.as_object().unwrap().clone();
+        let json = settings.as_object().unwrap().clone();
+        let mut new_settings = Map::new();
 
         let mut changed = false;
 
-        let mut new_json: Map<String, Value> = Map::new();
-        let default_keys = settings.as_object().unwrap();
+        let default_keys = default_settings.as_object().unwrap();
 
         for k in default_keys.keys() {
-            if let Some(value) = json.remove(k) {
-                new_json.insert(k.to_string(), value);
+            if json.contains_key(k) {
+                new_settings.insert(k.to_string(), json[k].clone());
             } else {
-                new_json.insert(k.to_string(), settings[k].clone());
+                new_settings.insert(k.to_string(), default_keys[k].clone());
                 changed = true;
-                info!("Added missing key to settings: {}", k);
+                info!("Added missing key: {}", k);
             }
         }
 
         if changed {
             match write_json_file(
                 file_path.to_str().unwrap(),
-                serde_json::to_string_pretty(&new_json).unwrap().as_str(),
+                serde_json::to_string_pretty(&new_settings)
+                    .unwrap()
+                    .as_str(),
             ) {
                 Ok(_) => return response("Settings file updated successfully", true, None),
                 Err(err) => response(
@@ -71,10 +74,8 @@ pub fn check_settings_file(app_handle: &AppHandle) -> Response {
             };
         }
 
-        return response("Settings file already exists", true, None);
+        return response("Settings file exists and is up to date", true, None);
     } else {
-        let default_settings = get_resource_json(app_handle, "default_settings.json").unwrap();
-
         let json_string =
             serde_json::to_string_pretty(&from_value::<Settings>(default_settings).unwrap());
         std::fs::create_dir_all(app_data_path).unwrap();
