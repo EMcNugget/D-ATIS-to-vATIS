@@ -1,5 +1,7 @@
 # Takes real-world D-ATIS's and creates a custom vATIS preset.
 
+![Cannot load logo](./src-tauri/icons/Square284x284Logo.png)
+
 ## Features
 
 - Works with any facility that has a D-ATIS.
