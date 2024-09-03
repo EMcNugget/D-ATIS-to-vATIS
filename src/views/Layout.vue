@@ -5,35 +5,48 @@ import CUpdate from "../components/CUpdate.vue";
 import { computed, ref, watch, onMounted } from "vue";
 import { use_store } from "../lib/stores";
 import { router } from "../lib/router";
-import { check } from "@tauri-apps/plugin-updater";
+import { check, Update } from "@tauri-apps/plugin-updater";
 import { relaunch } from "@tauri-apps/plugin-process";
 import { getVersion } from "@tauri-apps/api/app";
+import { invoke } from "@tauri-apps/api/core";
+import { TSettings } from "src/lib/types";
 
 const store = use_store();
 
 const version = ref("Unknown");
 const show_update = ref(false);
+let update: Update | null = null;
 const info = computed(() => `v${version.value} Copyright © 2024 Ethan Seys`);
+let read = false;
 
-const update_and_relaunch = async () => {
-  const update = await check();
-  if (update?.available) {
-    update.downloadAndInstall().then(() => {
-      relaunch();
-    });
-  }
-};
-
-onMounted(async () => {
+const setup = async () => {
   version.value = await getVersion();
   if (!store.get_app_update()) {
     store.set_app_update(true);
-    const update = await check();
-    if (update?.available) {
-      version.value = update.version;
+    const update_value = await check();
+    if (update_value?.available) {
+      update = update_value;
+      version.value = update_value.version;
       show_update.value = true;
     }
   }
+
+  if (!read) {
+    read = true;
+    store.set_settings(await invoke<TSettings>("read_settings"));
+    store.set_profiles(await invoke<string[]>("get_profiles"));
+  }
+};
+
+const update_and_relaunch = async () => {
+  if (!update) return;
+  update.downloadAndInstall().then(() => {
+    relaunch();
+  });
+};
+
+onMounted(async () => {
+  await setup();
 });
 
 const message = computed(() => store.get_alert());
