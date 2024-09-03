@@ -1,6 +1,16 @@
 <script setup lang="ts">
 import Layout from "./Layout.vue";
 import { RouterLink, RouterView } from "vue-router";
+import { TSettings } from "../lib/types";
+import { use_store } from "../lib/stores";
+import { invoke } from "@tauri-apps/api/core";
+
+const store = use_store();
+
+invoke("read_settings").then(async (k) => {
+  store.set_settings(k as TSettings);
+  store.set_profiles(await invoke<string[]>("get_profiles"));
+});
 </script>
 
 <template>

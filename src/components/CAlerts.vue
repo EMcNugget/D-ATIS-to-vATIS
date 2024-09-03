@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import type { TAlert } from "../lib/types";
 import CTable from "./CTable.vue";
-const props = defineProps<{ message: TAlert; show: boolean; slot?: string }>();
+const props = defineProps<{ message: TAlert; show: boolean }>();
 const emit = defineEmits(["close"]);
 
 const get_alert_class = () => {
@@ -19,7 +19,7 @@ const get_alert_class = () => {
   }
 };
 
-const get_alert_icon = () => {
+const get_alert_icon_svg = () => {
   switch (props.message.alert_type) {
     case "error":
       return "M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z";
@@ -48,24 +48,19 @@ const get_alert_icon = () => {
           stroke-linecap="round"
           stroke-linejoin="round"
           stroke-width="2"
-          :d="get_alert_icon()"
+          :d="get_alert_icon_svg()"
         />
       </svg>
-      <div class="flex flex-col">
-        <span class="mb-2" v-if="slot">
-          {{ slot }}
-        </span>
-        <span v-if="typeof message.message === 'object'">
-          <CTable
-            :head="[]"
-            :rows="(message.message as Array<{
+      <span v-if="typeof message.message === 'object'">
+        <CTable
+          :head="[]"
+          :rows="(message.message as Array<{
           key: string;
           message: string;
         }>)"
-          />
-        </span>
-        <span v-else>{{ message.message }}</span>
-      </div>
+        />
+      </span>
+      <span v-else>{{ message.message }}</span>
       <button class="btn btn-circle btn-ghost h-4" @click="emit('close')">
         <svg
           xmlns="http://www.w3.org/2000/svg"

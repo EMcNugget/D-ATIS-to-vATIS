@@ -28,7 +28,7 @@ const profile = computed({
 
 const message = computed({
   get: () => store.get_alert(),
-  set: (v) => store.set_alert(v.alert, v.slot),
+  set: (v) => store.set_alert(v),
 });
 
 const update_time = computed({
@@ -50,7 +50,6 @@ const fetch_for_profile = computed(() =>
   store.get_individual("fetch_for_profile")
 );
 
-let facs: string[] = [];
 let codes: Record<string, string[]> = {};
 
 const tooltip = ref("");
@@ -121,15 +120,14 @@ const get_atis = async () => {
   try {
     if (await invoke("is_vatis_running")) {
       message.value = {
-        alert: {
-          alert_type: "error",
-          message: "Close vATIS before fetching ATIS",
-        },
+        alert_type: "error",
+        message: "Close vATIS before fetching ATIS",
       };
       return;
     }
 
-    let messages: { key: string; message: string }[] = [];
+    let facs: string[] = [];
+    let messages: Array<{ key: string; message: string }> = [];
     let status: Record<string, string> = {};
 
     codes = {};
@@ -148,32 +146,28 @@ const get_atis = async () => {
       let atis: vATIS[] = [];
       try {
         atis = await fetch_atis(fac);
+
+        const alert: TAlert = await invoke("write_atis", {
+          facility: fac,
+          atis: atis,
+        });
+
+        const success = alert.alert_type === "success";
+        alert.message = (alert.message as string).concat(
+          success
+            ? ` ${get_atis_code(atis)
+                .map((k) => `${k.type}: ${k.code}`)
+                .join(", ")}`
+            : ""
+        );
+
+        messages.push({ key: fac, message: alert.message as string });
+        status[fac] = alert.alert_type;
       } catch (e) {
         const alert = e as TAlert;
         messages.push({ key: fac, message: alert.message as string });
         status[fac] = alert.alert_type;
-        if (alert.payload) {
-          atis.push(alert.payload as vATIS);
-        }
       }
-
-      const alert = await invoke<TAlert>("write_atis", {
-        facility: fac,
-        atis: atis,
-      });
-
-      const success = alert.alert_type === "success";
-      alert.message = (alert.message as string).concat(
-        success
-          ? ` ${get_atis_code(atis)
-              .map((k) => `${k.type}: ${k.code}`)
-              .join(", ")}`
-          : ""
-      );
-
-      messages.push({ key: fac, message: alert.message as string });
-      status[fac] = alert.alert_type;
-      codes[fac] = get_atis_code(atis).map((k) => k.code);
     });
 
     await Promise.all(promises);
@@ -190,10 +184,8 @@ const get_atis = async () => {
     const success = alert_level > 1;
 
     message.value = {
-      alert: {
-        alert_type: alert_types[alert_level + 1],
-        message: messages,
-      },
+      alert_type: alert_types[alert_level + 1],
+      message: messages,
     };
 
     if (open_vatis_on_fetch.value && success) {
@@ -202,17 +194,19 @@ const get_atis = async () => {
       });
     }
   } catch (e) {
-    message.value = { alert: e as TAlert };
+    message.value = e as TAlert;
   }
 };
 
-const alert_new_codes = (rows: { key: string; message: string }[]) => {
+const alert_new_codes = (codes: Record<string, string[]>) => {
+  let rows: Array<{ key: string; message: string }> = [];
+
+  Object.entries(codes).forEach(([key, value]) => {
+    rows.push({ key, message: value.join(", ") });
+  });
   message.value = {
-    alert: {
-      alert_type: "info",
-      message: rows,
-    },
-    slot: `New ATIS found for: ${facs.join(", ")}`,
+    alert_type: "info",
+    message: rows,
   };
   emit("new-codes");
 };
@@ -256,13 +250,19 @@ watch(
         clearInterval(interval_id);
       }
 
+      let facilities = [facility.value];
+
+      if (fetch_for_profile.value) {
+        facilities = airports_in_profile.value;
+      }
+
       let changed = false;
       let new_codes: Record<string, string[]> = {};
 
       interval_id = setInterval(async () => {
-        facs.forEach(async (fac) => {
+        facilities.forEach(async (fac) => {
           const response = await fetch(
-            `https://datis.clowd.io/api/${fac}`
+            `https://datis.clowd.io/api/${facility.value}`
           ).then((res) => res.json());
 
           response.forEach((k: TATIS) => {
@@ -274,12 +274,7 @@ watch(
         });
 
         if (changed) {
-          alert_new_codes(
-            Object.entries(new_codes).map(([k, v]) => ({
-              key: k,
-              message: v.join(", "),
-            }))
-          );
+          alert_new_codes(new_codes);
           codes = new_codes;
         }
       }, val * 60000);

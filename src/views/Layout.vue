@@ -5,48 +5,35 @@ import CUpdate from "../components/CUpdate.vue";
 import { computed, ref, watch, onMounted } from "vue";
 import { use_store } from "../lib/stores";
 import { router } from "../lib/router";
-import { check, Update } from "@tauri-apps/plugin-updater";
+import { check } from "@tauri-apps/plugin-updater";
 import { relaunch } from "@tauri-apps/plugin-process";
 import { getVersion } from "@tauri-apps/api/app";
-import { invoke } from "@tauri-apps/api/core";
-import { TSettings } from "src/lib/types";
 
 const store = use_store();
 
 const version = ref("Unknown");
 const show_update = ref(false);
-let update: Update | null = null;
 const info = computed(() => `v${version.value} Copyright © 2024 Ethan Seys`);
-let read = false;
 
-const setup = async () => {
-  version.value = await getVersion();
-  if (!store.get_app_update()) {
-    store.set_app_update(true);
-    const update_value = await check();
-    if (update_value?.available) {
-      update = update_value;
-      version.value = update_value.version;
-      show_update.value = true;
-    }
+const updateAndRelaunch = async () => {
+  const update = await check();
+  if (update?.available) {
+    update.downloadAndInstall().then(() => {
+      relaunch();
+    });
   }
-
-  if (!read) {
-    read = true;
-    store.set_settings(await invoke<TSettings>("read_settings"));
-    store.set_profiles(await invoke<string[]>("get_profiles"));
-  }
-};
-
-const update_and_relaunch = async () => {
-  if (!update) return;
-  update.downloadAndInstall().then(() => {
-    relaunch();
-  });
 };
 
 onMounted(async () => {
-  await setup();
+  version.value = await getVersion();
+  if (!store.get_app_update()) {
+    store.set_app_update(true);
+    const update = await check();
+    if (update?.available) {
+      version.value = update.version;
+      show_update.value = true;
+    }
+  }
 });
 
 const message = computed(() => store.get_alert());
@@ -67,24 +54,16 @@ watch(
     class="h-screen relative flex flex-col items-center justify-center"
     :data-theme="local_theme"
   >
-    <CAlerts
-      :message="message.alert"
-      :slot="message.slot"
-      :show="show_alert"
-      @close="show_alert = false"
-    />
+    <CAlerts :message="message" :show="show_alert" @close="show_alert = false" />
     <CUpdate
       v-if="show_update"
       :show="show_update"
       :version="version"
       @close-update="show_update = false"
-      @download-and-install="update_and_relaunch"
+      @download-and-install="updateAndRelaunch"
     />
     <slot></slot>
-    <CSettings
-      :showModal="show_settings"
-      @close="show_settings = !show_settings"
-    />
+    <CSettings :showModal="show_settings" @close="show_settings = !show_settings" />
     <button
       class="btn btn-circle fixed bottom-0 left-0 m-4 flex items-center justify-center"
       @click="show_settings = !show_settings"

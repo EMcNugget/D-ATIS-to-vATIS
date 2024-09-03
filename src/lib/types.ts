@@ -53,7 +53,6 @@ type TAlert = {
         message: string;
       }[];
   alert_type: (typeof alert_types)[number];
-  payload?: any;
 };
 
 export const facilities = [
