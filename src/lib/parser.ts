@@ -111,12 +111,12 @@ export const fetch_atis = async (facility: string) => {
       } catch (e) {
         const alert = e as TAlert;
         if (alert.payload) {
-          atisArray.push(alert.payload);
+          parsed = alert.payload;
         } else {
           throw e;
         }
       }
-      atisArray.push(parse_atis(atis, split, facility));
+      atisArray.push(parsed);
     });
 
     return atisArray;
