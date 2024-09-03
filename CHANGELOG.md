@@ -1,5 +1,17 @@
 # D-ATIS to vATIS
 
+## [1.7.0](#1.7.0) - 9/2/2024
+
+### Minor Changes
+
+- 1eba84e: Added ability to fetch ATIS for all airports in a profile
+
+### Patch Changes
+
+- 1eba84e: Fixed alerts having duplicate messages (resurgence)
+- 1eba84e: Fixed profile dropdown duplicating entries when selecting a profile
+- 1eba84e: Added added error handling for fetching
+
 ## [1.6.1](#1.6.1) - 8/29/2024
 
 ### Patch Changes
