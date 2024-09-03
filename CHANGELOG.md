@@ -11,6 +11,7 @@
 - 1eba84e: Fixed alerts having duplicate messages (resurgence)
 - 1eba84e: Fixed profile dropdown duplicating entries when selecting a profile
 - 1eba84e: Added added error handling for fetching
+- 9c00d5e: Fixed settings validation CTD
 
 ## [1.6.1](#1.6.1) - 8/29/2024
 

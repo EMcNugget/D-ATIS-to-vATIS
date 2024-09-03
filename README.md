@@ -3,6 +3,7 @@
 ## Features
 
 - Works with any facility that has a D-ATIS.
+- Can fetch the D-ATIS for all airports in a profile.
 - Adds appropiate contractions so the voice atis reads it correctly.
 - Listens for updates to the D-ATIS at an interval of your choosing, notifying you when it changes.
   - The interval can be set to a minimum of 15 minutes and a maximum of 60 minutes. By default, from the H+53 -> H+03 it will check it every 2 minutes as this is when the ATIS is most likely to change. This can be disabled.
