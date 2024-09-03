@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { computed, ref, watch } from "vue";
 import CLabel from "./CLabel.vue";
-import Dropdown from "./Dropdown.vue";
+import CDropdown from "./CDropdown.vue";
 import { use_store } from "../lib/stores";
 import { invoke } from "@tauri-apps/api/core";
 import { open } from "@tauri-apps/plugin-dialog";
@@ -46,7 +46,7 @@ const profile = computed({
   set: (v) => store.set_individual("profile", v),
 });
 
-const profiles = ref(["No Profile"]);
+const profiles = computed(() => store.profiles);
 
 const alert = computed({
   get: () => store.get_alert(),
@@ -71,6 +71,11 @@ const update_time = computed({
 const open_vatis_on_fetch = computed({
   get: () => store.get_individual("open_vatis_on_fetch"),
   set: (v) => store.set_individual("open_vatis_on_fetch", v),
+});
+
+const fetch_for_profile = computed({
+  get: () => store.get_individual("fetch_for_profile"),
+  set: (v) => store.set_individual("fetch_for_profile", v),
 });
 
 const show_alert = ref(false);
@@ -151,11 +156,10 @@ const save_settings = () => {
 
 watch(
   () => store.settings.profile,
-  async () => {
-    profiles.value.push(...(await invoke<string[]>("get_profiles")));
+  async (k) => {
     store.set_airports_in_profile(
       await invoke<string[]>("get_airports_in_profile", {
-        profile: profile.value,
+        profile: k,
       })
     );
   },
@@ -176,7 +180,7 @@ watch(
       </form>
       <h3 class="text-2xl mb-6 font-bold">Settings</h3>
       <CLabel title="Profile">
-        <Dropdown
+        <CDropdown
           :name="profile"
           :click="handle_dropdown_profile"
           :show="show_dropdown_profile"
@@ -185,7 +189,7 @@ watch(
           <li v-for="p in profiles" :key="p">
             <a @click="handle_profile(p)">{{ p }}</a>
           </li>
-        </Dropdown>
+        </CDropdown>
       </CLabel>
       <CLabel title="Custom vATIS Installation">
         <input type="checkbox" class="toggle" v-model="custom_path" />
@@ -204,19 +208,17 @@ watch(
         <input type="checkbox" class="toggle" v-model="save_facility" />
       </CLabel>
       <CLabel title="Check for ATIS Updates">
-        <input type="checkbox" class="checkbox" v-model="check_updates" />
+        <input type="checkbox" class="toggle" v-model="check_updates" />
       </CLabel>
-
+      <CLabel title="Fetch ATIS for all airports in a profile">
+        <input type="checkbox" class="toggle" v-model="fetch_for_profile" />
+      </CLabel>
       <div v-if="check_updates">
         <CLabel title="Automatically Change Interval based on Zulu Time">
-          <input
-            type="checkbox"
-            class="checkbox"
-            v-model="check_updates_freq"
-          />
+          <input type="checkbox" class="toggle" v-model="check_updates_freq" />
         </CLabel>
         <CLabel title="Update Interval">
-          <Dropdown
+          <CDropdown
             :name="`${update_time}m`"
             :click="handle_dropdown_interval"
             :show="show_dropdown_interval"
@@ -226,14 +228,14 @@ watch(
             <li><a @click="handle_interval(30)">30m</a></li>
             <li><a @click="handle_interval(45)">45m</a></li>
             <li><a @click="handle_interval(60)">60m</a></li>
-          </Dropdown>
+          </CDropdown>
         </CLabel>
       </div>
       <CLabel title="Open vATIS on Fetch">
-        <input type="checkbox" class="checkbox" v-model="open_vatis_on_fetch" />
+        <input type="checkbox" class="toggle" v-model="open_vatis_on_fetch" />
       </CLabel>
       <CLabel title="Theme">
-        <Dropdown
+        <CDropdown
           :name="theme.charAt(0).toUpperCase() + theme.slice(1)"
           :click="handle_dropdown_theme"
           :show="show_dropdown_theme"
@@ -242,7 +244,7 @@ watch(
           <li><a @click="handle_theme('system')">System</a></li>
           <li><a @click="handle_theme('light')">Light</a></li>
           <li><a @click="handle_theme('dark')">Dark</a></li>
-        </Dropdown>
+        </CDropdown>
       </CLabel>
       <button
         class="btn btn-active btn-primary mt-8 w-full"

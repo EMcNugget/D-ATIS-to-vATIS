@@ -10,6 +10,7 @@ pub struct Settings {
     pub open_vatis_on_fetch: bool,
     pub check_updates: bool,
     pub check_updates_freq: bool,
+    pub fetch_for_profile: bool,
     pub update_time: u64,
     pub profile: String,
     pub theme: String,

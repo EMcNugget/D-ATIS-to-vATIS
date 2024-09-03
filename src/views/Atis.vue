@@ -2,7 +2,14 @@
 import Layout from "./Layout.vue";
 import { fetch_atis } from "../lib/parser";
 import { use_store } from "../lib/stores";
-import { TAlert, TATISCode, facilities, vATIS, TATIS } from "../lib/types";
+import {
+  TAlert,
+  TATISCode,
+  facilities,
+  vATIS,
+  TATIS,
+  alert_types,
+} from "../lib/types";
 import { invoke } from "@tauri-apps/api/core";
 import { emit } from "@tauri-apps/api/event";
 import { computed, ref, watch } from "vue";
@@ -12,6 +19,11 @@ const store = use_store();
 const facility = computed({
   get: () => store.get_individual("facility"),
   set: (v) => store.set_individual("facility", v.toUpperCase()),
+});
+
+const profile = computed({
+  get: () => store.get_individual("profile"),
+  set: (v) => store.set_individual("profile", v),
 });
 
 const message = computed({
@@ -25,7 +37,6 @@ const update_time = computed({
 });
 
 const check_update = computed(() => store.get_individual("check_updates"));
-
 const check_updates_freq = computed(() =>
   store.get_individual("check_updates_freq")
 );
@@ -35,15 +46,15 @@ const open_vatis_on_fetch = computed(() =>
 );
 
 const airports_in_profile = computed(() => store.get_airports_in_profile());
+const fetch_for_profile = computed(() =>
+  store.get_individual("fetch_for_profile")
+);
 
-const codes = computed({
-  get: () => store.get_codes(),
-  set: (v) => store.set_codes(v),
-});
+let codes: Record<string, string[]> = {};
 
 const tooltip = ref("");
 
-const validateICAO = (value: string) => {
+const validate_iaco = (value: string) => {
   if (!facilities.includes(value)) {
     tooltip.value = "Invalid facility";
     return false;
@@ -90,50 +101,112 @@ const get_atis_code = (atis: vATIS[]): TATISCode[] => {
   });
 };
 
+const get_alert_level = (level: string) => {
+  switch (level) {
+    case "error":
+      return 0;
+    case "warn":
+      return 1;
+    case "success":
+      return 2;
+    case "info":
+      return 3;
+    default:
+      return 0;
+  }
+};
+
 const get_atis = async () => {
   try {
-    invoke("is_vatis_running").then(async (k) => {
-      if (k) {
-        message.value = {
-          alert_type: "error",
-          message: "Close vATIS before fetching ATIS",
-        };
-        return;
-      } else {
-        fetch_atis(facility.value).then((atis) => {
-          store.set_codes(atis.map((k) => k.atis_code));
-          invoke("write_atis", {
-            facility: facility.value,
-            atis: atis,
-          }).then((k) => {
-            const v = k as TAlert;
-            const success = v.alert_type === "success";
-            v.message = v.message.concat(
-              success
-                ? ` | ${get_atis_code(atis)
-                    .map((k) => `${k.type}: ${k.code}`)
-                    .join(", ")}`
-                : ""
-            );
-            message.value = v;
-            if (open_vatis_on_fetch.value && success) {
-              invoke("open_vatis", {
-                custom_path: store.get_individual("custom_path"),
-              });
-            }
-          });
+    if (await invoke("is_vatis_running")) {
+      message.value = {
+        alert_type: "error",
+        message: "Close vATIS before fetching ATIS",
+      };
+      return;
+    }
+
+    let facs: string[] = [];
+    let messages: Array<{ key: string; message: string }> = [];
+    let status: Record<string, string> = {};
+
+    codes = {};
+
+    if (store.get_individual("fetch_for_profile")) {
+      airports_in_profile.value.forEach((k) => {
+        if (facilities.includes(k) && !facs.includes(k)) {
+          facs.push(k);
+        }
+      });
+    } else {
+      facs.push(facility.value);
+    }
+
+    const promises = facs.map(async (fac) => {
+      let atis: vATIS[] = [];
+      try {
+        atis = await fetch_atis(fac);
+
+        const alert: TAlert = await invoke("write_atis", {
+          facility: fac,
+          atis: atis,
         });
+
+        const success = alert.alert_type === "success";
+        alert.message = (alert.message as string).concat(
+          success
+            ? ` ${get_atis_code(atis)
+                .map((k) => `${k.type}: ${k.code}`)
+                .join(", ")}`
+            : ""
+        );
+
+        messages.push({ key: fac, message: alert.message as string });
+        status[fac] = alert.alert_type;
+      } catch (e) {
+        const alert = e as TAlert;
+        messages.push({ key: fac, message: alert.message as string });
+        status[fac] = alert.alert_type;
       }
     });
+
+    await Promise.all(promises);
+
+    let alert_level = 0;
+
+    Object.values(status).forEach((k) => {
+      const level = get_alert_level(k);
+      if (level < alert_level) {
+        alert_level = level;
+      }
+    });
+
+    const success = alert_level > 1;
+
+    message.value = {
+      alert_type: alert_types[alert_level + 1],
+      message: messages,
+    };
+
+    if (open_vatis_on_fetch.value && success) {
+      await invoke("open_vatis", {
+        custom_path: store.get_individual("custom_path"),
+      });
+    }
   } catch (e) {
     message.value = e as TAlert;
   }
 };
 
-const alert_new_codes = (codes: string[]) => {
+const alert_new_codes = (codes: Record<string, string[]>) => {
+  let rows: Array<{ key: string; message: string }> = [];
+
+  Object.entries(codes).forEach(([key, value]) => {
+    rows.push({ key, message: value.join(", ") });
+  });
   message.value = {
     alert_type: "info",
-    message: `${facility.value} information: ${codes.join(", ")} is current`,
+    message: rows,
   };
   emit("new-codes");
 };
@@ -177,24 +250,32 @@ watch(
         clearInterval(interval_id);
       }
 
+      let facilities = [facility.value];
+
+      if (fetch_for_profile.value) {
+        facilities = airports_in_profile.value;
+      }
+
+      let changed = false;
+      let new_codes: Record<string, string[]> = {};
+
       interval_id = setInterval(async () => {
-        const response = await fetch(
-          `https://datis.clowd.io/api/${facility.value}`
-        ).then((res) => res.json());
+        facilities.forEach(async (fac) => {
+          const response = await fetch(
+            `https://datis.clowd.io/api/${facility.value}`
+          ).then((res) => res.json());
 
-        let changed = false;
-        let new_codes: string[] = [];
-
-        response.forEach((k: TATIS) => {
-          if (!codes.value.includes(k.code)) {
-            changed = true;
-            new_codes.push(k.code);
-          }
+          response.forEach((k: TATIS) => {
+            if (!codes.value.includes(k.code)) {
+              changed = true;
+              codes[fac] = new_codes[fac] || [];
+            }
+          });
         });
 
         if (changed) {
           alert_new_codes(new_codes);
-          codes.value = new_codes;
+          codes = new_codes;
         }
       }, val * 60000);
 
@@ -210,28 +291,31 @@ watch(
     <div class="flex flex-col items-center">
       <input
         type="text"
+        placeholder="Select a profile..."
+        class="input input-bordered mb-4 text-center"
+        readonly
+        :value="profile === 'No Profile' ? null : profile"
+        v-if="fetch_for_profile"
+      />
+      <input
+        type="text"
         placeholder="Airport Code..."
         :class="
           'input input-bordered w-full max-w-xs mb-4 input-uppercase ' +
-          (validateICAO(facility) ? '' : ' input-error')
+          (validate_iaco(facility) ? '' : ' input-error')
         "
         v-model="facility"
         maxlength="4"
+        v-else
       />
-      <div v-if="tooltip" class="tooltip tooltip-bottom" :data-tip="tooltip">
+      <div
+        :class="tooltip ? 'tooltip tooltip-bottom' : ''"
+        :data-tip="tooltip || ''"
+      >
         <button
           class="btn btn-primary w-half max-w-xs mb-4"
           @click="get_atis()"
-          :disabled="!validateICAO(facility)"
-        >
-          Fetch
-        </button>
-      </div>
-      <div v-else>
-        <button
-          class="btn btn-primary w-half max-w-xs mb-4"
-          @click="get_atis()"
-          :disabled="!validateICAO(facility)"
+          :disabled="!fetch_for_profile && !validate_iaco(facility)"
         >
           Fetch
         </button>

@@ -1,7 +1,7 @@
 use crate::structs::{Response, Settings};
-use crate::util::{get_resource_json, read_json_file, write_json_file};
+use crate::util::{read_json_file, write_json_file};
 use log::{error, info};
-use serde_json::{from_value, Map};
+use serde_json::{from_value, json, Map};
 use std::path::Path;
 use tauri::{AppHandle, Manager};
 
@@ -26,8 +26,19 @@ fn response(res: &str, success: bool, log_msg: Option<&str>) -> Response {
 pub fn check_settings_file(app_handle: &AppHandle) -> Response {
     let app_data_path = app_handle.path().app_data_dir().unwrap();
     let file_path = app_data_path.join("settings.json");
-
-    let default_settings = get_resource_json(app_handle, "default_settings.json").unwrap();
+    let default_settings = json!({
+        "facility": "",
+        "file_path": "",
+        "custom_path": false,
+        "save_facility": false,
+        "open_vatis_on_fetch": false,
+        "check_updates": false,
+        "check_updates_freq": false,
+        "fetch_for_profile": false,
+        "update_time": 60,
+        "profile": "",
+        "theme": "system"
+    });
 
     if Path::new(&file_path).exists() {
         let settings = match read_json_file(file_path.to_str().unwrap()) {

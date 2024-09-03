@@ -1,7 +1,7 @@
 <script setup lang="ts">
-import Alerts from "../components/Alerts.vue";
-import Settings from "../components/Settings.vue";
-import Update from "../components/Update.vue";
+import CAlerts from "../components/CAlerts.vue";
+import CSettings from "../components/CSettings.vue";
+import CUpdate from "../components/CUpdate.vue";
 import { computed, ref, watch, onMounted } from "vue";
 import { use_store } from "../lib/stores";
 import { router } from "../lib/router";
@@ -54,8 +54,8 @@ watch(
     class="h-screen relative flex flex-col items-center justify-center"
     :data-theme="local_theme"
   >
-    <Alerts :message="message" :show="show_alert" @close="show_alert = false" />
-    <Update
+    <CAlerts :message="message" :show="show_alert" @close="show_alert = false" />
+    <CUpdate
       v-if="show_update"
       :show="show_update"
       :version="version"
@@ -63,7 +63,7 @@ watch(
       @download-and-install="updateAndRelaunch"
     />
     <slot></slot>
-    <Settings :showModal="show_settings" @close="show_settings = !show_settings" />
+    <CSettings :showModal="show_settings" @close="show_settings = !show_settings" />
     <button
       class="btn btn-circle fixed bottom-0 left-0 m-4 flex items-center justify-center"
       @click="show_settings = !show_settings"

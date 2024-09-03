@@ -1,9 +1,10 @@
 <script setup lang="ts">
 import type { TAlert } from "../lib/types";
+import CTable from "./CTable.vue";
 const props = defineProps<{ message: TAlert; show: boolean }>();
 const emit = defineEmits(["close"]);
 
-const getAlertClass = () => {
+const get_alert_class = () => {
   switch (props.message.alert_type) {
     case "error":
       return "alert-error";
@@ -18,7 +19,7 @@ const getAlertClass = () => {
   }
 };
 
-const getAlertIconPath = () => {
+const get_alert_icon_svg = () => {
   switch (props.message.alert_type) {
     case "error":
       return "M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z";
@@ -36,7 +37,7 @@ const getAlertIconPath = () => {
 
 <template>
   <div class="fixed top-8 max-w-sm z-50" v-if="show">
-    <div :class="['alert', getAlertClass()]" role="alert">
+    <div :class="['alert', get_alert_class()]" role="alert">
       <svg
         xmlns="http://www.w3.org/2000/svg"
         class="h-6 w-6 shrink-0 stroke-current"
@@ -47,10 +48,19 @@ const getAlertIconPath = () => {
           stroke-linecap="round"
           stroke-linejoin="round"
           stroke-width="2"
-          :d="getAlertIconPath()"
+          :d="get_alert_icon_svg()"
         />
       </svg>
-      <span>{{ props.message.message }}</span>
+      <span v-if="typeof message.message === 'object'">
+        <CTable
+          :head="[]"
+          :rows="(message.message as Array<{
+          key: string;
+          message: string;
+        }>)"
+        />
+      </span>
+      <span v-else>{{ message.message }}</span>
       <button class="btn btn-circle btn-ghost h-4" @click="emit('close')">
         <svg
           xmlns="http://www.w3.org/2000/svg"

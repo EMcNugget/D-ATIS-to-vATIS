@@ -7,8 +7,9 @@ import { invoke } from "@tauri-apps/api/core";
 
 const store = use_store();
 
-invoke("read_settings").then((k) => {
+invoke("read_settings").then(async (k) => {
   store.set_settings(k as TSettings);
+  store.set_profiles(await invoke<string[]>("get_profiles"));
 });
 </script>
 

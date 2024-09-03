@@ -1,5 +1,5 @@
 import { defineStore } from "pinia";
-import type { TSettings, TAlert } from "./types";
+import type { TSettings, TAlert, vATIS } from "./types";
 
 type TStore = {
   settings: TSettings;
@@ -7,6 +7,8 @@ type TStore = {
   codes: string[];
   app_update: boolean;
   airports_in_profile: string[];
+  profiles: string[];
+  temp_atis: vATIS;
 };
 
 export const use_store = defineStore("store", {
@@ -19,13 +21,23 @@ export const use_store = defineStore("store", {
     codes: [],
     app_update: false,
     airports_in_profile: [],
+    profiles: [],
+    temp_atis: {
+      atis_type: "dep",
+      atis_code: "",
+      atis: {
+        id: "",
+        name: "",
+        airportConditions: "",
+        notams: "",
+        template: "",
+        externalGenerator: {
+          enabled: false,
+        },
+      },
+    },
   }),
   actions: {
-    // Setters
-
-    /**
-     * Only for settings
-     */
     set_individual<K extends keyof TSettings>(key: K, value: TSettings[K]) {
       this.settings[key] = value;
     },
@@ -45,12 +57,13 @@ export const use_store = defineStore("store", {
     set_airports_in_profile(airports: string[]) {
       this.airports_in_profile = airports;
     },
+    set_profiles(profiles: string[]) {
+      this.profiles = profiles;
+    },
+    set_temp_atis(atis: vATIS) {
+      this.temp_atis = atis;
+    },
 
-    // Getters
-
-    /**
-     * Only for settings
-     */
     get_individual<K extends keyof TSettings>(key: K): TSettings[K] {
       return this.settings[key];
     },
@@ -68,6 +81,12 @@ export const use_store = defineStore("store", {
     },
     get_airports_in_profile() {
       return this.airports_in_profile;
+    },
+    get_profiles() {
+      return this.profiles;
+    },
+    get_temp_atis() {
+      return this.temp_atis;
     },
   },
 });

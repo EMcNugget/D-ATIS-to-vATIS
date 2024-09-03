@@ -1,6 +1,5 @@
-import type { TATIS, vATIS } from "./types";
-import { warn } from "@tauri-apps/plugin-log";
 import { v4 } from "uuid";
+import { TATIS, vATIS } from "./types";
 
 const find_number_of_occurances = (
   str: string,
@@ -60,8 +59,7 @@ const parse_atis = (atis: TATIS, split: boolean, facility: string): vATIS => {
   };
 
   if (!notam_varients.some((varient) => atis.datis.includes(varient))) {
-    let message = `No NOTAM keyword found in the ${atis.airport} ATIS, unable to parse. (The preset will still be created, but the NOTAMs will be empty)`;
-    warn(message);
+    let message = `No NOTAM keyword found in the ${atis.airport} ATIS, unable to parse.`;
     vATIS.atis.airportConditions = atis.datis;
     throw {
       alert_type: "warn",
@@ -82,20 +80,33 @@ const parse_atis = (atis: TATIS, split: boolean, facility: string): vATIS => {
 };
 
 export const fetch_atis = async (facility: string) => {
-  const response = await fetch(`https://datis.clowd.io/api/${facility}`).then(
-    (res) => res.json()
-  );
-
-  let split = false;
-
-  if (response.length > 1) {
-    split = true;
+  const res = await fetch(`https://datis.clowd.io/api/${facility}`);
+  if (!res.ok) {
+    throw {
+      alert_type: "error",
+      message: "An error occurred while fetching the ATIS data.",
+    };
   }
 
-  const atisArray: vATIS[] = [];
-  response.forEach((atis: TATIS) => {
-    atisArray.push(parse_atis(atis, split, facility));
-  });
+  const contentType = res.headers.get("Content-Type");
+  if (contentType && contentType.includes("application/json")) {
+    const response = await res.json();
 
-  return atisArray;
+    let split = false;
+    if (response.length > 1) {
+      split = true;
+    }
+
+    const atisArray: vATIS[] = [];
+    response.forEach((atis: TATIS) => {
+      atisArray.push(parse_atis(atis, split, facility));
+    });
+
+    return atisArray;
+  } else {
+    throw {
+      alert_type: "error",
+      message: "An error occurred while fetching the ATIS data.",
+    };
+  }
 };

@@ -149,13 +149,21 @@ pub fn write_atis(facility: String, atis: Value, app_handle: AppHandle) -> Resul
             Ok(_) => {
                 let data = &format!("Successfully wrote ATIS for {}", &facility);
                 info!("{}", data);
-                alert.message.push_str(data);
+                if alert.message == *data {
+                    // do nothing
+                } else {
+                    alert.message.push_str(data);
+                }
             }
             Err(e) => {
                 let data = &format!("Error writing ATIS: {}", e);
                 error!("{}", data);
-                alert.message.push_str(data);
-                alert.alert_type = "error".to_string();
+                if alert.message == *data {
+                    // do nothing
+                } else {
+                    alert.message.push_str(data);
+                    alert.alert_type = "error".to_string();
+                }
             }
         }
     }

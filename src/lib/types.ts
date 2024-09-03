@@ -37,14 +37,22 @@ type TSettings = {
   open_vatis_on_fetch: boolean;
   check_updates: boolean;
   check_updates_freq: boolean;
+  fetch_for_profile: boolean;
   update_time: number;
   profile: string;
   theme: TTheme;
 };
 
-export type TAlert = {
-  message: string;
-  alert_type: "error" | "warn" | "success" | "info";
+export const alert_types = ["error", "warn", "info", "success"] as const;
+
+type TAlert = {
+  message:
+    | string
+    | {
+        key: string;
+        message: string;
+      }[];
+  alert_type: (typeof alert_types)[number];
 };
 
 export const facilities = [
@@ -126,4 +134,12 @@ export const facilities = [
   "TJSJ",
 ];
 
-export type { TATIS, vATIS, TSettings, TATISType, TATISCode, TTheme };
+export type {
+  TATIS,
+  vATIS,
+  TSettings,
+  TATISType,
+  TATISCode,
+  TTheme,
+  TAlert,
+};
