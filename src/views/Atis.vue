@@ -120,9 +120,11 @@ const get_alert_level = (level: string) => {
 const get_atis = async () => {
   try {
     if (await invoke("is_vatis_running")) {
-      message.value.alert = {
-        alert_type: "error",
-        message: "Close vATIS before fetching ATIS",
+      message.value = {
+        alert: {
+          alert_type: "error",
+          message: "Close vATIS before fetching ATIS",
+        },
       };
       return;
     }
@@ -187,9 +189,11 @@ const get_atis = async () => {
 
     const success = alert_level > 1;
 
-    message.value.alert = {
-      alert_type: alert_types[alert_level + 1],
-      message: messages,
+    message.value = {
+      alert: {
+        alert_type: alert_types[alert_level + 1],
+        message: messages,
+      },
     };
 
     if (open_vatis_on_fetch.value && success) {
@@ -198,7 +202,7 @@ const get_atis = async () => {
       });
     }
   } catch (e) {
-    message.value.alert = e as TAlert;
+    message.value = { alert: e as TAlert };
   }
 };
 

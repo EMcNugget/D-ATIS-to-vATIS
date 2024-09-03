@@ -52,7 +52,7 @@ const get_alert_icon = () => {
         />
       </svg>
       <div class="flex flex-col">
-        <span class="mb-2">
+        <span class="mb-2" v-if="slot">
           {{ slot }}
         </span>
         <span v-if="typeof message.message === 'object'">

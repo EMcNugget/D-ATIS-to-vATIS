@@ -150,7 +150,7 @@ const save_settings = () => {
   invoke<TAlert>("write_settings", {
     settings: store.get_settings(),
   }).then((k) => {
-    alert.value.alert = k;
+    alert.value = { alert: k };
   });
 };
 

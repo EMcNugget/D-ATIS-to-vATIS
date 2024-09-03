@@ -5,7 +5,7 @@ type TStore = {
   settings: TSettings;
   alert: {
     alert: TAlert;
-    slot: string;
+    slot?: string;
   };
   codes: string[];
   app_update: boolean;
@@ -18,7 +18,7 @@ export const use_store = defineStore("store", {
     settings: {} as TSettings,
     alert: {
       alert: {} as TAlert,
-      slot: "",
+      slot: undefined
     },
     codes: [],
     app_update: false,
