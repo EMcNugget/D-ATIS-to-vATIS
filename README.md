@@ -1,7 +1,5 @@
 # Takes real-world D-ATIS's and creates a custom vATIS preset.
 
-![Cannot load logo](./src-tauri/icons/Square284x284Logo.png)
-
 ## Features
 
 - Works with any facility that has a D-ATIS.
@@ -47,4 +45,8 @@ To create a new contraction you have to edit the custom_contractions.json file.
 - ### Airport name:
   - Same as above but edit the `airports` section.
 
-## [Roadmap](https://github.com/users/EMcNugget/projects/12)
+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+![Cannot load logo](./src-tauri/icons/Square284x284Logo.png)
+
+
