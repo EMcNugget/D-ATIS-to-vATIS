@@ -15,7 +15,7 @@ const version = ref("Unknown");
 const show_update = ref(false);
 const info = computed(() => `v${version.value} Copyright © 2024 Ethan Seys`);
 
-const updateAndRelaunch = async () => {
+const update_and_relaunch = async () => {
   const update = await check();
   if (update?.available) {
     update.downloadAndInstall().then(() => {
@@ -54,16 +54,24 @@ watch(
     class="h-screen relative flex flex-col items-center justify-center"
     :data-theme="local_theme"
   >
-    <CAlerts :message="message" :show="show_alert" @close="show_alert = false" />
+    <CAlerts
+      :message="message.alert"
+      :slot="message.slot"
+      :show="show_alert"
+      @close="show_alert = false"
+    />
     <CUpdate
       v-if="show_update"
       :show="show_update"
       :version="version"
       @close-update="show_update = false"
-      @download-and-install="updateAndRelaunch"
+      @download-and-install="update_and_relaunch"
     />
     <slot></slot>
-    <CSettings :showModal="show_settings" @close="show_settings = !show_settings" />
+    <CSettings
+      :showModal="show_settings"
+      @close="show_settings = !show_settings"
+    />
     <button
       class="btn btn-circle fixed bottom-0 left-0 m-4 flex items-center justify-center"
       @click="show_settings = !show_settings"

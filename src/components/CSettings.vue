@@ -50,7 +50,7 @@ const profiles = computed(() => store.profiles);
 
 const alert = computed({
   get: () => store.get_alert(),
-  set: (v) => store.set_alert(v),
+  set: (v) => store.set_alert(v.alert),
 });
 
 const check_updates = computed({
@@ -147,10 +147,10 @@ watch(
 );
 
 const save_settings = () => {
-  invoke("write_settings", {
+  invoke<TAlert>("write_settings", {
     settings: store.get_settings(),
   }).then((k) => {
-    alert.value = k as TAlert;
+    alert.value.alert = k;
   });
 };
 
