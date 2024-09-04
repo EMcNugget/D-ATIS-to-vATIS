@@ -1,5 +1,5 @@
 import { defineStore } from "pinia";
-import type { TSettings, TAlert, vATIS } from "./types";
+import type { TSettings, TAlert } from "./types";
 
 type TStore = {
   settings: TSettings;
@@ -8,7 +8,6 @@ type TStore = {
   app_update: boolean;
   airports_in_profile: string[];
   profiles: string[];
-  temp_atis: vATIS;
 };
 
 export const use_store = defineStore("store", {
@@ -22,20 +21,6 @@ export const use_store = defineStore("store", {
     app_update: false,
     airports_in_profile: [],
     profiles: [],
-    temp_atis: {
-      atis_type: "dep",
-      atis_code: "",
-      atis: {
-        id: "",
-        name: "",
-        airportConditions: "",
-        notams: "",
-        template: "",
-        externalGenerator: {
-          enabled: false,
-        },
-      },
-    },
   }),
   actions: {
     set_individual<K extends keyof TSettings>(key: K, value: TSettings[K]) {
@@ -60,9 +45,6 @@ export const use_store = defineStore("store", {
     set_profiles(profiles: string[]) {
       this.profiles = profiles;
     },
-    set_temp_atis(atis: vATIS) {
-      this.temp_atis = atis;
-    },
 
     get_individual<K extends keyof TSettings>(key: K): TSettings[K] {
       return this.settings[key];
@@ -84,9 +66,6 @@ export const use_store = defineStore("store", {
     },
     get_profiles() {
       return this.profiles;
-    },
-    get_temp_atis() {
-      return this.temp_atis;
     },
   },
 });

@@ -1,5 +1,6 @@
 import { v4 } from "uuid";
-import { TATIS, vATIS } from "./types";
+import { TAlert, TATIS, vATIS } from "./types";
+import { error, warn } from "@tauri-apps/plugin-log";
 
 const find_number_of_occurances = (
   str: string,
@@ -60,10 +61,15 @@ const parse_atis = (atis: TATIS, split: boolean, facility: string): vATIS => {
 
   if (!notam_varients.some((varient) => atis.datis.includes(varient))) {
     let message = `No NOTAM keyword found in the ${atis.airport} ATIS, unable to parse.`;
-    vATIS.atis.airportConditions = atis.datis;
+    vATIS.atis.airportConditions = atis.datis
+      .slice(find_number_of_occurances(atis.datis, ".", 2) + 1)
+      .split(" ...ADVS")[0]
+      .trim();
+    warn(message);
     throw {
       alert_type: "warn",
       message,
+      payload: vATIS,
     };
   } else {
     const notam_varient =
@@ -82,9 +88,12 @@ const parse_atis = (atis: TATIS, split: boolean, facility: string): vATIS => {
 export const fetch_atis = async (facility: string) => {
   const res = await fetch(`https://datis.clowd.io/api/${facility}`);
   if (!res.ok) {
+    error(
+      `Error fetching ATIS data. Status Code: ${res.status}, Status: ${res.statusText}`
+    );
     throw {
       alert_type: "error",
-      message: "An error occurred while fetching the ATIS data.",
+      message: `An error occurred while fetching the ATIS data. Status Code: ${res.status}`,
     };
   }
 
@@ -99,11 +108,26 @@ export const fetch_atis = async (facility: string) => {
 
     const atisArray: vATIS[] = [];
     response.forEach((atis: TATIS) => {
-      atisArray.push(parse_atis(atis, split, facility));
+      let parsed: vATIS;
+      try {
+        parsed = parse_atis(atis, split, facility);
+      } catch (e) {
+        const alert = e as TAlert;
+        if (alert.payload) {
+          parsed = alert.payload;
+          atisArray.push(parsed);
+          throw alert;
+        } else {
+          throw e;
+        }
+      }
+
+      atisArray.push(parsed);
     });
 
     return atisArray;
   } else {
+    warn("Response was not JSON.");
     throw {
       alert_type: "error",
       message: "An error occurred while fetching the ATIS data.",

@@ -107,9 +107,9 @@ const get_alert_level = (level: string) => {
       return 0;
     case "warn":
       return 1;
-    case "success":
-      return 2;
     case "info":
+      return 2;
+    case "success":
       return 3;
     default:
       return 0;
@@ -144,27 +144,39 @@ const get_atis = async () => {
 
     const promises = facs.map(async (fac) => {
       let atis: vATIS[] = [];
+
+      const concat_codes = (atis: vATIS[], message: string) => {
+        message = message.concat(
+          ` ${get_atis_code(atis)
+            .map((k) => `${k.type}: ${k.code}`)
+            .join(", ")}`
+        );
+        return message;
+      };
+
       try {
         atis = await fetch_atis(fac);
-
-        const alert: TAlert = await invoke("write_atis", {
-          facility: fac,
-          atis: atis,
-        });
-
-        const success = alert.alert_type === "success";
-        alert.message = (alert.message as string).concat(
-          success
-            ? ` ${get_atis_code(atis)
-                .map((k) => `${k.type}: ${k.code}`)
-                .join(", ")}`
-            : ""
-        );
-
-        messages.push({ key: fac, message: alert.message as string });
-        status[fac] = alert.alert_type;
       } catch (e) {
         const alert = e as TAlert;
+        if (alert.payload) {
+          atis.push(alert.payload as vATIS);
+          alert.message = concat_codes(atis, alert.message as string);
+        }
+        messages.push({ key: fac, message: alert.message as string });
+        status[fac] = alert.alert_type;
+      }
+
+      const alert: TAlert = await invoke("write_atis", {
+        facility: fac,
+        atis: atis,
+      });
+
+      const success = alert.alert_type === "success";
+      alert.message = success
+        ? concat_codes(atis, alert.message as string)
+        : "";
+
+      if (!messages.some((k) => k.key === fac)) {
         messages.push({ key: fac, message: alert.message as string });
         status[fac] = alert.alert_type;
       }
@@ -172,7 +184,7 @@ const get_atis = async () => {
 
     await Promise.all(promises);
 
-    let alert_level = 0;
+    let alert_level = 3;
 
     Object.values(status).forEach((k) => {
       const level = get_alert_level(k);
@@ -184,7 +196,7 @@ const get_atis = async () => {
     const success = alert_level > 1;
 
     message.value = {
-      alert_type: alert_types[alert_level + 1],
+      alert_type: alert_types[alert_level],
       message: messages,
     };
 
