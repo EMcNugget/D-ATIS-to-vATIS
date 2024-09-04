@@ -9,6 +9,7 @@ pub struct Settings {
     pub save_facility: bool,
     pub open_vatis_on_fetch: bool,
     pub check_updates: bool,
+    pub suppress_notification: bool,
     pub check_updates_freq: bool,
     pub fetch_for_profile: bool,
     pub update_time: u64,

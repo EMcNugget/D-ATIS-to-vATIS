@@ -58,6 +58,11 @@ const check_updates = computed({
   set: (v) => store.set_individual("check_updates", v),
 });
 
+const suppress_notification = computed({
+  get: () => store.get_individual("suppress_notification"),
+  set: (v) => store.set_individual("suppress_notification", v),
+});
+
 const check_updates_freq = computed({
   get: () => store.get_individual("check_updates_freq"),
   set: (v) => store.set_individual("check_updates_freq", v),
@@ -209,6 +214,9 @@ watch(
       </CLabel>
       <CLabel title="Check for ATIS Updates">
         <input type="checkbox" class="toggle" v-model="check_updates" />
+      </CLabel>
+      <CLabel title="Suppress ATIS Notification">
+        <input type="checkbox" class="toggle" v-model="suppress_notification" />
       </CLabel>
       <CLabel title="Fetch ATIS for All Airports in a Profile">
         <input type="checkbox" class="toggle" v-model="fetch_for_profile" />

@@ -23,6 +23,8 @@ invoke("read_settings").then(async (k) => {
       <RouterLink to="/record" class="btn btn-primary w-2/3"
         >Record ATIS</RouterLink
       >
+      <RouterLink to="/contractions" class="btn btn-primary w-2/3"
+        >Edit Contractions</RouterLink>
     </div>
   </Layout>
   <RouterView v-else />

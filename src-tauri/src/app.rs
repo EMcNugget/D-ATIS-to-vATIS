@@ -7,18 +7,22 @@ use serde_json::{self, Value};
 use sysinfo::System;
 use tauri::{AppHandle, Manager};
 
+fn get_atis_type(atis_type: &str) -> &'static str {
+    return match atis_type {
+        "dep" => "Departure",
+        "arr" => "Arrival",
+        "combined" => "Combined",
+        _ => "Combined",
+    };
+}
+
 fn find_composite(
     data: &Value,
     profile: &str,
     facility: &str,
     atis_type: Option<&str>,
 ) -> Option<FindComposite> {
-    let atis_type_str = match atis_type {
-        Some("dep") => "Departure",
-        Some("arr") => "Arrival",
-        Some("combined") => "Combined",
-        _ => "Combined",
-    };
+    let atis_type_str = get_atis_type(atis_type.unwrap_or("unknown"));
 
     let profiles = data.get("profiles").and_then(|p| p.as_array()).unwrap();
 
@@ -133,6 +137,8 @@ pub fn write_atis(facility: String, atis: Value, app_handle: AppHandle) -> Resul
         message: String::new(),
     };
 
+    let mut codes: Vec<String> = Vec::new();
+
     let file_path = get_vatis_path(&app_handle);
 
     for atis_entry in atis_array {
@@ -148,6 +154,11 @@ pub fn write_atis(facility: String, atis: Value, app_handle: AppHandle) -> Resul
         match result {
             Ok(_) => {
                 let data = &format!("Successfully wrote ATIS for {}", &facility);
+                codes.push(format!(
+                    "{}: {}",
+                    get_atis_type(atis_entry["atis_type"].as_str().unwrap_or("unknown")),
+                    &atis_entry["atis_code"].as_str().unwrap_or_default()
+                ));
                 info!("{}", data);
                 if alert.message == *data {
                     // do nothing
@@ -165,6 +176,12 @@ pub fn write_atis(facility: String, atis: Value, app_handle: AppHandle) -> Resul
                     alert.alert_type = "error".to_string();
                 }
             }
+        }
+    }
+
+    if !codes.is_empty() {
+        for code in codes {
+            alert.message.push_str(&format!(" {}", code));
         }
     }
 

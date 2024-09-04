@@ -33,6 +33,7 @@ pub fn check_settings_file(app_handle: &AppHandle) -> Response {
         "save_facility": false,
         "open_vatis_on_fetch": false,
         "check_updates": false,
+        "suppress_notification": false,
         "check_updates_freq": false,
         "fetch_for_profile": false,
         "update_time": 60,

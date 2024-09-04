@@ -2,14 +2,7 @@
 import Layout from "./Layout.vue";
 import { fetch_atis } from "../lib/parser";
 import { use_store } from "../lib/stores";
-import {
-  TAlert,
-  TATISCode,
-  facilities,
-  vATIS,
-  TATIS,
-  alert_types,
-} from "../lib/types";
+import { TAlert, facilities, vATIS, TATIS, alert_types } from "../lib/types";
 import { invoke } from "@tauri-apps/api/core";
 import { emit } from "@tauri-apps/api/event";
 import { computed, ref, watch } from "vue";
@@ -74,33 +67,6 @@ const validate_iaco = (value: string) => {
   }
 };
 
-const get_atis_code = (atis: vATIS[]): TATISCode[] => {
-  return atis.map((k) => {
-    switch (k.atis_type) {
-      case "arr":
-        return {
-          type: "Arrival",
-          code: k.atis_code,
-        };
-      case "dep":
-        return {
-          type: "Departure",
-          code: k.atis_code,
-        };
-      case "combined":
-        return {
-          type: "Combined",
-          code: k.atis_code,
-        };
-      default:
-        return {
-          type: "Combined",
-          code: k.atis_code,
-        };
-    }
-  });
-};
-
 const get_alert_level = (level: string) => {
   switch (level) {
     case "error":
@@ -145,22 +111,12 @@ const get_atis = async () => {
     const promises = facs.map(async (fac) => {
       let atis: vATIS[] = [];
 
-      const concat_codes = (atis: vATIS[], message: string) => {
-        message = message.concat(
-          ` ${get_atis_code(atis)
-            .map((k) => `${k.type}: ${k.code}`)
-            .join(", ")}`
-        );
-        return message;
-      };
-
       try {
         atis = await fetch_atis(fac);
       } catch (e) {
         const alert = e as TAlert;
         if (alert.payload) {
           atis.push(alert.payload as vATIS);
-          alert.message = concat_codes(atis, alert.message as string);
         }
         messages.push({ key: fac, message: alert.message as string });
         status[fac] = alert.alert_type;
@@ -172,9 +128,7 @@ const get_atis = async () => {
       });
 
       const success = alert.alert_type === "success";
-      alert.message = success
-        ? concat_codes(atis, alert.message as string)
-        : "";
+      alert.message = success ? alert.message : "";
 
       if (!messages.some((k) => k.key === fac)) {
         messages.push({ key: fac, message: alert.message as string });
@@ -216,12 +170,15 @@ const alert_new_codes = (codes: Record<string, string[]>) => {
   Object.entries(codes).forEach(([key, value]) => {
     rows.push({ key, message: value.join(", ") });
   });
+
   message.value = {
     alert_type: "info",
     message: rows,
     slot: `New ATIS's found for ${rows.map((k) => k.key).join(", ")}`,
   };
-  emit("new-codes");
+  if (!store.get_individual("suppress_notification")) {
+    emit("new-codes");
+  }
 };
 
 const get_zulu_time = () => {

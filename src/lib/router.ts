@@ -1,5 +1,6 @@
 import Atis from "../views/Atis.vue";
 import RecordAtis from "../views/RecordAtis.vue";
+import EditContractions from "../views/EditContractions.vue";
 import { createRouter, createWebHashHistory } from "vue-router";
 
 const routes = [
@@ -13,6 +14,11 @@ const routes = [
     name: "Record ATIS",
     component: RecordAtis,
   },
+  {
+    path: "/contractions",
+    name: "Edit Contractions",
+    component: EditContractions,
+  }
 ];
 
 export const router = createRouter({

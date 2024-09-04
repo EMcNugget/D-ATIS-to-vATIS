@@ -3,7 +3,6 @@
 
 use log::info;
 use tauri::{AppHandle, Listener};
-use tauri_plugin_log::{Target, TargetKind};
 
 mod app;
 mod audio;
@@ -37,13 +36,8 @@ fn main() {
         .plugin(tauri_plugin_dialog::init())
         .plugin(
             tauri_plugin_log::Builder::new()
-                .targets([
-                    Target::new(TargetKind::Stdout),
-                    Target::new(TargetKind::LogDir {
-                        file_name: Some("log".to_string()),
-                    }),
-                ])
                 .timezone_strategy(tauri_plugin_log::TimezoneStrategy::UseLocal)
+                .max_file_size(50_000)
                 .rotation_strategy(tauri_plugin_log::RotationStrategy::KeepOne)
                 .build(),
         )
