@@ -219,6 +219,7 @@ const alert_new_codes = (codes: Record<string, string[]>) => {
   message.value = {
     alert_type: "info",
     message: rows,
+    slot: `New ATIS's found for ${rows.map((k) => k.key).join(", ")}`,
   };
   emit("new-codes");
 };

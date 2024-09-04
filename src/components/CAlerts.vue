@@ -51,16 +51,20 @@ const get_alert_icon_svg = () => {
           :d="get_alert_icon_svg()"
         />
       </svg>
-      <span v-if="typeof message.message === 'object'">
-        <CTable
-          :head="[]"
-          :rows="(message.message as Array<{
+      <div class="flex flex-col">
+        <span v-if="message.slot">{{ message.slot }}</span>
+        <span v-if="typeof message.message === 'object'">
+          <CTable
+            :head="[]"
+            :rows="(message.message as Array<{
           key: string;
           message: string;
         }>)"
-        />
-      </span>
-      <span v-else>{{ message.message }}</span>
+          />
+        </span>
+        <span v-else>{{ message.message }}</span>
+      </div>
+
       <button class="btn btn-circle btn-ghost h-4" @click="emit('close')">
         <svg
           xmlns="http://www.w3.org/2000/svg"
