@@ -1,4 +1,7 @@
-use crate::{structs::Contraction, util::get_resource_json};
+use crate::{
+    structs::{Contraction, Response},
+    util::{get_resource_json, response, write_resource_json},
+};
 use log::{error, info};
 use serde_json::Value;
 use tauri::AppHandle;
@@ -86,5 +89,23 @@ pub fn write_contractions(
         let e = format!("Failed to parse custom contractions for {}", airport_code);
         error!("{}", e);
         Err(anyhow::Error::msg(e.to_string()))
+    }
+}
+
+#[tauri::command]
+pub fn create_new_contraction(contraction: Contraction, app_handle: AppHandle) -> Response {
+    let mut contractions = get_resource_json(&app_handle, "custom_contractions.json").unwrap()
+        ["notam_contractions"]
+        .clone();
+
+    contractions[contraction.string.clone()] = Value::String(contraction.spoken.clone());
+
+    match write_resource_json(&app_handle, "custom_contractions.json", &contractions) {
+        Ok(_) => response("Custom contraction edit successfully", true, None),
+        Err(err) => response(
+            "Failed to add custom contraction",
+            false,
+            Some(&err.to_string()),
+        ),
     }
 }

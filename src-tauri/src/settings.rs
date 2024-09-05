@@ -1,27 +1,9 @@
 use crate::structs::{Response, Settings};
-use crate::util::{read_json_file, write_json_file};
-use log::{error, info};
+use crate::util::{read_json_file, response, write_json_file};
+use log::info;
 use serde_json::{from_value, json, Map};
 use std::path::Path;
 use tauri::{AppHandle, Manager};
-
-fn response(res: &str, success: bool, log_msg: Option<&str>) -> Response {
-    let log_msg = log_msg.unwrap_or(res);
-
-    if success {
-        info!("{}", log_msg);
-        return Response {
-            alert_type: "success".to_string(),
-            message: res.to_string(),
-        };
-    } else {
-        error!("{}", log_msg);
-        return Response {
-            alert_type: "error".to_string(),
-            message: res.to_string(),
-        };
-    }
-}
 
 pub fn check_settings_file(app_handle: &AppHandle) -> Response {
     let app_data_path = app_handle.path().app_data_dir().unwrap();

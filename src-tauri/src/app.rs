@@ -149,7 +149,7 @@ pub fn write_atis(
     let settings = read_settings(app_handle.clone()).unwrap();
     let atis_array = atis.as_array().unwrap();
 
-    let mut alert = WriteAtis {
+    let mut res = WriteAtis {
         alert: Alert {
             alert_type: "success".to_string(),
             message: "".to_string(),
@@ -182,28 +182,24 @@ pub fn write_atis(
                     &atis_entry["atis_code"].as_str().unwrap_or_default()
                 ));
                 info!("{}", data);
-                if alert.alert.message == *data {
-                    // do nothing
-                } else {
-                    alert.alert.message.push_str(data);
+                if res.alert.message != *data {
+                    res.alert.message.push_str(data);
                 }
             }
             Err(e) => {
                 let data = &format!("Error writing ATIS: {}", e);
                 error!("{}", data);
-                if alert.alert.message == *data {
-                    // do nothing
-                } else {
-                    alert.alert.message.push_str(data);
-                    alert.alert.alert_type = "error".to_string();
+                if res.alert.message != *data {
+                    res.alert.message.push_str(data);
+                    res.alert.alert_type = "error".to_string();
                 }
             }
         }
     }
 
-    alert.codes.codes = codes;
+    res.codes.codes = codes;
 
-    Ok(alert)
+    Ok(res)
 }
 
 #[tauri::command]
