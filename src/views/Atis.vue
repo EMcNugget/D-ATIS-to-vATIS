@@ -82,6 +82,14 @@ const get_alert_level = (level: string) => {
   }
 };
 
+type WriteAtis = {
+  alert: TAlert;
+  codes: {
+    key: string;
+    codes: string[];
+  };
+};
+
 const get_atis = async () => {
   try {
     if (await invoke("is_vatis_running")) {
@@ -95,6 +103,10 @@ const get_atis = async () => {
     let facs: string[] = [];
     let messages: Array<{ key: string; message: string }> = [];
     let status: Record<string, string> = {};
+    let code_str: {
+      key: string;
+      codes: string[];
+    }[] = [];
 
     codes = {};
 
@@ -122,21 +134,30 @@ const get_atis = async () => {
         status[fac] = alert.alert_type;
       }
 
-      const alert: TAlert = await invoke("write_atis", {
+      const alert: WriteAtis = await invoke("write_atis", {
         facility: fac,
         atis: atis,
       });
 
-      const success = alert.alert_type === "success";
-      alert.message = success ? alert.message : "";
+      code_str.push(alert.codes);
+
+      const success = alert.alert.alert_type === "success";
+      alert.alert.message = success ? alert.alert.message : "";
 
       if (!messages.some((k) => k.key === fac)) {
-        messages.push({ key: fac, message: alert.message as string });
-        status[fac] = alert.alert_type;
+        messages.push({ key: fac, message: alert.alert.message as string });
+        status[fac] = alert.alert.alert_type;
       }
     });
 
     await Promise.all(promises);
+
+    messages.forEach((k) => {
+      const index = code_str.findIndex((j) => j.key === k.key);
+      if (index !== -1) {
+        k.message = k.message.concat(` ${code_str[index].codes.join(", ")}`);
+      }
+    });
 
     let alert_level = 3;
 

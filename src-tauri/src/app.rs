@@ -3,6 +3,7 @@ use crate::settings::read_settings;
 use crate::structs::{Alert, FindComposite};
 use crate::util::{read_json_file, write_json_file};
 use log::{error, info};
+use serde::Serialize;
 use serde_json::{self, Value};
 use sysinfo::System;
 use tauri::{AppHandle, Manager};
@@ -127,16 +128,37 @@ pub fn write_profile(
     Ok(())
 }
 
+#[derive(Serialize)]
+pub struct Codes {
+    pub key: String,
+    pub codes: Vec<String>,
+}
+#[derive(Serialize)]
+
+pub struct WriteAtis {
+    pub alert: Alert,
+    pub codes: Codes,
+}
+
 #[tauri::command]
-pub fn write_atis(facility: String, atis: Value, app_handle: AppHandle) -> Result<Alert, String> {
+pub fn write_atis(
+    facility: String,
+    atis: Value,
+    app_handle: AppHandle,
+) -> Result<WriteAtis, String> {
     let settings = read_settings(app_handle.clone()).unwrap();
     let atis_array = atis.as_array().unwrap();
 
-    let mut alert = Alert {
-        alert_type: "success".to_string(),
-        message: String::new(),
+    let mut alert = WriteAtis {
+        alert: Alert {
+            alert_type: "success".to_string(),
+            message: "".to_string(),
+        },
+        codes: Codes {
+            key: facility.clone(),
+            codes: Vec::new(),
+        },
     };
-
     let mut codes: Vec<String> = Vec::new();
 
     let file_path = get_vatis_path(&app_handle);
@@ -160,30 +182,26 @@ pub fn write_atis(facility: String, atis: Value, app_handle: AppHandle) -> Resul
                     &atis_entry["atis_code"].as_str().unwrap_or_default()
                 ));
                 info!("{}", data);
-                if alert.message == *data {
+                if alert.alert.message == *data {
                     // do nothing
                 } else {
-                    alert.message.push_str(data);
+                    alert.alert.message.push_str(data);
                 }
             }
             Err(e) => {
                 let data = &format!("Error writing ATIS: {}", e);
                 error!("{}", data);
-                if alert.message == *data {
+                if alert.alert.message == *data {
                     // do nothing
                 } else {
-                    alert.message.push_str(data);
-                    alert.alert_type = "error".to_string();
+                    alert.alert.message.push_str(data);
+                    alert.alert.alert_type = "error".to_string();
                 }
             }
         }
     }
 
-    if !codes.is_empty() {
-        for code in codes {
-            alert.message.push_str(&format!(" {}", code));
-        }
-    }
+    alert.codes.codes = codes;
 
     Ok(alert)
 }
