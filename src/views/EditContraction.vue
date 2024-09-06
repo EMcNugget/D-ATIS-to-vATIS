@@ -2,7 +2,7 @@
 import { invoke } from "@tauri-apps/api/core";
 import { computed, ref } from "vue";
 import { use_store } from "../lib/stores";
-import { TAlert } from "src/lib/types";
+import { type TAlert } from "../lib/types";
 
 const store = use_store();
 
@@ -38,16 +38,16 @@ const add = () => {
   new_contraction.value = { string: "", spoken: "" };
 };
 
-const remove = (index: number) => {
-  const keys = Object.keys(contractions.value.notam_contractions);
-
-  const key = keys[index];
-  const { [key]: removed, ...rest } = contractions.value.notam_contractions;
-
-  contractions.value.notam_contractions = rest;
-};
-
 const remove_contraction = (index: number) => {
+  const remove = (index: number) => {
+    const keys = Object.keys(contractions.value.notam_contractions);
+
+    const key = keys[index];
+    const { [key]: removed, ...rest } = contractions.value.notam_contractions;
+
+    contractions.value.notam_contractions = rest;
+  };
+
   message.value = {
     message: "Are you sure you want to delete this contraction?",
     alert_type: "warn",
@@ -57,13 +57,13 @@ const remove_contraction = (index: number) => {
 </script>
 
 <template>
-  <div class="overflow-x-auto h-1/2 border-2 border-outline p-1 rounded-lg">
+  <div class="overflow-x-auto h-1/2 border-2 border-outline rounded-lg">
     <table class="table border-collapse border-outline rounded-lg">
-      <thead>
+      <thead class="sticky top-0 shadow-md bg-accent z-10">
         <tr>
           <th></th>
-          <th>Contraction</th>
-          <th>Spoken</th>
+          <th class="text-base-content">Contraction</th>
+          <th class="text-base-content">Spoken</th>
           <th></th>
         </tr>
       </thead>
@@ -122,7 +122,7 @@ const remove_contraction = (index: number) => {
           @input="new_contraction.spoken = new_contraction.spoken.toUpperCase()"
         />
         <button
-          class="btn btn-active btn-primary w-1/4"
+          class="btn btn-active btn-neutral w-1/4"
           onclick="my_modal_1.close()"
           @click="add()"
         >

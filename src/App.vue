@@ -6,7 +6,7 @@ import { RouterLink, RouterView } from "vue-router";
 <template>
   <Suspense>
     <CLayout>
-      <div v-if="$route.path === '/'">
+      <div v-if="$route.path === '/'" class="flex justify-center">
         <h1 class="absolute top-0 mt-6 font-semibold text-4xl">
           vATIS Utilites
         </h1>

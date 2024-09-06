@@ -16,11 +16,13 @@ export default {
       {
         light: {
           ...require("daisyui/src/theming/themes")["light"],
-          primary: "2b3440",
+          primary: "#2b3440",
+          accent: "#d2d2d2",
         },
         dark: {
           ...require("daisyui/src/theming/themes")["dark"],
           primary: "#111419",
+          accent: "#2a323c",
         },
       },
       "dark",
