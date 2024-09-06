@@ -1,12 +1,14 @@
 <script setup lang="ts">
 import { fetch_atis } from "../lib/parser";
 import { use_store } from "../lib/stores";
-import { TAlert, facilities, vATIS, TATIS, alert_types } from "../lib/types";
+import { TAlert, vATIS, TATIS, alert_types } from "../lib/types";
 import { invoke } from "@tauri-apps/api/core";
 import { emit } from "@tauri-apps/api/event";
 import { computed, ref, watch } from "vue";
 
 const store = use_store();
+
+const facilities = Object.keys(store.get_contractions().airports);
 
 const facility = computed({
   get: () => store.get_individual("facility"),
