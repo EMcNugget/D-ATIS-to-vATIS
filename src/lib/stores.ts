@@ -1,16 +1,18 @@
 import { defineStore } from "pinia";
-import type { TSettings, TAlert } from "./types";
+import type { TSettings, TAlert, TCustomContractions } from "./types";
 
 type TStore = {
   settings: TSettings;
   alert: TAlert;
   codes: string[];
-  app_update: boolean;
+  init: boolean;
   airports_in_profile: string[];
   profiles: string[];
+  contractions: TCustomContractions;
 };
 
-export const use_store = defineStore("store", {
+export const use_store = defineStore({
+  id: "store",
   state: (): TStore => ({
     settings: {} as TSettings,
     alert: {
@@ -18,9 +20,10 @@ export const use_store = defineStore("store", {
       alert_type: "success",
     },
     codes: [],
-    app_update: false,
+    init: false,
     airports_in_profile: [],
     profiles: [],
+    contractions: {} as TCustomContractions,
   }),
   actions: {
     set_individual<K extends keyof TSettings>(key: K, value: TSettings[K]) {
@@ -36,14 +39,17 @@ export const use_store = defineStore("store", {
     set_alert(message: TAlert) {
       this.alert = message;
     },
-    set_app_update(status: boolean) {
-      this.app_update = status;
+    set_init(status: boolean) {
+      this.init = status;
     },
     set_airports_in_profile(airports: string[]) {
       this.airports_in_profile = airports;
     },
     set_profiles(profiles: string[]) {
       this.profiles = profiles;
+    },
+    set_contractions(contractions: TCustomContractions) {
+      this.contractions = contractions;
     },
 
     get_individual<K extends keyof TSettings>(key: K): TSettings[K] {
@@ -58,14 +64,17 @@ export const use_store = defineStore("store", {
     get_alert() {
       return this.alert;
     },
-    get_app_update() {
-      return this.app_update;
+    get_init() {
+      return this.init;
     },
     get_airports_in_profile() {
       return this.airports_in_profile;
     },
     get_profiles() {
       return this.profiles;
+    },
+    get_contractions() {
+      return this.contractions;
     },
   },
 });

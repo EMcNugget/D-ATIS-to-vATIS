@@ -4,6 +4,13 @@ import CTable from "./CTable.vue";
 const props = defineProps<{ message: TAlert; show: boolean }>();
 const emit = defineEmits(["close"]);
 
+const confirm_alert = () => {
+  if (props.message.confirm) {
+    props.message.confirm();
+    emit("close");
+  }
+};
+
 const get_alert_class = () => {
   switch (props.message.alert_type) {
     case "error":
@@ -62,6 +69,15 @@ const get_alert_icon_svg = () => {
         }>)"
           />
         </span>
+        <div v-if="message.confirm && message.message">
+          <span> {{ message.message }}</span>
+          <button
+            class="btn btn-sm btn-warn btn-active btn-outline ml-4"
+            @click="confirm_alert"
+          >
+            Confirm
+          </button>
+        </div>
         <span v-else>{{ message.message }}</span>
       </div>
 

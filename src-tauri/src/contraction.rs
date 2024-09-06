@@ -93,19 +93,24 @@ pub fn write_contractions(
 }
 
 #[tauri::command]
-pub fn create_new_contraction(contraction: Contraction, app_handle: AppHandle) -> Response {
-    let mut contractions = get_resource_json(&app_handle, "custom_contractions.json").unwrap()
-        ["notam_contractions"]
-        .clone();
-
-    contractions[contraction.string.clone()] = Value::String(contraction.spoken.clone());
-
+pub fn set_contractions(contractions: Value, app_handle: AppHandle) -> Response {
     match write_resource_json(&app_handle, "custom_contractions.json", &contractions) {
-        Ok(_) => response("Custom contraction edit successfully", true, None),
+        Ok(_) => response("Custom Contractions updated successfully", true, None),
         Err(err) => response(
             "Failed to add custom contraction",
             false,
             Some(&err.to_string()),
         ),
     }
+}
+
+#[tauri::command]
+pub fn get_contractions(app_handle: AppHandle) -> Value {
+    serde_json::Value::Object(
+        get_resource_json(&app_handle, "custom_contractions.json")
+            .unwrap()
+            .as_object()
+            .unwrap()
+            .clone(),
+    )
 }

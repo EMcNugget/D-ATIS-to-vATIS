@@ -1,6 +1,6 @@
 use crate::contraction::write_contractions;
 use crate::settings::read_settings;
-use crate::structs::{Alert, FindComposite};
+use crate::structs::{FindComposite, Response};
 use crate::util::{read_json_file, write_json_file};
 use log::{error, info};
 use serde::Serialize;
@@ -136,7 +136,7 @@ pub struct Codes {
 #[derive(Serialize)]
 
 pub struct WriteAtis {
-    pub alert: Alert,
+    pub alert: Response,
     pub codes: Codes,
 }
 
@@ -150,7 +150,7 @@ pub fn write_atis(
     let atis_array = atis.as_array().unwrap();
 
     let mut res = WriteAtis {
-        alert: Alert {
+        alert: Response {
             alert_type: "success".to_string(),
             message: "".to_string(),
         },

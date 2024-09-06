@@ -51,12 +51,6 @@ pub struct FindComposite {
     pub composite_index: usize,
 }
 
-#[derive(Serialize)]
-pub struct Alert {
-    pub alert_type: String,
-    pub message: String,
-}
-
 #[derive(Serialize, Deserialize, Debug, Clone)]
 pub struct Contraction {
     pub string: String,

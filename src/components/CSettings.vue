@@ -215,14 +215,14 @@ watch(
       <CLabel title="Check for ATIS Updates">
         <input type="checkbox" class="toggle" v-model="check_updates" />
       </CLabel>
-      <CLabel title="Suppress ATIS Notification">
+      <CLabel title="Suppress ATIS Notification" v-if="check_updates">
         <input type="checkbox" class="toggle" v-model="suppress_notification" />
       </CLabel>
       <CLabel title="Fetch ATIS for All Airports in a Profile">
         <input type="checkbox" class="toggle" v-model="fetch_for_profile" />
       </CLabel>
       <div v-if="check_updates">
-        <CLabel title="Automatically Change Interval based on Zulu Time">
+        <CLabel title="Automatically Change Interval Based on Zulu Time">
           <input type="checkbox" class="toggle" v-model="check_updates_freq" />
         </CLabel>
         <CLabel title="Update Interval">

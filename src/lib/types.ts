@@ -56,6 +56,17 @@ type TAlert = {
   alert_type: (typeof alert_types)[number];
   payload?: any;
   slot?: string;
+  confirm?: (...args: any[]) => void;
+};
+
+type TContractions = {
+  string: string;
+  spoken: string;
+};
+
+type TCustomContractions = {
+  notam_contractions: Record<string, string>;
+  airports: Record<string, string>;
 };
 
 export const facilities = [
@@ -145,4 +156,6 @@ export type {
   TATISCode,
   TTheme,
   TAlert,
+  TContractions,
+  TCustomContractions,
 };

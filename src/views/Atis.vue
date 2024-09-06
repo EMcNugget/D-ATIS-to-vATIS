@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import Layout from "./Layout.vue";
 import { fetch_atis } from "../lib/parser";
 import { use_store } from "../lib/stores";
 import { TAlert, facilities, vATIS, TATIS, alert_types } from "../lib/types";
@@ -278,41 +277,39 @@ watch(
 </script>
 
 <template>
-  <Layout>
-    <div class="flex flex-col items-center">
-      <input
-        type="text"
-        placeholder="Select a profile..."
-        class="input input-bordered mb-4 text-center"
-        readonly
-        :value="profile === 'No Profile' ? null : profile"
-        v-if="fetch_for_profile"
-      />
-      <input
-        type="text"
-        placeholder="Airport Code..."
-        :class="
-          'input input-bordered w-full max-w-xs mb-4 input-uppercase ' +
-          (validate_iaco(facility) ? '' : ' input-error')
-        "
-        v-model="facility"
-        maxlength="4"
-        v-else
-      />
-      <div
-        :class="tooltip ? 'tooltip tooltip-bottom' : ''"
-        :data-tip="tooltip || ''"
+  <div class="flex flex-col items-center">
+    <input
+      type="text"
+      placeholder="Select a profile..."
+      class="input input-bordered mb-4 text-center"
+      readonly
+      :value="profile === 'No Profile' ? null : profile"
+      v-if="fetch_for_profile"
+    />
+    <input
+      type="text"
+      placeholder="Airport Code..."
+      :class="
+        'input input-bordered w-full max-w-xs mb-4 input-uppercase ' +
+        (validate_iaco(facility) ? '' : ' input-error')
+      "
+      v-model="facility"
+      maxlength="4"
+      v-else
+    />
+    <div
+      :class="tooltip ? 'tooltip tooltip-bottom' : ''"
+      :data-tip="tooltip || ''"
+    >
+      <button
+        class="btn btn-primary w-half max-w-xs mb-4"
+        @click="get_atis()"
+        :disabled="!fetch_for_profile && !validate_iaco(facility)"
       >
-        <button
-          class="btn btn-primary w-half max-w-xs mb-4"
-          @click="get_atis()"
-          :disabled="!fetch_for_profile && !validate_iaco(facility)"
-        >
-          Fetch
-        </button>
-      </div>
+        Fetch
+      </button>
     </div>
-  </Layout>
+  </div>
 </template>
 
 <style>

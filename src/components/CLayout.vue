@@ -2,37 +2,53 @@
 import CAlerts from "../components/CAlerts.vue";
 import CSettings from "../components/CSettings.vue";
 import CUpdate from "../components/CUpdate.vue";
-import { computed, ref, watch, onMounted } from "vue";
+import { computed, ref, watch, onBeforeMount } from "vue";
 import { use_store } from "../lib/stores";
 import { router } from "../lib/router";
-import { check } from "@tauri-apps/plugin-updater";
+import { check, type Update } from "@tauri-apps/plugin-updater";
 import { relaunch } from "@tauri-apps/plugin-process";
 import { getVersion } from "@tauri-apps/api/app";
+import { invoke } from "@tauri-apps/api/core";
+import { TCustomContractions, TSettings } from "../lib/types";
+import { info, error } from "@tauri-apps/plugin-log";
 
 const store = use_store();
 
 const version = ref("Unknown");
 const show_update = ref(false);
-const info = computed(() => `v${version.value} Copyright © 2024 Ethan Seys`);
+let update_value: Update | null = null;
 
-const updateAndRelaunch = async () => {
-  const update = await check();
-  if (update?.available) {
-    update.downloadAndInstall().then(() => {
+const undate_and_relaunch = async () => {
+  if (update_value) {
+    update_value.downloadAndInstall().then(() => {
       relaunch();
     });
   }
 };
 
-onMounted(async () => {
+const setup = async () => {
+  store.set_settings(await invoke<TSettings>("read_settings"));
+  store.set_profiles(await invoke<string[]>("get_profiles"));
+  store.set_contractions(await invoke<TCustomContractions>("get_contractions"));
+  store.set_init(true);
   version.value = await getVersion();
-  if (!store.get_app_update()) {
-    store.set_app_update(true);
-    const update = await check();
-    if (update?.available) {
-      version.value = update.version;
-      show_update.value = true;
-    }
+  const update = await check();
+  if (update?.available) {
+    update_value = update;
+    version.value = update.version;
+    show_update.value = true;
+  }
+};
+
+onBeforeMount(async () => {
+  if (!store.get_init()) {
+    setup()
+      .then(() => {
+        info("Initialization Complete");
+      })
+      .catch((e) => {
+        error(e as string);
+      });
   }
 });
 
@@ -54,16 +70,23 @@ watch(
     class="h-screen relative flex flex-col items-center justify-center"
     :data-theme="local_theme"
   >
-    <CAlerts :message="message" :show="show_alert" @close="show_alert = false" />
+    <CAlerts
+      :message="message"
+      :show="show_alert"
+      @close="show_alert = false"
+    />
     <CUpdate
       v-if="show_update"
       :show="show_update"
       :version="version"
       @close-update="show_update = false"
-      @download-and-install="updateAndRelaunch"
+      @download-and-install="undate_and_relaunch"
     />
     <slot></slot>
-    <CSettings :showModal="show_settings" @close="show_settings = !show_settings" />
+    <CSettings
+      :showModal="show_settings"
+      @close="show_settings = !show_settings"
+    />
     <button
       class="btn btn-circle fixed bottom-0 left-0 m-4 flex items-center justify-center"
       @click="show_settings = !show_settings"
@@ -81,15 +104,5 @@ watch(
     >
       <img src="/back.svg" alt="Back" class="h-auto w-auto max-h-6 max-w-6" />
     </button>
-    <div
-      class="h-auto w-auto max-h-6 max-w-6 fixed bottom-0 right-0 m-4 flex items-center justify-center tooltip tooltip-left"
-      :data-tip="info"
-    >
-      <img
-        src="/info.svg"
-        alt="Info"
-        v-if="router.currentRoute.value.path === '/'"
-      />
-    </div>
   </div>
 </template>

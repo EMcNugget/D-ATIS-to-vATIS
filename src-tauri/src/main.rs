@@ -49,7 +49,8 @@ fn main() {
             crate::app::open_vatis,
             crate::app::get_profiles,
             crate::app::get_airports_in_profile,
-            crate::contraction::create_new_contraction
+            crate::contraction::set_contractions,
+            crate::contraction::get_contractions
         ])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");
