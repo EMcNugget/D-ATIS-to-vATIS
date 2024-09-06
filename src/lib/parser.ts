@@ -97,8 +97,8 @@ export const fetch_atis = async (facility: string) => {
     };
   }
 
-  const contentType = res.headers.get("Content-Type");
-  if (contentType && contentType.includes("application/json")) {
+  const content_type = res.headers.get("Content-Type");
+  if (content_type && content_type.includes("application/json")) {
     const response = await res.json();
 
     let split = false;
@@ -106,28 +106,24 @@ export const fetch_atis = async (facility: string) => {
       split = true;
     }
 
-    const atisArray: vATIS[] = [];
+    const atis_arr: vATIS[] = [];
     response.forEach((atis: TATIS) => {
-      let parsed: vATIS;
       try {
-        parsed = parse_atis(atis, split, facility);
+        atis_arr.push(parse_atis(atis, split, facility));
       } catch (e) {
         const alert = e as TAlert;
         if (alert.payload) {
-          parsed = alert.payload;
-          atisArray.push(parsed);
+          atis_arr.push(alert.payload);
           throw alert;
         } else {
           throw e;
         }
       }
-
-      atisArray.push(parsed);
     });
 
-    return atisArray;
+    return atis_arr;
   } else {
-    warn("Response was not JSON.");
+    error("Response was not JSON.");
     throw {
       alert_type: "error",
       message: "An error occurred while fetching the ATIS data.",
