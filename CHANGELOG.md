@@ -1,5 +1,13 @@
 # D-ATIS to vATIS
 
+## [1.7.1](#1.7.1) - 9/5/2024
+
+### Patch Changes
+
+- aebdb99: Added GUI for adding custom contractions
+- a876405: Added ability to suppress new ATIS notification
+- 0eafaa6: Fixed ATIS's with parsing errors not displaying a code in the alert message
+
 ## [1.7.0](#1.7.0) - 9/2/2024
 
 ### Minor Changes
