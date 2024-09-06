@@ -6,7 +6,7 @@ export default {
   theme: {
     extend: {
       colors: {
-        "outline": "#2b3440",
+        outline: "#2b3440",
       },
     },
   },
@@ -17,6 +17,10 @@ export default {
         light: {
           ...require("daisyui/src/theming/themes")["light"],
           primary: "2b3440",
+        },
+        dark: {
+          ...require("daisyui/src/theming/themes")["dark"],
+          primary: "#111419",
         },
       },
       "dark",
