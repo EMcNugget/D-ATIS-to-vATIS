@@ -57,8 +57,8 @@ const remove_contraction = (index: number) => {
 </script>
 
 <template>
-  <div class="overflow-x-auto h-1/2">
-    <table class="table">
+  <div class="overflow-x-auto h-1/2 border-2 border-outline p-1 rounded-lg">
+    <table class="table border-collapse border-outline rounded-lg">
       <thead>
         <tr>
           <th></th>
