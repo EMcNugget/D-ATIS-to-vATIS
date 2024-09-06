@@ -114,10 +114,8 @@ export const fetch_atis = async (facility: string) => {
         const alert = e as TAlert;
         if (alert.payload) {
           atis_arr.push(alert.payload);
-          throw alert;
-        } else {
-          throw e;
         }
+        throw alert;
       }
     });
 
