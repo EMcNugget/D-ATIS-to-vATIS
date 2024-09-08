@@ -47,7 +47,7 @@ let codes: Record<string, string[]> = {};
 const tooltip = ref("");
 
 const validate_iaco = (value: string) => {
-  if (!facilities.includes(value)) {
+  if (!facilities.includes(value.toLocaleUpperCase())) {
     tooltip.value = "Invalid facility";
     return false;
   } else if (
@@ -290,7 +290,7 @@ watch(
       type="text"
       placeholder="Airport Code..."
       :class="
-        'input input-bordered w-full max-w-xs mb-4 input-uppercase ' +
+        'input input-bordered w-full max-w-xs mb-4 input-uppercase text-center' +
         (validate_iaco(facility) ? '' : ' input-error')
       "
       v-model="facility"
