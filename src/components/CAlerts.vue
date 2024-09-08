@@ -60,7 +60,7 @@ const get_alert_icon_svg = () => {
       </svg>
       <div class="flex flex-col">
         <span v-if="message.slot">{{ message.slot }}</span>
-        <span v-if="typeof message.message === 'object'">
+        <span v-else-if="typeof message.message === 'object'">
           <CTable
             :head="[]"
             :rows="(message.message as Array<{
@@ -69,10 +69,7 @@ const get_alert_icon_svg = () => {
         }>)"
           />
         </span>
-        <div
-          v-if="message.confirm && message.message"
-          class="flex flex-col space-y-2"
-        >
+        <div v-else-if="message.confirm" class="flex flex-col space-y-2">
           <span> {{ message.message }}</span>
           <button
             class="btn btn-sm btn-outline btn-active btn-outline ml-4"

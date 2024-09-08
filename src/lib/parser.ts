@@ -1,5 +1,5 @@
 import { v4 } from "uuid";
-import { TAlert, TATIS, vATIS } from "./types";
+import { TATIS, vATIS } from "./types";
 import { error, warn } from "@tauri-apps/plugin-log";
 
 const find_number_of_occurances = (
@@ -108,17 +108,8 @@ export const fetch_atis = async (facility: string) => {
 
     const atis_arr: vATIS[] = [];
     response.forEach((atis: TATIS) => {
-      try {
-        atis_arr.push(parse_atis(atis, split, facility));
-      } catch (e) {
-        const alert = e as TAlert;
-        if (alert.payload) {
-          atis_arr.push(alert.payload);
-        }
-        throw alert;
-      }
+      atis_arr.push(parse_atis(atis, split, facility));
     });
-
     return atis_arr;
   } else {
     error("Response was not JSON.");
