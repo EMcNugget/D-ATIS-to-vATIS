@@ -1,10 +1,9 @@
 <script setup lang="ts">
 import CAlerts from "../components/CAlerts.vue";
-import CSettings from "../components/CSettings.vue";
 import CUpdate from "../components/CUpdate.vue";
+import SettingsLayout from "./SettingsLayout.vue";
 import { computed, ref, watch, onBeforeMount } from "vue";
 import { use_store } from "../lib/stores";
-import { router } from "../lib/router";
 import { check, type Update } from "@tauri-apps/plugin-updater";
 import { relaunch } from "@tauri-apps/plugin-process";
 import { getVersion } from "@tauri-apps/api/app";
@@ -55,7 +54,6 @@ onBeforeMount(async () => {
 const message = computed(() => store.get_alert());
 const local_theme = computed(() => store.get_individual("theme"));
 const show_alert = ref(false);
-const show_settings = ref(false);
 
 watch(
   () => message.value,
@@ -83,26 +81,16 @@ watch(
       @download-and-install="undate_and_relaunch"
     />
     <slot></slot>
-    <CSettings
-      :showModal="show_settings"
-      @close="show_settings = !show_settings"
-    />
+    <SettingsLayout />
     <button
       class="btn btn-circle fixed bottom-0 left-0 m-4 flex items-center justify-center"
-      @click="show_settings = !show_settings"
+      onclick="modal_1.showModal()"
     >
       <img
-        src="/settings.svg"
+        src="/bars.svg"
         alt="Settings"
         class="h-auto w-auto max-h-6 max-w-6"
       />
-    </button>
-    <button
-      class="btn btn-circle fixed bottom-0 right-0 m-4 flex items-center justify-center"
-      @click="router.back()"
-      v-if="router.currentRoute.value.path !== '/'"
-    >
-      <img src="/back.svg" alt="Back" class="h-auto w-auto max-h-6 max-w-6" />
     </button>
   </div>
 </template>

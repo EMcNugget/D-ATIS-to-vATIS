@@ -17,8 +17,7 @@
     "@tauri-apps/plugin-updater": "2.0.0-rc.0",
     "pinia": "^2.2.2",
     "uuid": "^10.0.0",
-    "vue": "^3.5.2",
-    "vue-router": "^4.4.3"
+    "vue": "^3.5.3"
   },
   "devDependencies": {
     "@changesets/cli": "^2.27.8",

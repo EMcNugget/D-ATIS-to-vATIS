@@ -1,18 +1,13 @@
 <script setup lang="ts">
 import { computed, ref, watch } from "vue";
-import CLabel from "./CLabel.vue";
-import CDropdown from "./CDropdown.vue";
-import { use_store } from "../lib/stores";
+import CLabel from "../../components/CLabel.vue";
+import CDropdown from "../../components/CDropdown.vue";
+import { use_store } from "../../lib/stores";
 import { invoke } from "@tauri-apps/api/core";
 import { open } from "@tauri-apps/plugin-dialog";
 import { getCurrentWindow } from "@tauri-apps/api/window";
 import { listen, TauriEvent } from "@tauri-apps/api/event";
-import type { TAlert } from "../lib/types";
-
-const props = defineProps<{
-  showModal: boolean;
-}>();
-defineEmits(["close"]);
+import type { TAlert } from "../../lib/types";
 
 const store = use_store();
 
@@ -173,97 +168,84 @@ watch(
 </script>
 
 <template>
-  <dialog class="modal" :open="props.showModal">
-    <div class="modal-box">
-      <form method="dialog">
-        <button
-          class="btn btn-sm btn-circle btn-ghost absolute right-2 top-2"
-          @click="$emit('close')"
-        >
-          ✕
-        </button>
-      </form>
-      <h3 class="text-2xl mb-6 font-bold">Settings</h3>
-      <CLabel title="Profile">
-        <CDropdown
-          :name="profile"
-          :click="handle_dropdown_profile"
-          :show="show_dropdown_profile"
-          :tab_index="2"
-        >
-          <li v-for="p in profiles" :key="p">
-            <a @click="handle_profile(p)">{{ p }}</a>
-          </li>
-        </CDropdown>
-      </CLabel>
-      <CLabel title="Custom vATIS Installation">
-        <input type="checkbox" class="toggle" v-model="custom_path" />
-      </CLabel>
-      <div class="flex flex-row" v-if="custom_path">
-        <input
-          type="text"
-          v-model="file_path"
-          readonly
-          placeholder="File Path..."
-          class="input input-bordered w-full mr-4 mb-4"
-        />
-        <button class="btn" @click="open_path()">Browse</button>
-      </div>
-      <CLabel title="Save Facility">
-        <input type="checkbox" class="toggle" v-model="save_facility" />
-      </CLabel>
-      <CLabel title="Check for ATIS Updates">
-        <input type="checkbox" class="toggle" v-model="check_updates" />
-      </CLabel>
-      <div v-if="check_updates">
-        <CLabel title="Suppress ATIS Notification">
-          <input
-            type="checkbox"
-            class="toggle"
-            v-model="suppress_notification"
-          />
-        </CLabel>
-        <CLabel title="Automatically Change Interval Based on Zulu Time">
-          <input type="checkbox" class="toggle" v-model="check_updates_freq" />
-        </CLabel>
-        <CLabel title="Update Interval">
-          <CDropdown
-            :name="`${update_time}m`"
-            :click="handle_dropdown_interval"
-            :show="show_dropdown_interval"
-            :tab_index="1"
-          >
-            <li><a @click="handle_interval(15)">15m</a></li>
-            <li><a @click="handle_interval(30)">30m</a></li>
-            <li><a @click="handle_interval(45)">45m</a></li>
-            <li><a @click="handle_interval(60)">60m</a></li>
-          </CDropdown>
-        </CLabel>
-      </div>
-      <CLabel title="Fetch ATIS for All Airports in a Profile">
-        <input type="checkbox" class="toggle" v-model="fetch_for_profile" />
-      </CLabel>
-      <CLabel title="Open vATIS on Fetch">
-        <input type="checkbox" class="toggle" v-model="open_vatis_on_fetch" />
-      </CLabel>
-      <CLabel title="Theme">
-        <CDropdown
-          :name="theme.charAt(0).toUpperCase() + theme.slice(1)"
-          :click="handle_dropdown_theme"
-          :show="show_dropdown_theme"
-          :tab_index="0"
-        >
-          <li><a @click="handle_theme('system')">System</a></li>
-          <li><a @click="handle_theme('light')">Light</a></li>
-          <li><a @click="handle_theme('dark')">Dark</a></li>
-        </CDropdown>
-      </CLabel>
-      <button
-        class="btn btn-active btn-primary mt-8 w-full"
-        @click="save_settings()"
+  <div
+    class="overflow-auto overflow-x-hidden h-96 border-2 p-4 border-base-300 rounded-box rounded-lg"
+  >
+    <CLabel title="Profile">
+      <CDropdown
+        :name="profile"
+        :click="handle_dropdown_profile"
+        :show="show_dropdown_profile"
+        :tab_index="2"
       >
-        Save
-      </button>
+        <li v-for="p in profiles" :key="p">
+          <a @click="handle_profile(p)">{{ p }}</a>
+        </li>
+      </CDropdown>
+    </CLabel>
+    <CLabel title="Custom vATIS Installation">
+      <input type="checkbox" class="toggle" v-model="custom_path" />
+    </CLabel>
+    <div class="flex flex-row" v-if="custom_path">
+      <input
+        type="text"
+        v-model="file_path"
+        readonly
+        placeholder="File Path..."
+        class="input input-bordered w-full mr-4 mb-4"
+      />
+      <button class="btn" @click="open_path()">Browse</button>
     </div>
-  </dialog>
+    <CLabel title="Save Facility">
+      <input type="checkbox" class="toggle" v-model="save_facility" />
+    </CLabel>
+    <CLabel title="Check for ATIS Updates">
+      <input type="checkbox" class="toggle" v-model="check_updates" />
+    </CLabel>
+    <div v-if="check_updates">
+      <CLabel title="Suppress ATIS Notification">
+        <input type="checkbox" class="toggle" v-model="suppress_notification" />
+      </CLabel>
+      <CLabel title="Change Interval Based on Zulu Time">
+        <input type="checkbox" class="toggle" v-model="check_updates_freq" />
+      </CLabel>
+      <CLabel title="Update Interval">
+        <CDropdown
+          :name="`${update_time}m`"
+          :click="handle_dropdown_interval"
+          :show="show_dropdown_interval"
+          :tab_index="1"
+        >
+          <li><a @click="handle_interval(15)">15m</a></li>
+          <li><a @click="handle_interval(30)">30m</a></li>
+          <li><a @click="handle_interval(45)">45m</a></li>
+          <li><a @click="handle_interval(60)">60m</a></li>
+        </CDropdown>
+      </CLabel>
+    </div>
+    <CLabel title="Get ATIS for All Airports in a Profile">
+      <input type="checkbox" class="toggle" v-model="fetch_for_profile" />
+    </CLabel>
+    <CLabel title="Open vATIS on Fetch">
+      <input type="checkbox" class="toggle" v-model="open_vatis_on_fetch" />
+    </CLabel>
+    <CLabel title="Theme">
+      <CDropdown
+        :name="theme.charAt(0).toUpperCase() + theme.slice(1)"
+        :click="handle_dropdown_theme"
+        :show="show_dropdown_theme"
+        :tab_index="0"
+      >
+        <li><a @click="handle_theme('system')">System</a></li>
+        <li><a @click="handle_theme('light')">Light</a></li>
+        <li><a @click="handle_theme('dark')">Dark</a></li>
+      </CDropdown>
+    </CLabel>
+  </div>
+  <button
+    class="btn btn-active btn-primary mt-8 w-full"
+    @click="save_settings()"
+  >
+    Save
+  </button>
 </template>

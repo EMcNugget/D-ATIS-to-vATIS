@@ -1,8 +1,8 @@
 <script setup lang="ts">
 import { invoke } from "@tauri-apps/api/core";
 import { computed, ref } from "vue";
-import { use_store } from "../lib/stores";
-import { type TAlert } from "../lib/types";
+import { use_store } from "../../lib/stores";
+import { type TAlert } from "../../lib/types";
 
 const store = use_store();
 
@@ -57,8 +57,8 @@ const remove_contraction = (index: number) => {
 </script>
 
 <template>
-  <div class="overflow-x-auto h-1/2 border-2 border-outline rounded-lg">
-    <table class="table border-collapse border-outline rounded-lg">
+  <div class="overflow-auto h-96 border-2 border-base-300 rounded-lg">
+    <table class="table border-collapse rounded-lg">
       <thead class="sticky top-0 shadow-md bg-accent z-10">
         <tr>
           <th></th>
@@ -76,7 +76,7 @@ const remove_contraction = (index: number) => {
         >
           <th>
             <button
-              class="btn btn-active"
+              class="btn btn-circle btn-sm"
               v-if="hovered_row === index"
               @click="remove_contraction(index)"
             >
@@ -89,7 +89,7 @@ const remove_contraction = (index: number) => {
       </tbody>
     </table>
   </div>
-  <div class="flex flex-row items-center justify-center space-x-4 w-1/2">
+  <div class="flex flex-row items-center justify-center space-x-4">
     <button
       class="btn btn-active btn-primary mt-8 w-1/4 mr-4"
       onclick="my_modal_1.showModal()"

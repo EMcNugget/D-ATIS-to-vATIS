@@ -1,20 +1,20 @@
-type TATISType = "arr" | "dep" | "combined";
+export type TATISType = "arr" | "dep" | "combined";
 
-type TTheme = "system" | "light" | "dark";
+export type TTheme = "system" | "light" | "dark";
 
-type TATISCode = {
+export type TATISCode = {
   type: "Arrival" | "Departure" | "Combined";
   code: string;
 };
 
-type TATIS = {
+export type TATIS = {
   airport: string;
   type: TATISType;
   code: string;
   datis: string;
 };
 
-type vATIS = {
+export type vATIS = {
   atis_type: TATISType;
   atis_code: string;
   atis: {
@@ -29,7 +29,7 @@ type vATIS = {
   };
 };
 
-type TSettings = {
+export type TSettings = {
   facility: string;
   file_path: string;
   custom_path: boolean;
@@ -46,7 +46,7 @@ type TSettings = {
 
 export const alert_types = ["error", "warn", "info", "success"] as const;
 
-type TAlert = {
+export type TAlert = {
   message:
     | string
     | {
@@ -59,24 +59,91 @@ type TAlert = {
   confirm?: (...args: any[]) => void;
 };
 
-type TContractions = {
+export type TContractions = {
   string: string;
   spoken: string;
 };
 
-type TCustomContractions = {
+export type TCustomContractions = {
   notam_contractions: Record<string, string>;
   airports: Record<string, string>;
 };
 
-export type {
-  TATIS,
-  vATIS,
-  TSettings,
-  TATISType,
-  TATISCode,
-  TTheme,
-  TAlert,
-  TContractions,
-  TCustomContractions,
-};
+export const facilities = [
+  "KABQ",
+  "KADW",
+  "KALB",
+  "KATL",
+  "KAUS",
+  "KBDL",
+  "KBNA",
+  "KBOI",
+  "KBOS",
+  "KBUF",
+  "KBUR",
+  "KBWI",
+  "KCHS",
+  "KCLE",
+  "KCLT",
+  "KCMH",
+  "KCVG",
+  "KDAL",
+  "KDCA",
+  "KDEN",
+  "KDFW",
+  "KDTW",
+  "KELP",
+  "KEWR",
+  "KFLL",
+  "KGSO",
+  "KHOU",
+  "KHPN",
+  "KIAD",
+  "KIAH",
+  "KIND",
+  "KJAX",
+  "KJFK",
+  "KLAS",
+  "KLAX",
+  "KLGA",
+  "KLIT",
+  "KMCI",
+  "KMCO",
+  "KMDW",
+  "KMEM",
+  "KMIA",
+  "KMKE",
+  "KMSP",
+  "KMSY",
+  "KOAK",
+  "KOKC",
+  "KOMA",
+  "KONT",
+  "KORD",
+  "KPBI",
+  "KPDX",
+  "KPHL",
+  "KPHX",
+  "KPIT",
+  "KPVD",
+  "KRDU",
+  "KRNO",
+  "KRSW",
+  "KSAN",
+  "KSAT",
+  "KSDF",
+  "KSEA",
+  "KSFO",
+  "KSJC",
+  "KSLC",
+  "KSMF",
+  "KSNA",
+  "KSTL",
+  "KTEB",
+  "KTPA",
+  "KTUL",
+  "KVNY",
+  "PANC",
+  "PHNL",
+  "TJSJ",
+];

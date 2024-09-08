@@ -1,14 +1,12 @@
 <script setup lang="ts">
 import { fetch_atis } from "../lib/parser";
 import { use_store } from "../lib/stores";
-import { TAlert, vATIS, TATIS, alert_types } from "../lib/types";
+import { TAlert, vATIS, TATIS, alert_types, facilities } from "../lib/types";
 import { invoke } from "@tauri-apps/api/core";
 import { emit } from "@tauri-apps/api/event";
 import { computed, ref, watch } from "vue";
 
 const store = use_store();
-
-const facilities = Object.keys(store.get_contractions().airports);
 
 const facility = computed({
   get: () => store.get_individual("facility"),
@@ -102,7 +100,7 @@ const get_atis = async () => {
     }
 
     let facs: string[] = [];
-    let messages: Array<{ key: string; message: string }> = [];
+    let messages: { key: string; message: string }[] = [];
     let status: Record<string, string> = {};
     let code_str: {
       key: string;
@@ -135,7 +133,7 @@ const get_atis = async () => {
         status[fac] = alert.alert_type;
       }
 
-      const alert: WriteAtis = await invoke("write_atis", {
+      const alert = await invoke<WriteAtis>("write_atis", {
         facility: fac,
         atis: atis,
       });
