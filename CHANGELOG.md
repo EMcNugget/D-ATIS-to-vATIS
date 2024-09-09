@@ -1,5 +1,12 @@
 # D-ATIS to vATIS
 
+## 1.7.3
+
+### Patch Changes
+
+- Fixed tooltip
+- Changed settings styling
+
 ## [1.7.1](#1.7.1) - 9/5/2024
 
 ### Patch Changes

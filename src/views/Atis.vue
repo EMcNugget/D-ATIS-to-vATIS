@@ -38,16 +38,20 @@ const open_vatis_on_fetch = computed(() =>
 );
 
 const airports_in_profile = computed(() => store.get_airports_in_profile());
-const fetch_for_profile = computed(() =>
-  store.get_individual("fetch_for_profile")
-);
+const fetch_for_profile = computed(() => {
+  const k = store.get_individual("fetch_for_profile");
+  if (k) {
+    tooltip.value = "";
+  }
+  return k;
+});
 
 let codes: Record<string, string[]> = {};
 
 const tooltip = ref("");
 
 const validate_iaco = (value: string) => {
-  if (!facilities.includes(value.toLocaleUpperCase())) {
+  if (!facilities.includes(value)) {
     tooltip.value = "Invalid facility";
     return false;
   } else if (
