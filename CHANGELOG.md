@@ -1,6 +1,6 @@
 # D-ATIS to vATIS
 
-## 1.7.3
+## [1.7.2](#1.7.2) - 9/8/2024
 
 ### Patch Changes
 

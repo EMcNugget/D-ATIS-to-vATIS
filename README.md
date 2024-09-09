@@ -12,14 +12,8 @@
 
 1. Download the latest [version](https://github.com/EMcNugget/D-ATIS-to-vATIS/releases).
 2. Follow the instructions laid out in the installer.
-
-## Setup
-
-1. Go to settings by clicking the cog icon on the bottem left.
-2. You can specify a custom path to the vATIS folder, if you do not specify a path it will use the default path.
-3. Specify which profile you'd like the program to use. If you do not specify a profile it will pick the first one it finds that has the facility that you specify.
-4. Choose if you would like to save your facility, does not affect vATIS but will auto-fill the facility next time you open the program.
-5. Click `Save` and then close the settings page.
+3. Go to settings by clicking the 3 bars icon on the bottem left and edit these to your likings, however the setup of these are not required.
+4. Click `Save` and then close the settings page.
 
 ## Usage
 
