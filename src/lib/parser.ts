@@ -29,16 +29,30 @@ const create_template = (
   }
 };
 
-const notam_varients = [
-  "NOTAMS...",
-  "NOTICE TO AIR MISSIONS.",
-  "NOTAM.",
-  "NOTICE TO AIR MISSION.",
-  "NOTICES TO AIRMEN.",
+const varients = [
+  "NOTAMS",
+  "NOTICE TO AIR MISSIONS",
+  "NOTAM",
+  "NOTICE TO AIR MISSION",
+  "NOTICES TO AIRMEN",
 ];
 
+const get_notam_varients = (periods: number) => {
+  return varients
+    .map((v) => {
+      const arr = [];
+
+      for (let i = 0; i < periods; i++) {
+        arr.push(v + ".".repeat(i));
+      }
+
+      return arr;
+    })
+    .flat();
+};
+
 const parse_atis = (atis: TATIS, split: boolean, facility: string): vATIS => {
-  // need to add ability to parse atis without NOTAM keyword
+  const notam_varients = get_notam_varients(3);
 
   const vATIS = {
     atis_type: atis.type as "arr" | "dep" | "combined",
