@@ -3,6 +3,7 @@ use crate::consts::FACILITY_CONFIG_PATH;
 use crate::contraction::write_contractions;
 use crate::settings::read_settings;
 use crate::structs::{FindComposite, Response};
+use anyhow::Result;
 use log::{error, info};
 use serde::Serialize;
 use serde_json::{self, Value};
@@ -86,7 +87,7 @@ pub fn write_profile(
     facility: &str,
     file_path: &str,
     atis_type: Option<&str>,
-) -> Result<(), String> {
+) -> Result<()> {
     let file_path = format!("{}\\AppConfig.json", file_path);
 
     let mut data = get_file(&file_path).unwrap();
@@ -140,11 +141,7 @@ pub struct WriteAtis {
 }
 
 #[tauri::command]
-pub fn write_atis(
-    facility: String,
-    atis: Value,
-    app_handle: AppHandle,
-) -> Result<WriteAtis, String> {
+pub fn write_atis(facility: String, atis: Value, app_handle: AppHandle) -> WriteAtis {
     let settings = read_settings().unwrap();
     let atis_array = atis.as_array().unwrap();
 
@@ -197,7 +194,7 @@ pub fn write_atis(
 
     res.codes.codes = codes;
 
-    Ok(res)
+    res
 }
 
 #[tauri::command]
@@ -218,7 +215,7 @@ pub fn get_vatis_path(app_handle: &AppHandle) -> String {
 }
 
 #[tauri::command]
-pub fn open_vatis(app_handle: AppHandle, custom_path: Option<&str>) -> Result<(), String> {
+pub fn open_vatis(app_handle: AppHandle, custom_path: Option<&str>) -> () {
     let s = System::new_all();
     let is_running = s.processes().values().any(|p| p.name() == "vATIS.exe");
 
@@ -231,24 +228,21 @@ pub fn open_vatis(app_handle: AppHandle, custom_path: Option<&str>) -> Result<()
 
     if !is_running {
         let path = custom_path.unwrap_or(&file_path);
-        std::process::Command::new(path).spawn().map_err(|e| {
-            error!("Failed to open vATIS: {}", e);
-            e.to_string()
-        })?;
+        std::process::Command::new(path)
+            .spawn()
+            .expect("Failed to open vATIS");
     }
-
-    Ok(())
 }
 
 #[tauri::command]
-pub fn get_profiles(app_handle: AppHandle) -> Result<Vec<String>, String> {
+pub fn get_profiles(app_handle: AppHandle) -> Vec<String> {
     let file_path = format!("{}\\AppConfig.json", get_vatis_path(&app_handle));
     let data = get_file::<Value>(&file_path).unwrap();
     let mut profiles = Vec::new();
     for profile in data["profiles"].as_array().unwrap() {
         profiles.push(profile["name"].as_str().unwrap().to_string());
     }
-    Ok(profiles)
+    profiles
 }
 
 #[tauri::command]

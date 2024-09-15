@@ -1,6 +1,7 @@
 use crate::assets::{get_file, response, set_file};
 use crate::consts::CONTRACTION_PATH;
 use crate::structs::{Contraction, Response};
+use anyhow::Result;
 use log::{error, info};
 use serde_json::Value;
 
@@ -28,7 +29,7 @@ pub fn write_contractions(
     atis: Value,
     airport_code: &str,
     atis_type: &str,
-) -> Result<Vec<Value>, anyhow::Error> {
+) -> Result<Vec<Value>> {
     let json = get_file::<Value>(&CONTRACTION_PATH).unwrap()["notam_contractions"].clone();
 
     if let Value::Object(map) = json {
@@ -78,7 +79,7 @@ pub fn write_contractions(
     } else {
         let e = format!("Failed to parse custom contractions for {}", airport_code);
         error!("{}", e);
-        Err(anyhow::Error::msg(e.to_string()))
+        Err(anyhow::Error::msg(e))
     }
 }
 
