@@ -1,13 +1,11 @@
+use crate::assets::{get_file, response, set_file};
+use crate::consts::SETTINGS_PATH;
 use crate::structs::{Response, Settings};
-use crate::util::{read_json_file, response, write_json_file};
 use log::info;
-use serde_json::{from_value, json, Map};
-use std::path::Path;
-use tauri::{AppHandle, Manager};
+use serde_json::{json, Map, Value};
+use std::path::{Path, PathBuf};
 
-pub fn check_settings_file(app_handle: &AppHandle) -> Response {
-    let app_data_path = app_handle.path().app_data_dir().unwrap();
-    let file_path = app_data_path.join("settings.json");
+pub fn check_settings_file() -> Response {
     let default_settings = json!({
         "facility": "",
         "file_path": "",
@@ -23,8 +21,8 @@ pub fn check_settings_file(app_handle: &AppHandle) -> Response {
         "theme": "system"
     });
 
-    if Path::new(&file_path).exists() {
-        let settings = match read_json_file(file_path.to_str().unwrap()) {
+    if Path::new(&SETTINGS_PATH).exists() {
+        let settings = match get_file::<Value>(&SETTINGS_PATH) {
             Ok(json) => json,
             Err(err) => {
                 return response(
@@ -53,12 +51,7 @@ pub fn check_settings_file(app_handle: &AppHandle) -> Response {
         }
 
         if changed {
-            match write_json_file(
-                file_path.to_str().unwrap(),
-                serde_json::to_string_pretty(&new_settings)
-                    .unwrap()
-                    .as_str(),
-            ) {
+            match set_file(&SETTINGS_PATH, &new_settings) {
                 Ok(_) => return response("Settings file updated successfully", true, None),
                 Err(err) => response(
                     "Failed to update settings file",
@@ -70,10 +63,8 @@ pub fn check_settings_file(app_handle: &AppHandle) -> Response {
 
         return response("Settings file exists and is up to date", true, None);
     } else {
-        let json_string =
-            serde_json::to_string_pretty(&from_value::<Settings>(default_settings).unwrap());
-        std::fs::create_dir_all(app_data_path).unwrap();
-        match write_json_file(file_path.to_str().unwrap(), &json_string.unwrap()) {
+        std::fs::create_dir_all(PathBuf::from("./config")).unwrap();
+        match set_file(&SETTINGS_PATH, &default_settings) {
             Ok(_) => return response("Settings file created successfully", true, None),
             Err(_) => return response("Failed to create settings file", false, None),
         }
@@ -81,19 +72,15 @@ pub fn check_settings_file(app_handle: &AppHandle) -> Response {
 }
 
 #[tauri::command]
-pub fn write_settings(settings: Settings, app_handle: AppHandle) -> Response {
-    let app_data_path = app_handle.path().app_data_dir().unwrap();
-    let file_path = app_data_path.join("settings.json");
-
-    if Path::new(&file_path).exists() {
-        match read_json_file(&file_path.to_str().unwrap()) {
+pub fn write_settings(settings: Settings) -> Response {
+    if Path::new(&SETTINGS_PATH).exists() {
+        match get_file(&SETTINGS_PATH) {
             Ok(json_value) => {
                 if let Ok(existing_settings) = serde_json::from_value::<Settings>(json_value) {
                     if existing_settings == settings {
                         return response("Settings have not changed", true, None);
                     } else {
-                        let json_string = serde_json::to_string_pretty(&settings);
-                        match write_json_file(file_path.to_str().unwrap(), &json_string.unwrap()) {
+                        match set_file(&SETTINGS_PATH, &settings) {
                             Ok(_) => return response("Settings updated successfully", true, None),
                             Err(err) => {
                                 return response(
@@ -122,15 +109,13 @@ pub fn write_settings(settings: Settings, app_handle: AppHandle) -> Response {
 }
 
 #[tauri::command]
-pub fn read_settings(app_handle: AppHandle) -> Result<Settings, Response> {
-    let app_data_path = app_handle.path().app_data_dir().unwrap();
-    let file_path = app_data_path.join("settings.json");
-    if !Path::new(&file_path).exists() {
+pub fn read_settings() -> Result<Settings, Response> {
+    if !Path::new(&SETTINGS_PATH).exists() {
         return Err(response("Settings file does not exist", false, None));
     }
 
-    match read_json_file(&file_path.to_str().unwrap()) {
-        Ok(json_value) => Ok(serde_json::from_value::<Settings>(json_value).unwrap()),
+    match get_file::<Settings>(&SETTINGS_PATH) {
+        Ok(json_value) => Ok(json_value),
         Err(err) => Err(response(
             "Failed to read settings",
             false,

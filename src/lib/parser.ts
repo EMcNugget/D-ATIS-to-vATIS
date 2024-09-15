@@ -1,6 +1,7 @@
 import { v4 } from "uuid";
 import { TATIS, vATIS } from "./types";
 import { error, warn } from "@tauri-apps/plugin-log";
+import { invoke } from "@tauri-apps/api/core";
 
 const find_number_of_occurances = (
   str: string,
@@ -51,6 +52,12 @@ const get_notam_varients = (periods: number) => {
     .flat();
 };
 
+const parse_atis = (
+  atis: TATIS,
+  split: boolean,
+  facility: string,
+  custom_template?: string
+): vATIS => {
 const parse_atis = (atis: TATIS, split: boolean, facility: string): vATIS => {
   const notam_varients = get_notam_varients(3);
 
@@ -62,11 +69,13 @@ const parse_atis = (atis: TATIS, split: boolean, facility: string): vATIS => {
       name: "REAL WORLD",
       airportConditions: "",
       notams: "",
-      template: create_template(
-        facility.slice(1),
-        split,
-        split ? (atis.type.toUpperCase() as "ARR" | "DEP") : undefined
-      ),
+      template: custom_template
+        ? custom_template
+        : create_template(
+            facility.slice(1),
+            split,
+            split ? (atis.type.toUpperCase() as "ARR" | "DEP") : undefined
+          ),
       externalGenerator: {
         enabled: false,
       },
@@ -121,8 +130,12 @@ export const fetch_atis = async (facility: string) => {
     }
 
     const atis_arr: vATIS[] = [];
-    response.forEach((atis: TATIS) => {
-      atis_arr.push(parse_atis(atis, split, facility));
+    response.forEach(async (v: TATIS) => {
+      const custom_template: string | undefined = await invoke(
+        "get_facility_config",
+        { facility: facility }
+      );
+      atis_arr.push(parse_atis(v, split, facility, custom_template));
     });
     return atis_arr;
   } else {

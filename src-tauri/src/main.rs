@@ -2,36 +2,28 @@
 #![cfg_attr(not(debug_assertions), windows_subsystem = "windows")]
 
 use log::info;
-use tauri::{AppHandle, Listener};
+use tauri::App;
 
 mod app;
+mod assets;
 mod audio;
+mod consts;
 mod contraction;
 mod settings;
 mod structs;
-mod util;
 
-fn setup(app_handle: &AppHandle) {
+fn setup(app: &mut App) {
     info!(
         "D-ATIS to vATIS started version {}",
-        app_handle.config().version.as_ref().unwrap()
+        app.handle().config().version.as_ref().unwrap()
     );
 
-    crate::settings::check_settings_file(&app_handle);
+    crate::settings::check_settings_file();
 }
 
 fn main() {
     tauri::Builder::default()
-        .setup(|app: &mut tauri::App| {
-            let handle = app.handle().clone();
-            setup(&handle);
-
-            app.listen("new-codes", move |_event| {
-                crate::audio::play_audio(&handle);
-            });
-
-            Ok(())
-        })
+        .setup(|app| Ok(setup(app)))
         .plugin(tauri_plugin_updater::Builder::new().build())
         .plugin(tauri_plugin_dialog::init())
         .plugin(
@@ -48,9 +40,11 @@ fn main() {
             crate::app::is_vatis_running,
             crate::app::open_vatis,
             crate::app::get_profiles,
+            crate::app::get_facility_config,
             crate::app::get_airports_in_profile,
             crate::contraction::set_contractions,
-            crate::contraction::get_contractions
+            crate::contraction::get_contractions,
+            crate::audio::play_audio,
         ])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");

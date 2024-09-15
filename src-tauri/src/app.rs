@@ -1,7 +1,8 @@
+use crate::assets::{get_file, set_file};
+use crate::consts::FACILITY_CONFIG_PATH;
 use crate::contraction::write_contractions;
 use crate::settings::read_settings;
 use crate::structs::{FindComposite, Response};
-use crate::util::{read_json_file, write_json_file};
 use log::{error, info};
 use serde::Serialize;
 use serde_json::{self, Value};
@@ -80,7 +81,6 @@ fn find_composite(
 }
 
 pub fn write_profile(
-    app_handle: &AppHandle,
     atis_preset: &Value,
     profile: &str,
     facility: &str,
@@ -89,7 +89,7 @@ pub fn write_profile(
 ) -> Result<(), String> {
     let file_path = format!("{}\\AppConfig.json", file_path);
 
-    let mut data = read_json_file(&file_path).unwrap();
+    let mut data = get_file(&file_path).unwrap();
     let indexes: FindComposite = find_composite(&data, profile, facility, atis_type).unwrap();
 
     let atis_position =
@@ -115,7 +115,6 @@ pub fn write_profile(
         .to_vec();
 
     atis_position["contractions"] = write_contractions(
-        app_handle,
         &mut existing,
         atis_preset.clone(),
         facility,
@@ -124,7 +123,7 @@ pub fn write_profile(
     .unwrap()
     .into();
 
-    write_json_file(&file_path, &data.to_string()).unwrap();
+    set_file(&file_path, &data).unwrap();
     Ok(())
 }
 
@@ -146,7 +145,7 @@ pub fn write_atis(
     atis: Value,
     app_handle: AppHandle,
 ) -> Result<WriteAtis, String> {
-    let settings = read_settings(app_handle.clone()).unwrap();
+    let settings = read_settings().unwrap();
     let atis_array = atis.as_array().unwrap();
 
     let mut res = WriteAtis {
@@ -165,7 +164,6 @@ pub fn write_atis(
 
     for atis_entry in atis_array {
         let result = write_profile(
-            &app_handle,
             &atis_entry["atis"],
             &settings.profile,
             &facility,
@@ -210,7 +208,7 @@ pub fn is_vatis_running() -> bool {
 }
 
 pub fn get_vatis_path(app_handle: &AppHandle) -> String {
-    let settings = read_settings(app_handle.clone()).unwrap();
+    let settings = read_settings().unwrap();
     let mut app_data_path = app_handle.path().app_local_data_dir().unwrap();
     app_data_path.pop();
     if settings.custom_path {
@@ -245,7 +243,7 @@ pub fn open_vatis(app_handle: AppHandle, custom_path: Option<&str>) -> Result<()
 #[tauri::command]
 pub fn get_profiles(app_handle: AppHandle) -> Result<Vec<String>, String> {
     let file_path = format!("{}\\AppConfig.json", get_vatis_path(&app_handle));
-    let data = read_json_file(&file_path).unwrap();
+    let data = get_file::<Value>(&file_path).unwrap();
     let mut profiles = Vec::new();
     for profile in data["profiles"].as_array().unwrap() {
         profiles.push(profile["name"].as_str().unwrap().to_string());
@@ -256,7 +254,7 @@ pub fn get_profiles(app_handle: AppHandle) -> Result<Vec<String>, String> {
 #[tauri::command]
 pub fn get_airports_in_profile(app_handle: AppHandle, profile: &str) -> Vec<String> {
     let file_path = format!("{}\\AppConfig.json", get_vatis_path(&app_handle));
-    let data = read_json_file(&file_path).unwrap();
+    let data = get_file::<Value>(&file_path).unwrap();
     let mut airports = Vec::new();
 
     for p in data["profiles"].as_array().unwrap() {
@@ -271,4 +269,10 @@ pub fn get_airports_in_profile(app_handle: AppHandle, profile: &str) -> Vec<Stri
     }
 
     return airports;
+}
+
+#[tauri::command]
+pub fn get_facility_config(facility: &str) -> Value {
+    let facility_config = get_file::<Value>(&FACILITY_CONFIG_PATH).unwrap();
+    return facility_config[facility].clone();
 }

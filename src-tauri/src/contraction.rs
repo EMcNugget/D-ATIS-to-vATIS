@@ -1,18 +1,11 @@
-use crate::{
-    structs::{Contraction, Response},
-    util::{get_resource_json, response, write_resource_json},
-};
+use crate::assets::{get_file, response, set_file};
+use crate::consts::CONTRACTION_PATH;
+use crate::structs::{Contraction, Response};
 use log::{error, info};
 use serde_json::Value;
-use tauri::AppHandle;
 
-pub fn get_intro_contraction(
-    app_handle: &AppHandle,
-    airport_code: &str,
-    atis_type: &str,
-) -> Vec<Contraction> {
-    let json =
-        get_resource_json(app_handle, "custom_contractions.json").unwrap()["airports"].clone();
+pub fn get_intro_contraction(airport_code: &str, atis_type: &str) -> Vec<Contraction> {
+    let json = get_file::<Value>(&CONTRACTION_PATH).unwrap()["airports"].clone();
 
     let atis_type_spoken = match atis_type {
         "dep" => "DEPARTURE",
@@ -31,15 +24,12 @@ pub fn get_intro_contraction(
 }
 
 pub fn write_contractions(
-    app_handle: &AppHandle,
     existing: &mut Vec<Value>,
     atis: Value,
     airport_code: &str,
     atis_type: &str,
 ) -> Result<Vec<Value>, anyhow::Error> {
-    let json = get_resource_json(app_handle, "custom_contractions.json").unwrap()
-        ["notam_contractions"]
-        .clone();
+    let json = get_file::<Value>(&CONTRACTION_PATH).unwrap()["notam_contractions"].clone();
 
     if let Value::Object(map) = json {
         let new_contractions: Vec<Contraction> = map
@@ -77,7 +67,7 @@ pub fn write_contractions(
                 .map(|c| serde_json::to_value(c).expect("Failed to serialize custom contractions")),
         );
 
-        let intro_contraction = get_intro_contraction(app_handle, airport_code, atis_type);
+        let intro_contraction = get_intro_contraction(airport_code, atis_type);
 
         if !existing.contains(&serde_json::to_value(intro_contraction.first().unwrap()).unwrap()) {
             existing.push(serde_json::to_value(intro_contraction.first().unwrap()).unwrap());
@@ -93,24 +83,18 @@ pub fn write_contractions(
 }
 
 #[tauri::command]
-pub fn set_contractions(contractions: Value, app_handle: AppHandle) -> Response {
-    match write_resource_json(&app_handle, "custom_contractions.json", &contractions) {
-        Ok(_) => response("Custom Contractions updated successfully", true, None),
-        Err(err) => response(
-            "Failed to add custom contraction",
+pub fn set_contractions(contractions: Value) -> Response {
+    match set_file(&CONTRACTION_PATH, &contractions) {
+        Ok(_) => response("Custom contractions updated successfully", true, None),
+        Err(e) => response(
+            "Failed to update custom contractions",
             false,
-            Some(&err.to_string()),
+            Some(&e.to_string()),
         ),
     }
 }
 
 #[tauri::command]
-pub fn get_contractions(app_handle: AppHandle) -> Value {
-    serde_json::Value::Object(
-        get_resource_json(&app_handle, "custom_contractions.json")
-            .unwrap()
-            .as_object()
-            .unwrap()
-            .clone(),
-    )
+pub fn get_contractions() -> Value {
+    get_file(&CONTRACTION_PATH).unwrap()
 }
