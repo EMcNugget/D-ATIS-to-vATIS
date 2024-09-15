@@ -58,7 +58,6 @@ const parse_atis = (
   facility: string,
   custom_template?: string
 ): vATIS => {
-const parse_atis = (atis: TATIS, split: boolean, facility: string): vATIS => {
   const notam_varients = get_notam_varients(3);
 
   const vATIS = {
