@@ -9,6 +9,7 @@ type TStore = {
   airports_in_profile: string[];
   profiles: string[];
   contractions: TCustomContractions;
+  facility_config: Record<string, string>;
 };
 
 export const use_store = defineStore({
@@ -24,6 +25,7 @@ export const use_store = defineStore({
     airports_in_profile: [],
     profiles: [],
     contractions: {} as TCustomContractions,
+    facility_config: {},
   }),
   actions: {
     set_individual<K extends keyof TSettings>(key: K, value: TSettings[K]) {
@@ -51,6 +53,9 @@ export const use_store = defineStore({
     set_contractions(contractions: TCustomContractions) {
       this.contractions = contractions;
     },
+    set_facility_config(config: Record<string, string>) {
+      this.facility_config = config;
+    },
 
     get_individual<K extends keyof TSettings>(key: K): TSettings[K] {
       return this.settings[key];
@@ -75,6 +80,9 @@ export const use_store = defineStore({
     },
     get_contractions() {
       return this.contractions;
+    },
+    get_facility_config() {
+      return this.facility_config;
     },
   },
 });

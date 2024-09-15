@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import Settings from "./settings/Settings.vue";
 import EditContraction from "./settings/EditContraction.vue";
-import FacilityConfig from "./settings/FacilityConfig.vue";
 </script>
 
 <template>
@@ -39,19 +38,6 @@ import FacilityConfig from "./settings/FacilityConfig.vue";
           class="tab-content border-base-300 rounded-box p-4"
         >
           <EditContraction />
-        </div>
-        <input
-          type="radio"
-          name="my_tabs_2"
-          role="tab"
-          class="tab whitespace-nowrap"
-          aria-label="Facility Config"
-        />
-        <div
-          role="tabpanel"
-          class="tab-content border-base-300 rounded-box p-6"
-        >
-          <FacilityConfig />
         </div>
       </div>
     </div>

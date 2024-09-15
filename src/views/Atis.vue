@@ -3,7 +3,6 @@ import { fetch_atis } from "../lib/parser";
 import { use_store } from "../lib/stores";
 import { TAlert, vATIS, TATIS, alert_types, facilities } from "../lib/types";
 import { invoke } from "@tauri-apps/api/core";
-import { emit } from "@tauri-apps/api/event";
 import { computed, ref, watch } from "vue";
 
 const store = use_store();
@@ -201,7 +200,7 @@ const alert_new_codes = (codes: Record<string, string[]>) => {
     slot: `New ATIS's found for ${rows.map((k) => k.key).join(", ")}`,
   };
   if (!store.get_individual("suppress_notification")) {
-    emit("new-codes");
+    invoke("play_codes");
   }
 };
 

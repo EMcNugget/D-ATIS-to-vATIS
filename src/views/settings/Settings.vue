@@ -169,7 +169,7 @@ watch(
 
 <template>
   <div
-    class="overflow-auto overflow-x-hidden h-96 border-2 p-4 border-base-300 rounded-box rounded-lg"
+    class="overflow-auto overflow-x-hidden h-96 border-2 p-4 border-base-300 rounded-lg"
   >
     <CLabel title="Profile">
       <CDropdown

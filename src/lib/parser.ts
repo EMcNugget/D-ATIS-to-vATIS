@@ -1,6 +1,7 @@
 import { v4 } from "uuid";
 import { TATIS, vATIS } from "./types";
 import { error, warn } from "@tauri-apps/plugin-log";
+import { invoke } from "@tauri-apps/api/core";
 
 const find_number_of_occurances = (
   str: string,
@@ -29,16 +30,35 @@ const create_template = (
   }
 };
 
-const notam_varients = [
-  "NOTAMS...",
-  "NOTICE TO AIR MISSIONS.",
-  "NOTAM.",
-  "NOTICE TO AIR MISSION.",
-  "NOTICES TO AIRMEN.",
+const varients = [
+  "NOTAMS",
+  "NOTICE TO AIR MISSIONS",
+  "NOTAM",
+  "NOTICE TO AIR MISSION",
+  "NOTICES TO AIRMEN",
 ];
 
-const parse_atis = (atis: TATIS, split: boolean, facility: string): vATIS => {
-  // need to add ability to parse atis without NOTAM keyword
+const get_notam_varients = (periods: number) => {
+  return varients
+    .map((v) => {
+      const arr = [];
+
+      for (let i = 0; i < periods; i++) {
+        arr.push(v + ".".repeat(i));
+      }
+
+      return arr;
+    })
+    .flat();
+};
+
+const parse_atis = (
+  atis: TATIS,
+  split: boolean,
+  facility: string,
+  custom_template?: string
+): vATIS => {
+  const notam_varients = get_notam_varients(3);
 
   const vATIS = {
     atis_type: atis.type as "arr" | "dep" | "combined",
@@ -48,11 +68,13 @@ const parse_atis = (atis: TATIS, split: boolean, facility: string): vATIS => {
       name: "REAL WORLD",
       airportConditions: "",
       notams: "",
-      template: create_template(
-        facility.slice(1),
-        split,
-        split ? (atis.type.toUpperCase() as "ARR" | "DEP") : undefined
-      ),
+      template: custom_template
+        ? custom_template
+        : create_template(
+            facility.slice(1),
+            split,
+            split ? (atis.type.toUpperCase() as "ARR" | "DEP") : undefined
+          ),
       externalGenerator: {
         enabled: false,
       },
@@ -107,8 +129,12 @@ export const fetch_atis = async (facility: string) => {
     }
 
     const atis_arr: vATIS[] = [];
-    response.forEach((atis: TATIS) => {
-      atis_arr.push(parse_atis(atis, split, facility));
+    response.forEach(async (v: TATIS) => {
+      const custom_template: string | undefined = await invoke(
+        "get_facility_config",
+        { facility: facility }
+      );
+      atis_arr.push(parse_atis(v, split, facility, custom_template));
     });
     return atis_arr;
   } else {

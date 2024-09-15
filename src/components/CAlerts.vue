@@ -72,7 +72,7 @@ const get_alert_icon_svg = () => {
         <div v-else-if="message.confirm" class="flex flex-col space-y-2">
           <span> {{ message.message }}</span>
           <button
-            class="btn btn-sm btn-outline btn-active btn-outline ml-4"
+            class="btn btn-sm btn-outline btn-active ml-4"
             @click="confirm_alert"
           >
             Confirm
