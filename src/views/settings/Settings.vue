@@ -78,7 +78,6 @@ const fetch_for_profile = computed({
   set: (v) => store.set_individual("fetch_for_profile", v),
 });
 
-const show_alert = ref(false);
 const show_dropdown_theme = ref(false);
 const show_dropdown_interval = ref(false);
 const show_dropdown_profile = ref(false);
@@ -136,13 +135,6 @@ watch(
   () => system_theme.value,
   () => {
     handle_theme(theme.value);
-  }
-);
-
-watch(
-  () => alert.value,
-  () => {
-    show_alert.value = true;
   }
 );
 
