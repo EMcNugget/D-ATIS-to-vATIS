@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { fetch_atis } from "../lib/parser";
+import { fetch_atis } from "../parser/fetch";
 import { use_store } from "../lib/stores";
 import { TAlert, vATIS, TATIS, alert_types, facilities } from "../lib/types";
 import { invoke } from "@tauri-apps/api/core";

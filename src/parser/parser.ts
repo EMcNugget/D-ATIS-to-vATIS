@@ -1,7 +1,6 @@
 import { v4 } from "uuid";
-import { TATIS, vATIS } from "./types";
-import { error, warn } from "@tauri-apps/plugin-log";
-import { invoke } from "@tauri-apps/api/core";
+import { TATIS, vATIS } from "../lib/types";
+import { warn } from "@tauri-apps/plugin-log";
 
 const find_number_of_occurances = (
   str: string,
@@ -52,7 +51,7 @@ const get_notam_varients = (periods: number) => {
     .flat();
 };
 
-const parse_atis = (
+export const parse_atis = (
   atis: TATIS,
   split: boolean,
   facility: string,
@@ -107,41 +106,4 @@ const parse_atis = (
   return vATIS;
 };
 
-export const fetch_atis = async (facility: string) => {
-  const res = await fetch(`https://datis.clowd.io/api/${facility}`);
-  if (!res.ok) {
-    error(
-      `Error fetching ATIS data. Status Code: ${res.status}, Status: ${res.statusText}`
-    );
-    throw {
-      alert_type: "error",
-      message: `An error occurred while fetching the ATIS data. Status Code: ${res.status}`,
-    };
-  }
 
-  const content_type = res.headers.get("Content-Type");
-  if (content_type && content_type.includes("application/json")) {
-    const response = await res.json();
-
-    let split = false;
-    if (response.length > 1) {
-      split = true;
-    }
-
-    const atis_arr: vATIS[] = [];
-    response.forEach(async (v: TATIS) => {
-      const custom_template: string | undefined = await invoke(
-        "get_facility_config",
-        { facility: facility }
-      );
-      atis_arr.push(parse_atis(v, split, facility, custom_template));
-    });
-    return atis_arr;
-  } else {
-    error("Response was not JSON.");
-    throw {
-      alert_type: "error",
-      message: "An error occurred while fetching the ATIS data.",
-    };
-  }
-};
