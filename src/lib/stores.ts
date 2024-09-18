@@ -1,5 +1,10 @@
 import { defineStore } from "pinia";
-import type { TSettings, TAlert, TCustomContractions } from "./types";
+import type {
+  TSettings,
+  TAlert,
+  TCustomContractions,
+  TAirportData,
+} from "./types";
 
 type TStore = {
   settings: TSettings;
@@ -10,6 +15,7 @@ type TStore = {
   profiles: string[];
   contractions: TCustomContractions;
   facility_config: Record<string, string>;
+  airport_data: Record<string, TAirportData>;
 };
 
 export const use_store = defineStore({
@@ -26,6 +32,7 @@ export const use_store = defineStore({
     profiles: [],
     contractions: {} as TCustomContractions,
     facility_config: {},
+    airport_data: {},
   }),
   actions: {
     set_individual<K extends keyof TSettings>(key: K, value: TSettings[K]) {
@@ -56,6 +63,9 @@ export const use_store = defineStore({
     set_facility_config(config: Record<string, string>) {
       this.facility_config = config;
     },
+    set_airport_data(facility: string, data: TAirportData) {
+      this.airport_data[facility] = data;
+    },
 
     get_individual<K extends keyof TSettings>(key: K): TSettings[K] {
       return this.settings[key];
@@ -83,6 +93,9 @@ export const use_store = defineStore({
     },
     get_facility_config() {
       return this.facility_config;
+    },
+    get_airport_data(facility: string) {
+      return this.airport_data[facility];
     },
   },
 });

@@ -1,3 +1,4 @@
+import { use_store } from "../lib/stores";
 import { TAirportData } from "../lib/types";
 
 const get_direction = (heading: number) => {
@@ -30,4 +31,19 @@ export const get_flow = async (
 
   directions.sort();
   return directions[0];
+};
+
+const app_types = ["VISUAL", "VOR", "RNAV", "ILS"];
+
+export const get_preset_name = async (
+  facility: string,
+  airport_conditions: string
+) => {
+  const store = use_store();
+
+  const airport_data = store.get_airport_data(facility);
+  const flow = await get_flow(airport_conditions, airport_data);
+  const app_type = app_types.find((type) => airport_conditions.includes(type));
+
+  return `REAL WORLD | ${flow} | ${app_type}`;
 };

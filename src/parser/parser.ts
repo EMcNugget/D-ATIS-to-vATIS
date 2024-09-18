@@ -1,6 +1,7 @@
 import { v4 } from "uuid";
 import { TATIS, vATIS } from "../lib/types";
 import { warn } from "@tauri-apps/plugin-log";
+import { get_preset_name } from "./preset_name";
 
 const find_number_of_occurances = (
   str: string,
@@ -51,12 +52,12 @@ const get_notam_varients = (periods: number) => {
     .flat();
 };
 
-export const parse_atis = (
+export const parse_atis = async (
   atis: TATIS,
   split: boolean,
   facility: string,
   custom_template?: string
-): vATIS => {
+): Promise<vATIS> => {
   const notam_varients = get_notam_varients(3);
 
   const vATIS = {
@@ -102,6 +103,7 @@ export const parse_atis = (
       .slice(find_number_of_occurances(atis.datis, ".", 2) + 1)
       .split(notam_varient)[0]
       .trim();
+    vATIS.atis.name = await get_preset_name(facility, vATIS.atis.airportConditions) || "REAL WORLD";
   }
   return vATIS;
 };

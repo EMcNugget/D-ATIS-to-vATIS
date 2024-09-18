@@ -2,9 +2,9 @@ import { error } from "@tauri-apps/plugin-log";
 import { TAirportData, TATIS, vATIS } from "../lib/types";
 import { invoke } from "@tauri-apps/api/core";
 import { parse_atis } from "./parser";
-import { AIRPORT_DB_KEY, AIRPORT_DB_URL } from "../lib/consts";
+import { AIRPORT_DB_KEY, AIRPORT_DB_URL, DATIS_URL } from "../lib/consts";
 
-const fetch_helper = async <T>(
+const fetch_helper = async <T extends object>(
   url: string,
   func: (data: Response) => Promise<T>
 ) => {
@@ -32,13 +32,12 @@ const fetch_helper = async <T>(
 export const fetch_airport = async (facility: string) => {
   const url = `${AIRPORT_DB_URL}${facility}?apiToken=${AIRPORT_DB_KEY}`;
   return await fetch_helper<TAirportData>(url, async (res) => {
-    const response = await res.json();
-    return response;
+    return await res.json();
   });
 };
 
 export const fetch_atis = async (facility: string) => {
-  const url = `https://datis.clowd.io/api/${facility}`;
+  const url = `${DATIS_URL}${facility}`;
 
   return await fetch_helper<vATIS[]>(url, async (res) => {
     const response = await res.json();
@@ -54,7 +53,7 @@ export const fetch_atis = async (facility: string) => {
         "get_facility_config",
         { facility: facility }
       );
-      atis_arr.push(parse_atis(v, split, facility, custom_template));
+      atis_arr.push(await parse_atis(v, split, facility, custom_template));
     });
     return atis_arr;
   });
