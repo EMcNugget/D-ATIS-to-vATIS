@@ -1,8 +1,16 @@
-import { use_store } from "../lib/stores";
-import { TAirportData } from "../lib/types";
+import { TAirportData, TATISType } from "../lib/types";
 
 const get_direction = (heading: number) => {
-  const directions = ["N", "NE", "E", "SE", "S", "SW", "W", "NW"];
+  const directions = [
+    "NORTH",
+    "NORTHEAST",
+    "EAST",
+    "SOUTHEAST",
+    "SOUTH",
+    "SOUTHWEST",
+    "WEST",
+    "NORTHWEST",
+  ];
   return directions[Math.round(heading / 45) % 8];
 };
 
@@ -10,8 +18,15 @@ const get_runways = (airport_conditions: string) => {
   const strs = airport_conditions.split(/[\s,.]+/);
   const runway_regex = /^[0-9]{1,2}(L|C|R)?$/;
 
-  const rwy_set = new Set(strs.filter((str) => runway_regex.test(str)));
-  return Array.from(rwy_set);
+  const rwy_set = Array.from(
+    new Set(strs.filter((str) => runway_regex.test(str)))
+  );
+
+  return rwy_set.map((rwy) => {
+    if (rwy.length < 3 && !isNaN(parseInt(rwy))) {
+      return `0${rwy}`;
+    }
+  });
 };
 
 export const get_flow = async (
@@ -33,17 +48,25 @@ export const get_flow = async (
   return directions[0];
 };
 
-const app_types = ["VISUAL", "VOR", "RNAV", "ILS"];
+const app_types = ["VISUAL", "VIS", "VOR", "RNAV", "ILS", "GLS", "LPV"];
 
 export const get_preset_name = async (
-  facility: string,
-  airport_conditions: string
+  airport_conditions: string,
+  airport_data: TAirportData,
+  type: TATISType
 ) => {
-  const store = use_store();
-
-  const airport_data = store.get_airport_data(facility);
   const flow = await get_flow(airport_conditions, airport_data);
-  const app_type = app_types.find((type) => airport_conditions.includes(type));
+  let app_type = app_types.find((type) => airport_conditions.includes(type));
+  let dep_type = airport_conditions.includes("RNAV") ? "ROTG" : "";
+  if (app_type === "VISUAL") {
+    app_type = "VIS";
+  }
 
-  return `REAL WORLD | ${flow} | ${app_type}`;
+  if (type === "combined") {
+    return `REAL WORLD: ${flow} ${app_type} ${dep_type}`;
+  } else if (type === "arr") {
+    return `REAL WORLD: ${flow} ${app_type}`;
+  } else if (type === "dep") {
+    return `REAL WORLD: ${dep_type}`;
+  }
 };
