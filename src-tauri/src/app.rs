@@ -1,5 +1,4 @@
 use crate::assets::{get_file, set_file};
-use crate::consts::FACILITY_CONFIG_PATH;
 use crate::contraction::write_contractions;
 use crate::settings::read_settings;
 use crate::structs::{FindComposite, Response};
@@ -263,10 +262,4 @@ pub fn get_airports_in_profile(app_handle: AppHandle, profile: &str) -> Vec<Stri
     }
 
     return airports;
-}
-
-#[tauri::command]
-pub fn get_facility_config(facility: &str) -> Value {
-    let facility_config = get_file::<Value>(&FACILITY_CONFIG_PATH).unwrap();
-    return facility_config[facility].clone();
 }

@@ -40,10 +40,11 @@ fn main() {
             crate::app::is_vatis_running,
             crate::app::open_vatis,
             crate::app::get_profiles,
-            crate::app::get_facility_config,
             crate::app::get_airports_in_profile,
-            crate::contraction::set_contractions,
-            crate::contraction::get_contractions,
+            crate::assets::get_facility_config,
+            crate::assets::set_contractions,
+            crate::assets::get_contractions,
+            crate::assets::get_runways,
             crate::audio::play_audio,
         ])
         .run(tauri::generate_context!())

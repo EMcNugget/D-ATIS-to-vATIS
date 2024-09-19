@@ -1,4 +1,5 @@
-import { TAirportData, TATISType } from "../lib/types";
+import { invoke } from "@tauri-apps/api/core";
+import { TATISType, TRunways } from "../lib/types";
 
 const get_direction = (heading: number) => {
   const directions = [
@@ -30,18 +31,20 @@ const get_runways = (airport_conditions: string) => {
 };
 
 export const get_flow = async (
-  airport_conditions: string,
-  airport_data: TAirportData
+  facility: string,
+  airport_conditions: string
 ) => {
   const runways = get_runways(airport_conditions);
   const directions: string[] = [];
+  const runway_data = (await invoke<Promise<TRunways>>("get_runways"))[
+    facility
+  ];
 
-  airport_data.runways.forEach((rwy) => {
-    if (runways.includes(rwy.he_ident)) {
-      directions.push(get_direction(parseInt(rwy.he_heading_degT)));
-    } else if (runways.includes(rwy.le_ident)) {
-      directions.push(get_direction(parseInt(rwy.le_heading_degT)));
-    } else return;
+  runways.forEach((rwy) => {
+    const runway = runway_data.find((runway) => runway.runway_id === rwy);
+    if (runway) {
+      directions.push(get_direction(runway.heading));
+    }
   });
 
   directions.sort();
@@ -52,10 +55,10 @@ const app_types = ["VISUAL", "VIS", "VOR", "RNAV", "ILS", "GLS", "LPV"];
 
 export const get_preset_name = async (
   airport_conditions: string,
-  airport_data: TAirportData,
+  facility: string,
   type: TATISType
 ) => {
-  const flow = await get_flow(airport_conditions, airport_data);
+  const flow = await get_flow(facility, airport_conditions);
   let app_type = app_types.find((type) => airport_conditions.includes(type));
   let dep_type = airport_conditions.includes("RNAV") ? "ROTG" : "";
   if (app_type === "VISUAL") {
@@ -68,5 +71,7 @@ export const get_preset_name = async (
     return `REAL WORLD: ${flow} ${app_type}`;
   } else if (type === "dep") {
     return `REAL WORLD: ${dep_type}`;
+  } else {
+    return "REAL WORLD";
   }
 };

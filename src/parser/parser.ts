@@ -39,17 +39,15 @@ const varients = [
 ];
 
 const get_notam_varients = (periods: number) => {
-  return varients
-    .map((v) => {
-      const arr = [];
+  return varients.flatMap((v) => {
+    const arr: string[] = [];
 
-      for (let i = 0; i < periods; i++) {
-        arr.push(v + ".".repeat(i));
-      }
+    for (let i = 0; i < periods; i++) {
+      arr.push(v + ".".repeat(i));
+    }
 
-      return arr;
-    })
-    .flat();
+    return arr;
+  });
 };
 
 export const parse_atis = async (
@@ -103,9 +101,11 @@ export const parse_atis = async (
       .slice(find_number_of_occurances(atis.datis, ".", 2) + 1)
       .split(notam_varient)[0]
       .trim();
-    vATIS.atis.name = await get_preset_name(facility, vATIS.atis.airportConditions) || "REAL WORLD";
+    vATIS.atis.name = await get_preset_name(
+      vATIS.atis.airportConditions,
+      facility,
+      atis.type
+    );
   }
   return vATIS;
 };
-
-

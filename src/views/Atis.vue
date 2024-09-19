@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { fetch_atis } from "../parser/fetch";
+import { fetch_atis, fetch_helper } from "../parser/fetch";
 import { use_store } from "../lib/stores";
 import { TAlert, vATIS, TATIS, alert_types, facilities } from "../lib/types";
 import { invoke } from "@tauri-apps/api/core";
@@ -136,6 +136,8 @@ const get_atis = async () => {
         status[fac] = alert.alert_type;
       }
 
+      console.log(atis);
+
       const alert = await invoke<WriteAtis>("write_atis", {
         facility: fac,
         atis: atis,
@@ -254,9 +256,12 @@ watch(
 
       interval_id = setInterval(async () => {
         facilities.forEach(async (fac) => {
-          const response = await fetch(
-            `https://datis.clowd.io/api/${facility.value}`
-          ).then((res) => res.json());
+          const response = await fetch_helper(
+            `https://datis.clowd.io/api/${facility.value}`,
+            async (res) => {
+              return await res.json();
+            }
+          );
 
           response.forEach((k: TATIS) => {
             if (!codes.value.includes(k.code)) {

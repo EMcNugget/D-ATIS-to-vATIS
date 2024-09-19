@@ -2,7 +2,7 @@
 import CAlerts from "../components/CAlerts.vue";
 import CUpdate from "../components/CUpdate.vue";
 import SettingsLayout from "./SettingsLayout.vue";
-import { computed, ref, onBeforeMount } from "vue";
+import { computed, ref, onBeforeMount, watch } from "vue";
 import { use_store } from "../lib/stores";
 import { check, type Update } from "@tauri-apps/plugin-updater";
 import { relaunch } from "@tauri-apps/plugin-process";
@@ -52,11 +52,15 @@ onBeforeMount(async () => {
   }
 });
 
-const message = computed(() => {
-  show_alert.value = true;
-  return store.get_alert();
-});
+const message = computed(() => store.get_alert());
 const local_theme = computed(() => store.get_individual("theme"));
+
+watch(
+  () => message.value,
+  () => {
+    show_alert.value = true;
+  }
+);
 </script>
 
 <template>
