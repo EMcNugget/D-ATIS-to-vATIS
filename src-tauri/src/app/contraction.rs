@@ -1,6 +1,6 @@
-use crate::assets::{get_file, response, set_file};
+use crate::util::assets::get_file;
 use crate::consts::CONTRACTION_PATH;
-use crate::structs::{Contraction, Response};
+use crate::structs::Contraction;
 use anyhow::Result;
 use log::{error, info};
 use serde_json::Value;
@@ -83,19 +83,3 @@ pub fn write_contractions(
     }
 }
 
-#[tauri::command]
-pub fn set_contractions(contractions: Value) -> Response {
-    match set_file(&CONTRACTION_PATH, &contractions) {
-        Ok(_) => response("Custom contractions updated successfully", true, None),
-        Err(e) => response(
-            "Failed to update custom contractions",
-            false,
-            Some(&e.to_string()),
-        ),
-    }
-}
-
-#[tauri::command]
-pub fn get_contractions() -> Value {
-    get_file(&CONTRACTION_PATH).unwrap()
-}

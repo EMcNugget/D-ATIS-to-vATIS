@@ -2,15 +2,13 @@
 #![cfg_attr(not(debug_assertions), windows_subsystem = "windows")]
 
 use log::info;
-use tauri::App;
+use tauri::{App, Manager};
+use tauri_plugin_log::{Target, TargetKind};
 
 mod app;
-mod assets;
-mod audio;
 mod consts;
-mod contraction;
-mod settings;
 mod structs;
+mod util;
 
 fn setup(app: &mut App) {
     info!(
@@ -18,7 +16,11 @@ fn setup(app: &mut App) {
         app.handle().config().version.as_ref().unwrap()
     );
 
-    crate::settings::check_settings_file();
+    crate::util::settings::check_settings_file();
+
+    let log_path = app.handle().path().app_log_dir().unwrap();
+
+    std::fs::write(log_path.join("log.log"), "").unwrap();
 }
 
 fn main() {
@@ -28,23 +30,28 @@ fn main() {
         .plugin(tauri_plugin_dialog::init())
         .plugin(
             tauri_plugin_log::Builder::new()
+                .targets([
+                    Target::new(TargetKind::Stdout),
+                    Target::new(TargetKind::LogDir {
+                        file_name: Some("log".to_string()),
+                    }),
+                ])
                 .timezone_strategy(tauri_plugin_log::TimezoneStrategy::UseLocal)
-                .max_file_size(50_000)
-                .rotation_strategy(tauri_plugin_log::RotationStrategy::KeepOne)
                 .build(),
         )
         .invoke_handler(tauri::generate_handler![
-            crate::settings::write_settings,
-            crate::settings::read_settings,
-            crate::app::write_atis,
-            crate::app::is_vatis_running,
-            crate::app::open_vatis,
-            crate::app::get_profiles,
-            crate::app::get_facility_config,
-            crate::app::get_airports_in_profile,
-            crate::contraction::set_contractions,
-            crate::contraction::get_contractions,
-            crate::audio::play_audio,
+            crate::app::app::write_atis,
+            crate::app::app::is_vatis_running,
+            crate::app::app::open_vatis,
+            crate::app::app::get_profiles,
+            crate::app::audio::play_audio,
+            crate::app::app::get_airports_in_profile,
+            crate::util::settings::write_settings,
+            crate::util::settings::read_settings,
+            crate::util::assets::set_contractions,
+            crate::util::assets::get_facility_config,
+            crate::util::assets::get_contractions,
+            crate::util::assets::get_runways,
         ])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");

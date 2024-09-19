@@ -1,4 +1,4 @@
-use crate::assets::{get_file, response, set_file};
+use crate::util::assets::{get_file, response, set_file};
 use crate::consts::SETTINGS_PATH;
 use crate::structs::{Response, Settings};
 use log::info;

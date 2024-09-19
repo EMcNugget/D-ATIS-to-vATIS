@@ -51,7 +51,7 @@
     }
   },
   "productName": "D-ATIStovATIS",
-  "version": "1.7.2",
+  "version": "1.7.3",
   "identifier": "D-ATIStovATIS",
   "plugins": {
     "updater": {

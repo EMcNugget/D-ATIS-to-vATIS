@@ -983,7 +983,7 @@ dependencies = [
 
 [[package]]
 name = "d_atis_to_vatis"
-version = "1.7.2"
+version = "1.7.3"
 dependencies = [
  "anyhow",
  "dotenv",

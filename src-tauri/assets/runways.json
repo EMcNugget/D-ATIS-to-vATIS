@@ -1,0 +1,2258 @@
+{
+  "KABQ": [
+    {
+      "runway_id": "21",
+      "heading": "225"
+    },
+    {
+      "runway_id": "03",
+      "heading": "45"
+    },
+    {
+      "runway_id": "26",
+      "heading": "270"
+    },
+    {
+      "runway_id": "08",
+      "heading": "90"
+    },
+    {
+      "runway_id": "30",
+      "heading": "309"
+    },
+    {
+      "runway_id": "12",
+      "heading": "129"
+    },
+    {
+      "runway_id": "35",
+      "heading": "3"
+    },
+    {
+      "runway_id": "17",
+      "heading": "183"
+    }
+  ],
+  "KADW": [
+    {
+      "runway_id": "19R",
+      "heading": "180"
+    },
+    {
+      "runway_id": "01L",
+      "heading": "360"
+    },
+    {
+      "runway_id": "19L",
+      "heading": "179.9"
+    },
+    {
+      "runway_id": "01R",
+      "heading": "359.9"
+    }
+  ],
+  "KALB": [
+    {
+      "runway_id": "19",
+      "heading": "178.2"
+    },
+    {
+      "runway_id": "01",
+      "heading": "358.2"
+    },
+    {
+      "runway_id": "28",
+      "heading": "268"
+    },
+    {
+      "runway_id": "10",
+      "heading": "88"
+    }
+  ],
+  "KATL": [
+    {
+      "runway_id": "26R",
+      "heading": "270"
+    },
+    {
+      "runway_id": "08L",
+      "heading": "90"
+    },
+    {
+      "runway_id": "26L",
+      "heading": "270"
+    },
+    {
+      "runway_id": "08R",
+      "heading": "90"
+    },
+    {
+      "runway_id": "27R",
+      "heading": "270"
+    },
+    {
+      "runway_id": "09L",
+      "heading": "90"
+    },
+    {
+      "runway_id": "27L",
+      "heading": "270"
+    },
+    {
+      "runway_id": "09R",
+      "heading": "90"
+    },
+    {
+      "runway_id": "28",
+      "heading": "270"
+    },
+    {
+      "runway_id": "10",
+      "heading": "90"
+    }
+  ],
+  "KAUS": [
+    {
+      "runway_id": "35R",
+      "heading": "358.7"
+    },
+    {
+      "runway_id": "17L",
+      "heading": "178.7"
+    },
+    {
+      "runway_id": "35L",
+      "heading": "358.7"
+    },
+    {
+      "runway_id": "17R",
+      "heading": "178.7"
+    }
+  ],
+  "KBDL": [
+    {
+      "runway_id": "19",
+      "heading": "179"
+    },
+    {
+      "runway_id": "01",
+      "heading": "359"
+    },
+    {
+      "runway_id": "24",
+      "heading": "224"
+    },
+    {
+      "runway_id": "06",
+      "heading": "44"
+    },
+    {
+      "runway_id": "33",
+      "heading": "315"
+    },
+    {
+      "runway_id": "15",
+      "heading": "135"
+    }
+  ],
+  "KBNA": [
+    {
+      "runway_id": "20C",
+      "heading": "198"
+    },
+    {
+      "runway_id": "02C",
+      "heading": "18"
+    },
+    {
+      "runway_id": "20R",
+      "heading": "197.6"
+    },
+    {
+      "runway_id": "02L",
+      "heading": "17.6"
+    },
+    {
+      "runway_id": "20L",
+      "heading": "198"
+    },
+    {
+      "runway_id": "02R",
+      "heading": "18"
+    },
+    {
+      "runway_id": "31",
+      "heading": "313.3"
+    },
+    {
+      "runway_id": "13",
+      "heading": "133.3"
+    }
+  ],
+  "KBOI": [
+    {
+      "runway_id": "27",
+      "heading": "285"
+    },
+    {
+      "runway_id": "09",
+      "heading": "105"
+    },
+    {
+      "runway_id": "28R",
+      "heading": "295.1"
+    },
+    {
+      "runway_id": "10L",
+      "heading": "115.1"
+    },
+    {
+      "runway_id": "28L",
+      "heading": "295.1"
+    },
+    {
+      "runway_id": "10R",
+      "heading": "115.1"
+    }
+  ],
+  "KBOS": [
+    {
+      "runway_id": "22R",
+      "heading": "200"
+    },
+    {
+      "runway_id": "04L",
+      "heading": "20"
+    },
+    {
+      "runway_id": "22L",
+      "heading": "200"
+    },
+    {
+      "runway_id": "04R",
+      "heading": "20"
+    },
+    {
+      "runway_id": "27",
+      "heading": "257"
+    },
+    {
+      "runway_id": "09",
+      "heading": "77"
+    },
+    {
+      "runway_id": "32",
+      "heading": "305"
+    },
+    {
+      "runway_id": "14",
+      "heading": "125"
+    },
+    {
+      "runway_id": "33R",
+      "heading": "315"
+    },
+    {
+      "runway_id": "15L",
+      "heading": "135"
+    },
+    {
+      "runway_id": "33L",
+      "heading": "315"
+    },
+    {
+      "runway_id": "15R",
+      "heading": "135"
+    }
+  ],
+  "KBUF": [
+    {
+      "runway_id": "23",
+      "heading": "223.8"
+    },
+    {
+      "runway_id": "05",
+      "heading": "43.8"
+    },
+    {
+      "runway_id": "32",
+      "heading": "306.8"
+    },
+    {
+      "runway_id": "14",
+      "heading": "126.8"
+    }
+  ],
+  "KBUR": [
+    {
+      "runway_id": "26",
+      "heading": "270.9"
+    },
+    {
+      "runway_id": "08",
+      "heading": "90.9"
+    },
+    {
+      "runway_id": "33",
+      "heading": "347.1"
+    },
+    {
+      "runway_id": "15",
+      "heading": "167.1"
+    }
+  ],
+  "KBWI": [
+    {
+      "runway_id": "22",
+      "heading": "213.2"
+    },
+    {
+      "runway_id": "04",
+      "heading": "33.2"
+    },
+    {
+      "runway_id": "28",
+      "heading": "274.2"
+    },
+    {
+      "runway_id": "10",
+      "heading": "94.2"
+    },
+    {
+      "runway_id": "33R",
+      "heading": "324.2"
+    },
+    {
+      "runway_id": "15L",
+      "heading": "144.2"
+    },
+    {
+      "runway_id": "33L",
+      "heading": "324.2"
+    },
+    {
+      "runway_id": "15R",
+      "heading": "144.2"
+    }
+  ],
+  "KCHS": [
+    {
+      "runway_id": "21",
+      "heading": "204.4"
+    },
+    {
+      "runway_id": "03",
+      "heading": "24.4"
+    },
+    {
+      "runway_id": "33",
+      "heading": "327.4"
+    },
+    {
+      "runway_id": "15",
+      "heading": "147.4"
+    }
+  ],
+  "KCLE": [
+    {
+      "runway_id": "24C",
+      "heading": "230"
+    },
+    {
+      "runway_id": "06C",
+      "heading": "50"
+    },
+    {
+      "runway_id": "24R",
+      "heading": "229.9"
+    },
+    {
+      "runway_id": "06L",
+      "heading": "49.9"
+    },
+    {
+      "runway_id": "24L",
+      "heading": "230"
+    },
+    {
+      "runway_id": "06R",
+      "heading": "50"
+    },
+    {
+      "runway_id": "28",
+      "heading": "273.3"
+    },
+    {
+      "runway_id": "10",
+      "heading": "93.3"
+    }
+  ],
+  "KCLT": [
+    {
+      "runway_id": "23",
+      "heading": "228.5"
+    },
+    {
+      "runway_id": "05",
+      "heading": "48.5"
+    },
+    {
+      "runway_id": "36C",
+      "heading": "356"
+    },
+    {
+      "runway_id": "18C",
+      "heading": "176"
+    },
+    {
+      "runway_id": "36R",
+      "heading": "356"
+    },
+    {
+      "runway_id": "18L",
+      "heading": "176"
+    },
+    {
+      "runway_id": "36L",
+      "heading": "356"
+    },
+    {
+      "runway_id": "18R",
+      "heading": "176"
+    }
+  ],
+  "KCMH": [
+    {
+      "runway_id": "28R",
+      "heading": "274.2"
+    },
+    {
+      "runway_id": "10L",
+      "heading": "94.2"
+    },
+    {
+      "runway_id": "28L",
+      "heading": "274.2"
+    },
+    {
+      "runway_id": "10R",
+      "heading": "94.2"
+    }
+  ],
+  "KCVG": [
+    {
+      "runway_id": "27",
+      "heading": "270"
+    },
+    {
+      "runway_id": "09",
+      "heading": "90"
+    },
+    {
+      "runway_id": "36C",
+      "heading": "360"
+    },
+    {
+      "runway_id": "18C",
+      "heading": "180"
+    },
+    {
+      "runway_id": "36R",
+      "heading": "360"
+    },
+    {
+      "runway_id": "18L",
+      "heading": "180"
+    },
+    {
+      "runway_id": "36L",
+      "heading": "0.2"
+    },
+    {
+      "runway_id": "18R",
+      "heading": "180.2"
+    }
+  ],
+  "KDAL": [
+    {
+      "runway_id": "31R",
+      "heading": "315.6"
+    },
+    {
+      "runway_id": "13L",
+      "heading": "135.6"
+    },
+    {
+      "runway_id": "31L",
+      "heading": "315.6"
+    },
+    {
+      "runway_id": "13R",
+      "heading": "135.6"
+    },
+    {
+      "runway_id": "36",
+      "heading": "6"
+    },
+    {
+      "runway_id": "18",
+      "heading": "186"
+    }
+  ],
+  "KDCA": [
+    {
+      "runway_id": "19",
+      "heading": "175.5"
+    },
+    {
+      "runway_id": "01",
+      "heading": "355.5"
+    },
+    {
+      "runway_id": "22",
+      "heading": "206"
+    },
+    {
+      "runway_id": "04",
+      "heading": "26"
+    },
+    {
+      "runway_id": "33",
+      "heading": "322.7"
+    },
+    {
+      "runway_id": "15",
+      "heading": "142.7"
+    }
+  ],
+  "KDEN": [
+    {
+      "runway_id": "25",
+      "heading": "270.5"
+    },
+    {
+      "runway_id": "07",
+      "heading": "90.5"
+    },
+    {
+      "runway_id": "26",
+      "heading": "270.5"
+    },
+    {
+      "runway_id": "08",
+      "heading": "90.5"
+    },
+    {
+      "runway_id": "34R",
+      "heading": "0.5"
+    },
+    {
+      "runway_id": "16L",
+      "heading": "180.5"
+    },
+    {
+      "runway_id": "34L",
+      "heading": "0.5"
+    },
+    {
+      "runway_id": "16R",
+      "heading": "180.5"
+    },
+    {
+      "runway_id": "35R",
+      "heading": "0.5"
+    },
+    {
+      "runway_id": "17L",
+      "heading": "180.5"
+    },
+    {
+      "runway_id": "35L",
+      "heading": "0.5"
+    },
+    {
+      "runway_id": "17R",
+      "heading": "180.5"
+    }
+  ],
+  "KDFW": [
+    {
+      "runway_id": "31R",
+      "heading": "315.3"
+    },
+    {
+      "runway_id": "13L",
+      "heading": "135.3"
+    },
+    {
+      "runway_id": "31L",
+      "heading": "319"
+    },
+    {
+      "runway_id": "13R",
+      "heading": "139"
+    },
+    {
+      "runway_id": "35C",
+      "heading": "0.3"
+    },
+    {
+      "runway_id": "17C",
+      "heading": "180.3"
+    },
+    {
+      "runway_id": "35R",
+      "heading": "0.3"
+    },
+    {
+      "runway_id": "17L",
+      "heading": "180.3"
+    },
+    {
+      "runway_id": "35L",
+      "heading": "0.3"
+    },
+    {
+      "runway_id": "17R",
+      "heading": "180.3"
+    },
+    {
+      "runway_id": "36R",
+      "heading": "0.2"
+    },
+    {
+      "runway_id": "18L",
+      "heading": "180.2"
+    },
+    {
+      "runway_id": "36L",
+      "heading": "0.3"
+    },
+    {
+      "runway_id": "18R",
+      "heading": "180.3"
+    }
+  ],
+  "KDTW": [
+    {
+      "runway_id": "21R",
+      "heading": "209"
+    },
+    {
+      "runway_id": "03L",
+      "heading": "29"
+    },
+    {
+      "runway_id": "21L",
+      "heading": "209"
+    },
+    {
+      "runway_id": "03R",
+      "heading": "29"
+    },
+    {
+      "runway_id": "22R",
+      "heading": "208.7"
+    },
+    {
+      "runway_id": "04L",
+      "heading": "28.7"
+    },
+    {
+      "runway_id": "22L",
+      "heading": "209"
+    },
+    {
+      "runway_id": "04R",
+      "heading": "29"
+    },
+    {
+      "runway_id": "27R",
+      "heading": "269"
+    },
+    {
+      "runway_id": "09L",
+      "heading": "89"
+    },
+    {
+      "runway_id": "27L",
+      "heading": "269"
+    },
+    {
+      "runway_id": "09R",
+      "heading": "89"
+    }
+  ],
+  "KELP": [
+    {
+      "runway_id": "22",
+      "heading": "230"
+    },
+    {
+      "runway_id": "04",
+      "heading": "50"
+    },
+    {
+      "runway_id": "26R",
+      "heading": "268.3"
+    },
+    {
+      "runway_id": "08L",
+      "heading": "88.3"
+    },
+    {
+      "runway_id": "26L",
+      "heading": "273.3"
+    },
+    {
+      "runway_id": "08R",
+      "heading": "93.3"
+    }
+  ],
+  "KEWR": [
+    {
+      "runway_id": "22R",
+      "heading": "206"
+    },
+    {
+      "runway_id": "04L",
+      "heading": "26"
+    },
+    {
+      "runway_id": "22L",
+      "heading": "206"
+    },
+    {
+      "runway_id": "04R",
+      "heading": "26"
+    },
+    {
+      "runway_id": "29",
+      "heading": "275"
+    },
+    {
+      "runway_id": "11",
+      "heading": "95"
+    }
+  ],
+  "KFLL": [
+    {
+      "runway_id": "28R",
+      "heading": "270"
+    },
+    {
+      "runway_id": "10L",
+      "heading": "90"
+    },
+    {
+      "runway_id": "28L",
+      "heading": "270"
+    },
+    {
+      "runway_id": "10R",
+      "heading": "90"
+    },
+    {
+      "runway_id": "31",
+      "heading": "315"
+    },
+    {
+      "runway_id": "13",
+      "heading": "135"
+    }
+  ],
+  "KGSO": [
+    {
+      "runway_id": "23R",
+      "heading": "226"
+    },
+    {
+      "runway_id": "05L",
+      "heading": "46"
+    },
+    {
+      "runway_id": "23L",
+      "heading": "226"
+    },
+    {
+      "runway_id": "05R",
+      "heading": "46"
+    },
+    {
+      "runway_id": "32",
+      "heading": "315.1"
+    },
+    {
+      "runway_id": "14",
+      "heading": "135.1"
+    }
+  ],
+  "KHOU": [
+    {
+      "runway_id": "22",
+      "heading": "224"
+    },
+    {
+      "runway_id": "04",
+      "heading": "44"
+    },
+    {
+      "runway_id": "30R",
+      "heading": "313.9"
+    },
+    {
+      "runway_id": "12L",
+      "heading": "133.9"
+    },
+    {
+      "runway_id": "30L",
+      "heading": "313.9"
+    },
+    {
+      "runway_id": "12R",
+      "heading": "133.9"
+    },
+    {
+      "runway_id": "35",
+      "heading": "358.9"
+    },
+    {
+      "runway_id": "17",
+      "heading": "178.9"
+    }
+  ],
+  "KHPN": [
+    {
+      "runway_id": "29",
+      "heading": "282"
+    },
+    {
+      "runway_id": "11",
+      "heading": "102"
+    },
+    {
+      "runway_id": "34",
+      "heading": "330"
+    },
+    {
+      "runway_id": "16",
+      "heading": "150"
+    }
+  ],
+  "KIAD": [
+    {
+      "runway_id": "19C",
+      "heading": "181"
+    },
+    {
+      "runway_id": "01C",
+      "heading": "1"
+    },
+    {
+      "runway_id": "19R",
+      "heading": "180.6"
+    },
+    {
+      "runway_id": "01L",
+      "heading": "0.6"
+    },
+    {
+      "runway_id": "19L",
+      "heading": "180.7"
+    },
+    {
+      "runway_id": "01R",
+      "heading": "0.7"
+    },
+    {
+      "runway_id": "30",
+      "heading": "290.6"
+    },
+    {
+      "runway_id": "12",
+      "heading": "110.6"
+    }
+  ],
+  "KIAH": [
+    {
+      "runway_id": "26R",
+      "heading": "269.9"
+    },
+    {
+      "runway_id": "08L",
+      "heading": "89.9"
+    },
+    {
+      "runway_id": "26L",
+      "heading": "269.9"
+    },
+    {
+      "runway_id": "08R",
+      "heading": "89.9"
+    },
+    {
+      "runway_id": "27",
+      "heading": "270"
+    },
+    {
+      "runway_id": "09",
+      "heading": "90"
+    },
+    {
+      "runway_id": "33R",
+      "heading": "332"
+    },
+    {
+      "runway_id": "15L",
+      "heading": "152"
+    },
+    {
+      "runway_id": "33L",
+      "heading": "332"
+    },
+    {
+      "runway_id": "15R",
+      "heading": "152"
+    }
+  ],
+  "KIND": [
+    {
+      "runway_id": "23R",
+      "heading": "224.5"
+    },
+    {
+      "runway_id": "05L",
+      "heading": "44.5"
+    },
+    {
+      "runway_id": "23L",
+      "heading": "224.6"
+    },
+    {
+      "runway_id": "05R",
+      "heading": "44.6"
+    },
+    {
+      "runway_id": "32",
+      "heading": "314.6"
+    },
+    {
+      "runway_id": "14",
+      "heading": "134.6"
+    }
+  ],
+  "KJAX": [
+    {
+      "runway_id": "26",
+      "heading": "251"
+    },
+    {
+      "runway_id": "08",
+      "heading": "71"
+    },
+    {
+      "runway_id": "32",
+      "heading": "311"
+    },
+    {
+      "runway_id": "14",
+      "heading": "131"
+    }
+  ],
+  "KJFK": [
+    {
+      "runway_id": "22R",
+      "heading": "211"
+    },
+    {
+      "runway_id": "04L",
+      "heading": "31"
+    },
+    {
+      "runway_id": "22L",
+      "heading": "210.6"
+    },
+    {
+      "runway_id": "04R",
+      "heading": "30.6"
+    },
+    {
+      "runway_id": "31R",
+      "heading": "301"
+    },
+    {
+      "runway_id": "13L",
+      "heading": "121"
+    },
+    {
+      "runway_id": "31L",
+      "heading": "301"
+    },
+    {
+      "runway_id": "13R",
+      "heading": "121"
+    }
+  ],
+  "KLAS": [
+    {
+      "runway_id": "19R",
+      "heading": "205"
+    },
+    {
+      "runway_id": "01L",
+      "heading": "25"
+    },
+    {
+      "runway_id": "19L",
+      "heading": "205"
+    },
+    {
+      "runway_id": "01R",
+      "heading": "25"
+    },
+    {
+      "runway_id": "26R",
+      "heading": "270"
+    },
+    {
+      "runway_id": "08L",
+      "heading": "90"
+    },
+    {
+      "runway_id": "26L",
+      "heading": "270"
+    },
+    {
+      "runway_id": "08R",
+      "heading": "90"
+    }
+  ],
+  "KLAX": [
+    {
+      "runway_id": "24R",
+      "heading": "263"
+    },
+    {
+      "runway_id": "06L",
+      "heading": "83"
+    },
+    {
+      "runway_id": "24L",
+      "heading": "263"
+    },
+    {
+      "runway_id": "06R",
+      "heading": "83"
+    },
+    {
+      "runway_id": "25R",
+      "heading": "263"
+    },
+    {
+      "runway_id": "07L",
+      "heading": "83"
+    },
+    {
+      "runway_id": "25L",
+      "heading": "263"
+    },
+    {
+      "runway_id": "07R",
+      "heading": "83"
+    },
+    {
+      "runway_id": "09R",
+      "heading": ""
+    },
+    {
+      "runway_id": "09l",
+      "heading": ""
+    }
+  ],
+  "KLGA": [
+    {
+      "runway_id": "22",
+      "heading": "212"
+    },
+    {
+      "runway_id": "04",
+      "heading": "32"
+    },
+    {
+      "runway_id": "31",
+      "heading": "302"
+    },
+    {
+      "runway_id": "13",
+      "heading": "122"
+    },
+    {
+      "runway_id": "H1",
+      "heading": ""
+    },
+    {
+      "runway_id": "H1",
+      "heading": ""
+    }
+  ],
+  "KLIT": [
+    {
+      "runway_id": "22R",
+      "heading": "226.5"
+    },
+    {
+      "runway_id": "04L",
+      "heading": "46.5"
+    },
+    {
+      "runway_id": "22L",
+      "heading": "226.5"
+    },
+    {
+      "runway_id": "04R",
+      "heading": "46.5"
+    },
+    {
+      "runway_id": "36",
+      "heading": "1.5"
+    },
+    {
+      "runway_id": "18",
+      "heading": "181.5"
+    }
+  ],
+  "KMCI": [
+    {
+      "runway_id": "19R",
+      "heading": "192.9"
+    },
+    {
+      "runway_id": "01L",
+      "heading": "12.9"
+    },
+    {
+      "runway_id": "19L",
+      "heading": "192.9"
+    },
+    {
+      "runway_id": "01R",
+      "heading": "12.9"
+    },
+    {
+      "runway_id": "27",
+      "heading": "276.1"
+    },
+    {
+      "runway_id": "09",
+      "heading": "96.1"
+    }
+  ],
+  "KMCO": [
+    {
+      "runway_id": "35R",
+      "heading": "359.5"
+    },
+    {
+      "runway_id": "17L",
+      "heading": "179.5"
+    },
+    {
+      "runway_id": "35L",
+      "heading": "359"
+    },
+    {
+      "runway_id": "17R",
+      "heading": "179"
+    },
+    {
+      "runway_id": "36R",
+      "heading": "359"
+    },
+    {
+      "runway_id": "18L",
+      "heading": "179"
+    },
+    {
+      "runway_id": "36L",
+      "heading": "359"
+    },
+    {
+      "runway_id": "18R",
+      "heading": "179"
+    }
+  ],
+  "KMDW": [
+    {
+      "runway_id": "22R",
+      "heading": "223"
+    },
+    {
+      "runway_id": "04L",
+      "heading": "43"
+    },
+    {
+      "runway_id": "22L",
+      "heading": "223"
+    },
+    {
+      "runway_id": "04R",
+      "heading": "43"
+    },
+    {
+      "runway_id": "31C",
+      "heading": "314"
+    },
+    {
+      "runway_id": "13C",
+      "heading": "134"
+    },
+    {
+      "runway_id": "31R",
+      "heading": "314"
+    },
+    {
+      "runway_id": "13L",
+      "heading": "134"
+    },
+    {
+      "runway_id": "31L",
+      "heading": "314"
+    },
+    {
+      "runway_id": "13R",
+      "heading": "134"
+    }
+  ],
+  "KMEM": [
+    {
+      "runway_id": "27",
+      "heading": "272"
+    },
+    {
+      "runway_id": "09",
+      "heading": "92"
+    },
+    {
+      "runway_id": "36C",
+      "heading": "359"
+    },
+    {
+      "runway_id": "18C",
+      "heading": "179"
+    },
+    {
+      "runway_id": "36R",
+      "heading": "359"
+    },
+    {
+      "runway_id": "18L",
+      "heading": "179"
+    },
+    {
+      "runway_id": "36L",
+      "heading": "359"
+    },
+    {
+      "runway_id": "18R",
+      "heading": "179"
+    }
+  ],
+  "KMIA": [
+    {
+      "runway_id": "26R",
+      "heading": "267.4"
+    },
+    {
+      "runway_id": "08L",
+      "heading": "87.4"
+    },
+    {
+      "runway_id": "26L",
+      "heading": "267"
+    },
+    {
+      "runway_id": "08R",
+      "heading": "87"
+    },
+    {
+      "runway_id": "27",
+      "heading": "267"
+    },
+    {
+      "runway_id": "09",
+      "heading": "87"
+    },
+    {
+      "runway_id": "30",
+      "heading": "299"
+    },
+    {
+      "runway_id": "12",
+      "heading": "119"
+    }
+  ],
+  "KMKE": [
+    {
+      "runway_id": "19R",
+      "heading": "187"
+    },
+    {
+      "runway_id": "01L",
+      "heading": "7"
+    },
+    {
+      "runway_id": "19L",
+      "heading": "187.2"
+    },
+    {
+      "runway_id": "01R",
+      "heading": "7.2"
+    },
+    {
+      "runway_id": "25R",
+      "heading": "251"
+    },
+    {
+      "runway_id": "07L",
+      "heading": "71"
+    },
+    {
+      "runway_id": "25L",
+      "heading": "252"
+    },
+    {
+      "runway_id": "07R",
+      "heading": "72"
+    },
+    {
+      "runway_id": "31",
+      "heading": "312"
+    },
+    {
+      "runway_id": "13",
+      "heading": "132"
+    }
+  ],
+  "KMSP": [
+    {
+      "runway_id": "22",
+      "heading": "225"
+    },
+    {
+      "runway_id": "04",
+      "heading": "45"
+    },
+    {
+      "runway_id": "30R",
+      "heading": "301.3"
+    },
+    {
+      "runway_id": "12L",
+      "heading": "121.3"
+    },
+    {
+      "runway_id": "30L",
+      "heading": "301.3"
+    },
+    {
+      "runway_id": "12R",
+      "heading": "121.3"
+    },
+    {
+      "runway_id": "35",
+      "heading": "349.5"
+    },
+    {
+      "runway_id": "17",
+      "heading": "169.5"
+    }
+  ],
+  "KMSY": [
+    {
+      "runway_id": "20",
+      "heading": "195"
+    },
+    {
+      "runway_id": "02",
+      "heading": "15"
+    },
+    {
+      "runway_id": "24",
+      "heading": "240.4"
+    },
+    {
+      "runway_id": "06",
+      "heading": "60.4"
+    },
+    {
+      "runway_id": "29",
+      "heading": "286"
+    },
+    {
+      "runway_id": "11",
+      "heading": "106"
+    }
+  ],
+  "KOAK": [
+    {
+      "runway_id": "28R",
+      "heading": "292.2"
+    },
+    {
+      "runway_id": "10L",
+      "heading": "112.2"
+    },
+    {
+      "runway_id": "28L",
+      "heading": "292"
+    },
+    {
+      "runway_id": "10R",
+      "heading": "112"
+    },
+    {
+      "runway_id": "30",
+      "heading": "310"
+    },
+    {
+      "runway_id": "12",
+      "heading": "130"
+    },
+    {
+      "runway_id": "33",
+      "heading": "345"
+    },
+    {
+      "runway_id": "15",
+      "heading": "165"
+    }
+  ],
+  "KOKC": [
+    {
+      "runway_id": "31",
+      "heading": "315.1"
+    },
+    {
+      "runway_id": "13",
+      "heading": "135.1"
+    },
+    {
+      "runway_id": "35R",
+      "heading": "360"
+    },
+    {
+      "runway_id": "17L",
+      "heading": "180"
+    },
+    {
+      "runway_id": "35L",
+      "heading": "360"
+    },
+    {
+      "runway_id": "17R",
+      "heading": "180"
+    },
+    {
+      "runway_id": "36",
+      "heading": "360"
+    },
+    {
+      "runway_id": "18",
+      "heading": "180"
+    }
+  ],
+  "KOMA": [
+    {
+      "runway_id": "32R",
+      "heading": "324.4"
+    },
+    {
+      "runway_id": "14L",
+      "heading": "144.4"
+    },
+    {
+      "runway_id": "32L",
+      "heading": "324.4"
+    },
+    {
+      "runway_id": "14R",
+      "heading": "144.4"
+    },
+    {
+      "runway_id": "36",
+      "heading": "360"
+    },
+    {
+      "runway_id": "18",
+      "heading": "180"
+    }
+  ],
+  "KONT": [
+    {
+      "runway_id": "26R",
+      "heading": "270"
+    },
+    {
+      "runway_id": "08L",
+      "heading": "90"
+    },
+    {
+      "runway_id": "26L",
+      "heading": "270"
+    },
+    {
+      "runway_id": "08R",
+      "heading": "90"
+    }
+  ],
+  "KORD": [
+    {
+      "runway_id": "22R",
+      "heading": "219"
+    },
+    {
+      "runway_id": "04L",
+      "heading": "39"
+    },
+    {
+      "runway_id": "22L",
+      "heading": "222"
+    },
+    {
+      "runway_id": "04R",
+      "heading": "42"
+    },
+    {
+      "runway_id": "27C",
+      "heading": "270"
+    },
+    {
+      "runway_id": "09C",
+      "heading": "90"
+    },
+    {
+      "runway_id": "27R",
+      "heading": "270"
+    },
+    {
+      "runway_id": "09L",
+      "heading": "90"
+    },
+    {
+      "runway_id": "27L",
+      "heading": "270"
+    },
+    {
+      "runway_id": "09R",
+      "heading": "90"
+    },
+    {
+      "runway_id": "28C",
+      "heading": "270"
+    },
+    {
+      "runway_id": "10C",
+      "heading": "90"
+    },
+    {
+      "runway_id": "28R",
+      "heading": "270"
+    },
+    {
+      "runway_id": "10L",
+      "heading": "90"
+    },
+    {
+      "runway_id": "32R",
+      "heading": "320"
+    },
+    {
+      "runway_id": "14L",
+      "heading": "140"
+    },
+    {
+      "runway_id": "33",
+      "heading": "320"
+    },
+    {
+      "runway_id": "15",
+      "heading": "140"
+    },
+    {
+      "runway_id": "36",
+      "heading": "360"
+    },
+    {
+      "runway_id": "18",
+      "heading": "180"
+    }
+  ],
+  "KPBI": [
+    {
+      "runway_id": "28R",
+      "heading": "273"
+    },
+    {
+      "runway_id": "10L",
+      "heading": "93"
+    },
+    {
+      "runway_id": "28L",
+      "heading": "273"
+    },
+    {
+      "runway_id": "10R",
+      "heading": "93"
+    },
+    {
+      "runway_id": "32",
+      "heading": "315"
+    },
+    {
+      "runway_id": "14",
+      "heading": "135"
+    }
+  ],
+  "KPDX": [
+    {
+      "runway_id": "21",
+      "heading": "225"
+    },
+    {
+      "runway_id": "03",
+      "heading": "45"
+    },
+    {
+      "runway_id": "28R",
+      "heading": "299"
+    },
+    {
+      "runway_id": "10L",
+      "heading": "119"
+    },
+    {
+      "runway_id": "28L",
+      "heading": "299"
+    },
+    {
+      "runway_id": "10R",
+      "heading": "119"
+    }
+  ],
+  "KPHL": [
+    {
+      "runway_id": "26",
+      "heading": "255.6"
+    },
+    {
+      "runway_id": "08",
+      "heading": "75.6"
+    },
+    {
+      "runway_id": "27R",
+      "heading": "255.5"
+    },
+    {
+      "runway_id": "09L",
+      "heading": "75.5"
+    },
+    {
+      "runway_id": "27L",
+      "heading": "255.5"
+    },
+    {
+      "runway_id": "09R",
+      "heading": "75.5"
+    },
+    {
+      "runway_id": "35",
+      "heading": "339.1"
+    },
+    {
+      "runway_id": "17",
+      "heading": "159.1"
+    }
+  ],
+  "KPHX": [
+    {
+      "runway_id": "25R",
+      "heading": "270"
+    },
+    {
+      "runway_id": "07L",
+      "heading": "90"
+    },
+    {
+      "runway_id": "25L",
+      "heading": "270"
+    },
+    {
+      "runway_id": "07R",
+      "heading": "90"
+    },
+    {
+      "runway_id": "26",
+      "heading": "270.1"
+    },
+    {
+      "runway_id": "08",
+      "heading": "90.1"
+    }
+  ],
+  "KPIT": [
+    {
+      "runway_id": "28C",
+      "heading": "272"
+    },
+    {
+      "runway_id": "10C",
+      "heading": "92"
+    },
+    {
+      "runway_id": "28R",
+      "heading": "271.9"
+    },
+    {
+      "runway_id": "10L",
+      "heading": "91.9"
+    },
+    {
+      "runway_id": "28L",
+      "heading": "272"
+    },
+    {
+      "runway_id": "10R",
+      "heading": "92"
+    },
+    {
+      "runway_id": "32",
+      "heading": "316.4"
+    },
+    {
+      "runway_id": "14",
+      "heading": "136.4"
+    }
+  ],
+  "KPVD": [
+    {
+      "runway_id": "23",
+      "heading": "212"
+    },
+    {
+      "runway_id": "05",
+      "heading": "32"
+    },
+    {
+      "runway_id": "34",
+      "heading": "321.7"
+    },
+    {
+      "runway_id": "16",
+      "heading": "141.7"
+    }
+  ],
+  "KRDU": [
+    {
+      "runway_id": "23R",
+      "heading": "225"
+    },
+    {
+      "runway_id": "05L",
+      "heading": "45"
+    },
+    {
+      "runway_id": "23L",
+      "heading": "225"
+    },
+    {
+      "runway_id": "05R",
+      "heading": "45"
+    },
+    {
+      "runway_id": "32",
+      "heading": "315"
+    },
+    {
+      "runway_id": "14",
+      "heading": "135"
+    }
+  ],
+  "KRNO": [
+    {
+      "runway_id": "25",
+      "heading": "270"
+    },
+    {
+      "runway_id": "07",
+      "heading": "90"
+    },
+    {
+      "runway_id": "34R",
+      "heading": "360"
+    },
+    {
+      "runway_id": "16L",
+      "heading": "180"
+    },
+    {
+      "runway_id": "34L",
+      "heading": "360"
+    },
+    {
+      "runway_id": "16R",
+      "heading": "180"
+    }
+  ],
+  "KRSW": [
+    {
+      "runway_id": "24",
+      "heading": "234"
+    },
+    {
+      "runway_id": "06",
+      "heading": "54"
+    }
+  ],
+  "KSAN": [
+    {
+      "runway_id": "27",
+      "heading": "286"
+    },
+    {
+      "runway_id": "09",
+      "heading": "106"
+    }
+  ],
+  "KSAT": [
+    {
+      "runway_id": "22",
+      "heading": "221"
+    },
+    {
+      "runway_id": "04",
+      "heading": "41"
+    },
+    {
+      "runway_id": "31R",
+      "heading": "312"
+    },
+    {
+      "runway_id": "13L",
+      "heading": "132"
+    },
+    {
+      "runway_id": "31L",
+      "heading": "312"
+    },
+    {
+      "runway_id": "13R",
+      "heading": "132"
+    }
+  ],
+  "KSDF": [
+    {
+      "runway_id": "29",
+      "heading": "291"
+    },
+    {
+      "runway_id": "11",
+      "heading": "111"
+    },
+    {
+      "runway_id": "35R",
+      "heading": "345"
+    },
+    {
+      "runway_id": "17L",
+      "heading": "165"
+    },
+    {
+      "runway_id": "35L",
+      "heading": "345.4"
+    },
+    {
+      "runway_id": "17R",
+      "heading": "165.4"
+    }
+  ],
+  "KSEA": [
+    {
+      "runway_id": "34C",
+      "heading": "360"
+    },
+    {
+      "runway_id": "16C",
+      "heading": "180"
+    },
+    {
+      "runway_id": "34R",
+      "heading": "360"
+    },
+    {
+      "runway_id": "16L",
+      "heading": "180"
+    },
+    {
+      "runway_id": "34L",
+      "heading": "360"
+    },
+    {
+      "runway_id": "16R",
+      "heading": "180"
+    },
+    {
+      "runway_id": "high",
+      "heading": ""
+    },
+    {
+      "runway_id": "lower",
+      "heading": ""
+    }
+  ],
+  "KSFO": [
+    {
+      "runway_id": "19R",
+      "heading": "208"
+    },
+    {
+      "runway_id": "01L",
+      "heading": "28"
+    },
+    {
+      "runway_id": "19L",
+      "heading": "208"
+    },
+    {
+      "runway_id": "01R",
+      "heading": "28"
+    },
+    {
+      "runway_id": "28R",
+      "heading": "298"
+    },
+    {
+      "runway_id": "10L",
+      "heading": "118"
+    },
+    {
+      "runway_id": "28L",
+      "heading": "298"
+    },
+    {
+      "runway_id": "10R",
+      "heading": "118"
+    }
+  ],
+  "KSJC": [
+    {
+      "runway_id": "29",
+      "heading": "319"
+    },
+    {
+      "runway_id": "11",
+      "heading": "139"
+    },
+    {
+      "runway_id": "30R",
+      "heading": "319"
+    },
+    {
+      "runway_id": "12L",
+      "heading": "139"
+    },
+    {
+      "runway_id": "30L",
+      "heading": "318.8"
+    },
+    {
+      "runway_id": "12R",
+      "heading": "138.8"
+    }
+  ],
+  "KSLC": [
+    {
+      "runway_id": "32",
+      "heading": "333"
+    },
+    {
+      "runway_id": "14",
+      "heading": "153"
+    },
+    {
+      "runway_id": "34R",
+      "heading": "355"
+    },
+    {
+      "runway_id": "16L",
+      "heading": "175"
+    },
+    {
+      "runway_id": "34L",
+      "heading": "354.9"
+    },
+    {
+      "runway_id": "16R",
+      "heading": "174.9"
+    },
+    {
+      "runway_id": "35",
+      "heading": "360"
+    },
+    {
+      "runway_id": "17",
+      "heading": "180"
+    }
+  ],
+  "KSMF": [
+    {
+      "runway_id": "35R",
+      "heading": "1"
+    },
+    {
+      "runway_id": "17L",
+      "heading": "181"
+    },
+    {
+      "runway_id": "35L",
+      "heading": "1"
+    },
+    {
+      "runway_id": "17R",
+      "heading": "181"
+    }
+  ],
+  "KSNA": [
+    {
+      "runway_id": "20R",
+      "heading": "207.8"
+    },
+    {
+      "runway_id": "02L",
+      "heading": "27.8"
+    },
+    {
+      "runway_id": "20L",
+      "heading": "207.8"
+    },
+    {
+      "runway_id": "02R",
+      "heading": "27.8"
+    }
+  ],
+  "KSTL": [
+    {
+      "runway_id": "24",
+      "heading": "243"
+    },
+    {
+      "runway_id": "06",
+      "heading": "63"
+    },
+    {
+      "runway_id": "29",
+      "heading": "302.2"
+    },
+    {
+      "runway_id": "11",
+      "heading": "122.2"
+    },
+    {
+      "runway_id": "30R",
+      "heading": "302"
+    },
+    {
+      "runway_id": "12L",
+      "heading": "122"
+    },
+    {
+      "runway_id": "30L",
+      "heading": "302"
+    },
+    {
+      "runway_id": "12R",
+      "heading": "122"
+    }
+  ],
+  "KTEB": [
+    {
+      "runway_id": "19",
+      "heading": "183.2"
+    },
+    {
+      "runway_id": "01",
+      "heading": "3.2"
+    },
+    {
+      "runway_id": "24",
+      "heading": "228"
+    },
+    {
+      "runway_id": "06",
+      "heading": "48"
+    }
+  ],
+  "KTPA": [
+    {
+      "runway_id": "28",
+      "heading": "272"
+    },
+    {
+      "runway_id": "10",
+      "heading": "92"
+    },
+    {
+      "runway_id": "01R",
+      "heading": "2"
+    },
+    {
+      "runway_id": "19L",
+      "heading": "182"
+    },
+    {
+      "runway_id": "01L",
+      "heading": "2"
+    },
+    {
+      "runway_id": "19R",
+      "heading": "182"
+    }
+  ],
+  "KTUL": [
+    {
+      "runway_id": "26",
+      "heading": "269.4"
+    },
+    {
+      "runway_id": "08",
+      "heading": "89.4"
+    },
+    {
+      "runway_id": "36R",
+      "heading": "3.1"
+    },
+    {
+      "runway_id": "18L",
+      "heading": "183.1"
+    },
+    {
+      "runway_id": "36L",
+      "heading": "3.1"
+    },
+    {
+      "runway_id": "18R",
+      "heading": "183.1"
+    }
+  ],
+  "KVNY": [
+    {
+      "runway_id": "34R",
+      "heading": "355.5"
+    },
+    {
+      "runway_id": "16L",
+      "heading": "175.5"
+    },
+    {
+      "runway_id": "34L",
+      "heading": "355.5"
+    },
+    {
+      "runway_id": "16R",
+      "heading": "175.5"
+    }
+  ],
+  "PANC": [
+    {
+      "runway_id": "25R",
+      "heading": "269.9"
+    },
+    {
+      "runway_id": "07L",
+      "heading": "89.9"
+    },
+    {
+      "runway_id": "25L",
+      "heading": "269.9"
+    },
+    {
+      "runway_id": "07R",
+      "heading": "89.9"
+    },
+    {
+      "runway_id": "33",
+      "heading": "345"
+    },
+    {
+      "runway_id": "15",
+      "heading": "165"
+    }
+  ],
+  "PHNL": [
+    {
+      "runway_id": "22R",
+      "heading": "233"
+    },
+    {
+      "runway_id": "04L",
+      "heading": "53"
+    },
+    {
+      "runway_id": "22L",
+      "heading": "233"
+    },
+    {
+      "runway_id": "04R",
+      "heading": "53"
+    },
+    {
+      "runway_id": "22W",
+      "heading": "231"
+    },
+    {
+      "runway_id": "04W",
+      "heading": "51"
+    },
+    {
+      "runway_id": "26R",
+      "heading": "270"
+    },
+    {
+      "runway_id": "08L",
+      "heading": "90"
+    },
+    {
+      "runway_id": "26L",
+      "heading": "270"
+    },
+    {
+      "runway_id": "08R",
+      "heading": "90"
+    },
+    {
+      "runway_id": "26W",
+      "heading": "271"
+    },
+    {
+      "runway_id": "08W",
+      "heading": "91"
+    }
+  ],
+  "TJSJ": [
+    {
+      "runway_id": "26",
+      "heading": "247"
+    },
+    {
+      "runway_id": "08",
+      "heading": "67"
+    },
+    {
+      "runway_id": "28",
+      "heading": "270"
+    },
+    {
+      "runway_id": "10",
+      "heading": "90"
+    }
+  ]
+}

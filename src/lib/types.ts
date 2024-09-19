@@ -147,3 +147,5 @@ export const facilities = [
   "PHNL",
   "TJSJ",
 ];
+
+export type TRunways = Record<string, { runway_id: string; heading: number }[]>;

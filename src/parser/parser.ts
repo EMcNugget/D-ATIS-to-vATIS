@@ -1,7 +1,7 @@
 import { v4 } from "uuid";
-import { TATIS, vATIS } from "./types";
-import { error, warn } from "@tauri-apps/plugin-log";
-import { invoke } from "@tauri-apps/api/core";
+import { TATIS, vATIS } from "../lib/types";
+import { warn } from "@tauri-apps/plugin-log";
+import { get_preset_name } from "./preset_name";
 
 const find_number_of_occurances = (
   str: string,
@@ -39,25 +39,23 @@ const varients = [
 ];
 
 const get_notam_varients = (periods: number) => {
-  return varients
-    .map((v) => {
-      const arr = [];
+  return varients.flatMap((v) => {
+    const arr: string[] = [];
 
-      for (let i = 0; i < periods; i++) {
-        arr.push(v + ".".repeat(i));
-      }
+    for (let i = 0; i < periods; i++) {
+      arr.push(v + ".".repeat(i));
+    }
 
-      return arr;
-    })
-    .flat();
+    return arr;
+  });
 };
 
-const parse_atis = (
+export const parse_atis = async (
   atis: TATIS,
   split: boolean,
   facility: string,
   custom_template?: string
-): vATIS => {
+): Promise<vATIS> => {
   const notam_varients = get_notam_varients(3);
 
   const vATIS = {
@@ -103,45 +101,11 @@ const parse_atis = (
       .slice(find_number_of_occurances(atis.datis, ".", 2) + 1)
       .split(notam_varient)[0]
       .trim();
+    vATIS.atis.name = await get_preset_name(
+      vATIS.atis.airportConditions,
+      facility,
+      atis.type
+    );
   }
   return vATIS;
-};
-
-export const fetch_atis = async (facility: string) => {
-  const res = await fetch(`https://datis.clowd.io/api/${facility}`);
-  if (!res.ok) {
-    error(
-      `Error fetching ATIS data. Status Code: ${res.status}, Status: ${res.statusText}`
-    );
-    throw {
-      alert_type: "error",
-      message: `An error occurred while fetching the ATIS data. Status Code: ${res.status}`,
-    };
-  }
-
-  const content_type = res.headers.get("Content-Type");
-  if (content_type && content_type.includes("application/json")) {
-    const response = await res.json();
-
-    let split = false;
-    if (response.length > 1) {
-      split = true;
-    }
-
-    const atis_arr: vATIS[] = [];
-    response.forEach(async (v: TATIS) => {
-      const custom_template: string | undefined = await invoke(
-        "get_facility_config",
-        { facility: facility }
-      );
-      atis_arr.push(parse_atis(v, split, facility, custom_template));
-    });
-    return atis_arr;
-  } else {
-    error("Response was not JSON.");
-    throw {
-      alert_type: "error",
-      message: "An error occurred while fetching the ATIS data.",
-    };
-  }
 };
