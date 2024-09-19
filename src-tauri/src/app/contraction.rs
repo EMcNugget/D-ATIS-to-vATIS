@@ -1,4 +1,4 @@
-use crate::assets::get_file;
+use crate::util::assets::get_file;
 use crate::consts::CONTRACTION_PATH;
 use crate::structs::Contraction;
 use anyhow::Result;

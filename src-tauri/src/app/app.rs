@@ -1,6 +1,6 @@
-use crate::assets::{get_file, set_file};
-use crate::contraction::write_contractions;
-use crate::settings::read_settings;
+use crate::util::assets::{get_file, set_file};
+use crate::app::contraction::write_contractions;
+use crate::util::settings::read_settings;
 use crate::structs::{FindComposite, Response};
 use anyhow::Result;
 use log::{error, info};

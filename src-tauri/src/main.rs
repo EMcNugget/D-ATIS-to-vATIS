@@ -5,12 +5,9 @@ use log::info;
 use tauri::App;
 
 mod app;
-mod assets;
-mod audio;
 mod consts;
-mod contraction;
-mod settings;
 mod structs;
+mod util;
 
 fn setup(app: &mut App) {
     info!(
@@ -18,7 +15,7 @@ fn setup(app: &mut App) {
         app.handle().config().version.as_ref().unwrap()
     );
 
-    crate::settings::check_settings_file();
+    crate::util::settings::check_settings_file();
 }
 
 fn main() {
@@ -34,18 +31,18 @@ fn main() {
                 .build(),
         )
         .invoke_handler(tauri::generate_handler![
-            crate::settings::write_settings,
-            crate::settings::read_settings,
-            crate::app::write_atis,
-            crate::app::is_vatis_running,
-            crate::app::open_vatis,
-            crate::app::get_profiles,
-            crate::app::get_airports_in_profile,
-            crate::assets::get_facility_config,
-            crate::assets::set_contractions,
-            crate::assets::get_contractions,
-            crate::assets::get_runways,
-            crate::audio::play_audio,
+            crate::app::app::write_atis,
+            crate::app::app::is_vatis_running,
+            crate::app::app::open_vatis,
+            crate::app::app::get_profiles,
+            crate::app::audio::play_audio,
+            crate::app::app::get_airports_in_profile,
+            crate::util::settings::write_settings,
+            crate::util::settings::read_settings,
+            crate::util::assets::set_contractions,
+            crate::util::assets::get_facility_config,
+            crate::util::assets::get_contractions,
+            crate::util::assets::get_runways,
         ])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");
