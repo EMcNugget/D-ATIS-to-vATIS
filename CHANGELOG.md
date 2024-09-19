@@ -1,5 +1,14 @@
 # D-ATIS to vATIS
 
+## [1.7.3](#1.7.3) - 9/18/2024
+
+### Patch Changes
+
+- 057a31c: Added custom preset names based on airport operations
+- 0b2f179: Added additional error handling
+- 00e0793: Updated NOTAM parser to accept a wider range of ATIS's
+- 67d823c: Fixed log not rolling over for each instance
+
 ## [1.7.2](#1.7.2) - 9/8/2024
 
 ### Patch Changes
