@@ -2,7 +2,8 @@
 #![cfg_attr(not(debug_assertions), windows_subsystem = "windows")]
 
 use log::info;
-use tauri::App;
+use tauri::{App, Manager};
+use tauri_plugin_log::{Target, TargetKind};
 
 mod app;
 mod consts;
@@ -16,6 +17,10 @@ fn setup(app: &mut App) {
     );
 
     crate::util::settings::check_settings_file();
+
+    let log_path = app.handle().path().app_log_dir().unwrap();
+
+    std::fs::write(log_path.join("log.log"), "").unwrap();
 }
 
 fn main() {
@@ -25,9 +30,13 @@ fn main() {
         .plugin(tauri_plugin_dialog::init())
         .plugin(
             tauri_plugin_log::Builder::new()
+                .targets([
+                    Target::new(TargetKind::Stdout),
+                    Target::new(TargetKind::LogDir {
+                        file_name: Some("log".to_string()),
+                    }),
+                ])
                 .timezone_strategy(tauri_plugin_log::TimezoneStrategy::UseLocal)
-                .max_file_size(50_000)
-                .rotation_strategy(tauri_plugin_log::RotationStrategy::KeepOne)
                 .build(),
         )
         .invoke_handler(tauri::generate_handler![
